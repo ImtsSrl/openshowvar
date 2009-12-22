@@ -47,6 +47,8 @@ private:
 	void addCombo(QTreeWidgetItem *child);
 	void toBinary(int value, QString *binary);
 	void toHex(int value, QString *binary);
+
+        void splitvaluetoview(QTreeWidgetItem *item, QString varname, QString varvalue);
 	
 	enum ColumName {VARNAME,VARVALUE,OPTIONS,TIME,ROBOTIP};
 	
@@ -74,6 +76,7 @@ private slots:
 	void insertNew(const QString &variabile, const QString &robotip);
 	void insertClose();
 	void lettura();
+        void letturaold();
 	void updateGraph();
 	void writeVariable(const QByteArray &varname, const QByteArray &value, const QHostAddress &varip);
 	void closeEvent(QCloseEvent * event);

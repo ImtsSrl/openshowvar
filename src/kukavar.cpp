@@ -21,8 +21,8 @@
 /*!	\file
  *	\class KukaVar
  *	\author Massimiliano Fago
- *	\version 1.0
- *	\date 2007
+ *	\version 1.1
+ *	\date 2009
  *	\brief Determinazione tipo variabile
  *
  *	Sui robot kuka possiamo trovare 4 tipi fondamentali:
@@ -40,6 +40,9 @@
  *	
  *	{E6POS: X -39.86226, Y 1601.820, Z 39.84885, A -104.2217, B 89.98643, C 75.77992, S 2, 
  *	T 3, E1 0.0, E2 0.0, E3 0.0, E4 0.0, E5 0.0, E6 0.0}
+ *
+ *      Un tipo struttura puo' contenere altre strutture. Questo avviene per esempio per la variabile
+ *      $PRO_IP
  */
 
 #include "kukavar.h"
@@ -147,6 +150,7 @@ QByteArray KukaVar::getStructureValue(const QByteArray *fieldname, int &datatype
 QByteArray KukaVar::getStructureMember(const int &fieldposition)
 {
 	QList<QByteArray> field = arrayvalue[fieldposition].split(' ');
+        qDebug() << "Contenuto di fieldposition " << arrayvalue[fieldposition];
 	QByteArray fieldelement(field[0]);
 	return fieldelement.trimmed();
 }

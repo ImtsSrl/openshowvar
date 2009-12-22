@@ -29,9 +29,9 @@
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
-	
+
 	app.setStyle("Plastique");
-	
+
 	QString locale = QLocale::system().name();
 	QTranslator translator;
 	translator.load(QString("openshowvar_") + locale);
@@ -43,11 +43,11 @@ int main(int argc, char *argv[])
 	
 	Qt::WindowFlags flags = showvar->windowFlags();
 	//showvar->setWindowFlags(flags  | Qt::WindowStaysOnTopHint | Qt::CustomizeWindowHint);
-	
+
 	showvar->setAttribute(Qt::WA_DeleteOnClose);
 	showvar->move(100,100);
 	showvar->show();
-        showvar->setWindowTitle("OpenShowVar Beta 0.5.2");
+        showvar->setWindowTitle("OpenShowVar Beta 0.6.2");
 	
 	return app.exec();
 }

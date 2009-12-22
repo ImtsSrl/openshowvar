@@ -37,7 +37,7 @@ class ClientCross : public QThread
 	Q_OBJECT	
 	
 	public:
-		ClientCross(const QHostAddress* address, int readtime = 1000, quint16 port = 7000);
+                ClientCross(const QHostAddress* address, int readtime = 1000, quint16 port = 7000);
 		~ClientCross();
 		
 		void stop();

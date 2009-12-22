@@ -106,9 +106,9 @@ void ClientCross::run()
 				for(int index=0;index<listvar.count();index++){
 					readtime.start();
 					
-					if(listvar[index]->getNewValue(&vartowrite))
-						socket.write(formatMsg(listvar[index]->getVarName(),vartowrite));
-					else
+                                        if(listvar[index]->getNewValue(&vartowrite))
+                                                socket.write(formatMsg(listvar[index]->getVarName(),vartowrite));
+                                        else
 						socket.write(formatMsg(listvar[index]->getVarName()));
 					
 					if(!socket.waitForBytesWritten(Timeout))
@@ -236,11 +236,19 @@ void ClientCross::delVar(int index)
  *	il tipo di funzione da esguire e il nome della variabile.
  *	Nel caso di lettura la funzione da richiedere e' 0
  *	
- *	I primi tre caratteri identificano sempre la lunghezza della
- *	stringa da inviare. Per esempio, se si vuole leggere la variabile
- *	$OV_PRO verra' inviata la richiesta 0|$OV_PRO che e' vettore di byte
- *	formato da 9 byte.
- *	Quindi la richiesta finale sul socket sara': 0090|$OV_PRO
+ *      I primi due byte identificano l'ID del messaggio da inviare, mentre
+ *      i secondi due la lunghezza del messaggio che segue.
+ *      Ogni informazione, ad eccezione della funzione, e' preceduta da due byte
+ *      che contengono la lunghezza del messaggio che segue.
+ *      Per esempio, se si vuole leggere la variabile
+ *	$OV_PRO verra' inviata la richiesta:
+ *      0009007$OV_PRO che e' vettore di byte.
+ *	00      ID messaggio
+ *      09      Lunghezza messaggio seguente
+ *      0       Funzione richiesta
+ *      07      Lunghezza pacchetto seguente
+ *      $OV_PRO Variabile da leggere
+ *	Quindi la richiesta finale sul socket sara': 009007$OV_PRO
  *
  *	\param msg Variabile da richiedere
  *	\return Messaggio formattato
@@ -249,16 +257,14 @@ void ClientCross::delVar(int index)
 QByteArray ClientCross::formatMsg(QByteArray msg){
 	
         QByteArray header, block;
-        int lunghezza;
+        int lunghezza,varnamelen;
         unsigned char hbyte, lbyte;
 	
-	//inserisco il primo byte in testa al messaggio: 0 lettura variabile
-        //block = READVARIABLE + "|" + msg;
-        //blocksize.setNum(block.size());  //inserisco in blocksize la lunghezza in byte di block
-	//3 byte format
-        //QString blocktosend = QString("%1").arg(block.size(), NUMBYTEINT, 'f',0, '0');
+        varnamelen=msg.size();
+        hbyte=(varnamelen & 0xff00) >> 8;
+        lbyte=(varnamelen & 0x00ff);
 
-        block.append(READVARIABLE).append("|").append(msg);
+        block.append(READVARIABLE).append(hbyte).append(lbyte).append(msg);
         lunghezza=block.size();
 
         hbyte=(lunghezza & 0xff00) >> 8;
@@ -295,33 +301,34 @@ QByteArray ClientCross::formatMsg(QByteArray msg){
  */
 
 QByteArray ClientCross::formatMsg(QByteArray msg, QByteArray value){
-        /*
-	QByteArray blocksize, block;
 
-	//inserisco il primo byte in testa al messaggio: 0 lettura variabile
-	block = WRITEVARIABLE + "|" + msg + "|" + value;
-	blocksize.setNum(block.size());  //inserisco in blocksize la lunghezza in byte di block
-	//3 byte format
-	QString blocktosend = QString("%1").arg(block.size(), NUMBYTEINT, 'f',0, '0');
-	
-	return blocktosend.toAscii() + block;
-        */
+    QByteArray header, block;
+    short lunghezza,varnamelen,varvaluelen;
+    unsigned char hbyte, lbyte;
 
-        QByteArray header, block;
-        int lunghezza;
-        unsigned char hbyte, lbyte;
+    varnamelen=msg.size();
+    hbyte=(varnamelen & 0xff00) >> 8;
+    lbyte=(varnamelen & 0x00ff);
 
-        block.append(WRITEVARIABLE).append("|").append(msg).append("|").append(value);
-        lunghezza=block.size();
+    block.append(WRITEVARIABLE).append(hbyte).append(lbyte).append(msg);
 
-        hbyte=(lunghezza & 0xff00) >> 8;
-        lbyte=(lunghezza & 0x00ff);
+    varvaluelen=value.size();
+    hbyte=(varvaluelen & 0xff00) >> 8;
+    lbyte=(varvaluelen & 0x00ff);
 
-        header.append((char)0).append((char)0).append(hbyte).append(lbyte);
-        block.prepend(header);
-        //qDebug() << block.toHex();
+    block.append(hbyte).append(lbyte).append(value);
 
-        return block;
+    lunghezza=block.size();
+
+    hbyte=(lunghezza & 0xff00) >> 8;
+    lbyte=(lunghezza & 0x00ff);
+
+    header.append((char)0).append((char)0).append(hbyte).append(lbyte);
+    block.prepend(header);
+    //qDebug() << "Scrittura: " << block.toHex();
+
+    return block;
+
 }
 
 /*!	\brief Pulizia messaggio
@@ -335,20 +342,30 @@ QByteArray ClientCross::formatMsg(QByteArray msg, QByteArray value){
  */
 
 QByteArray ClientCross::clearMsg(QByteArray msg){
+    short idmsg,lenmsg,func,lenmsg1;
 	if(msg.length() > 0){
-		QByteArray QBLunghezzaBlocco = msg.mid(0,NUMBYTEINT);
-		//int nLunghezzaBlocco=QBLunghezzaBlocco.toInt();
-			
-		//separazione del messaggio ricevuto in tre campi
-		//rimuovo i primi due byte
-		msg=msg.remove(0,NUMBYTEINT);
-		//viene generato un array di nome list
-		QList<QByteArray> lista=msg.split('|');
+            //ID Messaggio
+            idmsg=((int)msg[0])<<8 | ((int)msg[1]);
+            //qDebug() << "ID Messaggio: " << idmsg;
+
+            //Lunghezza messaggio
+            lenmsg=((int)msg[2])<<8 | ((int)msg[3]);
+            //qDebug() << "Lunghezza messaggio: " << lenmsg;
+
+            //Funzione
+            func=((int)msg[4]);
+            //qDebug() << "Funzione: " << func;
+
+            //Lunghezza messaggio 1
+            lenmsg1=((int)msg[5])<<8 | ((int)msg[6]);
+            //qDebug() << "Lunghezza messaggio 1: " << lenmsg1;
 		
-		return lista[1];
+            //qDebug() << "Valore ricevuto " << msg.toHex();
+
+            return msg.mid(7,lenmsg1);
 	}
 	else{
-		return QByteArray("");
+            return QByteArray("");
 	}
 }
 

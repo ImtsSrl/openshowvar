@@ -339,112 +339,158 @@ void OpenShowVarTree::lettura()
 			}
 			
 			item->setForeground(VARVALUE,brush);
-			
-			kukavar = new KukaVar(&item->text(VARNAME).toAscii(),&item->text(VARVALUE).toAscii());
-			
-			int datatype;
-			
-			qDebug() << "Tipo variabile: " << kukavar->getVarType();
-			qDebug() << "Numero elementi: " << kukavar->getElementsNumber();
-			
-			switch(kukavar->getVarType()){
-				case STRUCTURE:
-				{
-					QSet<QString> darobot;
-					QHash<QString, int> dalista;
-					for(int i=0;i<kukavar->getElementsNumber();i++)
-						darobot.insert(kukavar->getStructureMember(i));
-			
-					for(int i=0;i<item->childCount();i++)
-						dalista.insert(item->child(i)->text(VARNAME),i);
-					
-					QHashIterator<QString, int> i(dalista);
-					while (i.hasNext()){
-						i.next();
-						if(!darobot.contains(i.key())){
-						//remove this child
-							QTreeWidgetItem *child = item->child(i.value());
-							item->removeChild(child);
-							delete child;
-							child=NULL;
-						}
-					}
-					
-					for(int i=0;i<kukavar->getElementsNumber();i++){
-						if(dalista.contains(kukavar->getStructureMember(i))){
-						//update vale
-							QTreeWidgetItem *child = item->child(i);
-							QByteArray elementvalue=kukavar->getStructureValue(i,datatype);
-							//tipo di dato struttura intero
-							if(datatype==INT){
-								if(((QComboBox*)treeWidget->itemWidget(child,OPTIONS))->currentText().toAscii()==tr("Binary code")){
-									QString binary;
-									toBinary(elementvalue.toInt(),&binary);
-									child->setText(VARVALUE,binary);
-								}
-								else if(((QComboBox*)treeWidget->itemWidget(child,OPTIONS))->currentText().toAscii()==tr("Hex code")){
-									QString hex;
-									toHex(elementvalue.toInt(),&hex);
-									child->setText(VARVALUE,hex);
-								}
-								else
-									child->setText(VARVALUE,elementvalue);
-							}
-							//altro tipo di dato
-							else{
-								child->setText(VARVALUE,elementvalue);
-								qDebug() << "Nome variabile: " << item->child(i)->text(1) << " tipo dato: " << datatype;
-							}
-						}
-						else{
-						//add value
-							QTreeWidgetItem *child = new QTreeWidgetItem();
-							child->setText(VARNAME,kukavar->getStructureMember(i));
-							child->setText(VARVALUE,kukavar->getStructureValue(i,datatype));
-							item->insertChild(i,child);
-							if(datatype==INT){
-								addCombo(child);
-							}
-						}
-					}
-					break;
-				}
-				case INT:
-				{
-					if(QComboBox* comboBox = dynamic_cast<QComboBox*>(treeWidget->itemWidget(item,OPTIONS))){
-						if(comboBox->currentText().toAscii()==tr("Binary code")){
-							QString binary;
-							toBinary(value.toInt(),&binary);
-							item->setText(VARVALUE,binary);
-						}
-						else if(comboBox->currentText().toAscii()==tr("Hex code")){
-							QString hex;
-							toHex(value.toInt(),&hex);
-							item->setText(VARVALUE,hex);
-						}
-						else
-							item->setText(VARVALUE,value);
-						
-					}
-					else
-						addCombo(item);
-					break;
-				}
-				default:
-				{
-				
-					break;
-				}
-			}//case
-			treeWidget->resizeColumnToContents(VARNAME);
-			delete kukavar;
-			kukavar=NULL;
-			
+
+                        this->splitvaluetoview(item, item->text(VARNAME), item->text(VARVALUE));
 		}//if
 	}//for
 	
 	cLog.writeList(treeWidget);
 }
+
+void OpenShowVarTree::letturaold()
+{
+        QString qsVariabile, tempo;
+        QByteArray qbVariabile, value;
+        int readtime;
+
+        for(int row=0;row<treeWidget->topLevelItemCount();row++)
+        {
+                //qDebug() << treeWidget->topLevelItem(row)->text(0);
+
+                qbVariabile.clear();
+
+                qsVariabile=treeWidget->topLevelItem(row)->text(VARNAME);
+                qbVariabile.append(qsVariabile);
+
+                if(database->readVar(qsVariabile.toAscii(),(QHostAddress)treeWidget->topLevelItem(row)->text(ROBOTIP), &value, &readtime)){
+                        qDebug() << "Trovato " << value << " Tempo di lettura: " << readtime << " [ms]";
+
+                        tempo.setNum(readtime);
+                        tempo.append(" " + tr("[ms]"));
+
+                        QTreeWidgetItem *item = treeWidget->topLevelItem(row);
+
+                        item->setText(VARVALUE,value);
+
+                        QBrush brush;
+
+                        if(readtime>=0){
+                                item->setText(TIME,tempo);
+                                brush.setColor(Qt::black);
+                        }
+                        else{
+                                item->setText(TIME,tr("TIMEOUT"));
+                                brush.setColor(Qt::red);
+                        }
+
+                        item->setForeground(VARVALUE,brush);
+
+                        kukavar = new KukaVar(&item->text(VARNAME).toAscii(),&item->text(VARVALUE).toAscii());
+
+                        int datatype;
+
+                        qDebug() << "Tipo variabile: " << kukavar->getVarType();
+                        qDebug() << "Numero elementi: " << kukavar->getElementsNumber();
+
+                        switch(kukavar->getVarType()){
+                                case STRUCTURE:
+                                {
+                                        QSet<QString> darobot;
+                                        QHash<QString, int> dalista;
+                                        for(int i=0;i<kukavar->getElementsNumber();i++)
+                                                darobot.insert(kukavar->getStructureMember(i));
+
+                                        for(int i=0;i<item->childCount();i++)
+                                                dalista.insert(item->child(i)->text(VARNAME),i);
+
+                                        QHashIterator<QString, int> i(dalista);
+                                        while (i.hasNext()){
+                                                i.next();
+                                                if(!darobot.contains(i.key())){
+                                                //remove this child
+                                                        QTreeWidgetItem *child = item->child(i.value());
+                                                        item->removeChild(child);
+                                                        delete child;
+                                                        child=NULL;
+                                                }
+                                        }
+
+                                        for(int i=0;i<kukavar->getElementsNumber();i++){
+                                                if(dalista.contains(kukavar->getStructureMember(i))){
+                                                //update vale
+                                                        QTreeWidgetItem *child = item->child(i);
+                                                        QByteArray elementvalue=kukavar->getStructureValue(i,datatype);
+                                                        //tipo di dato struttura intero
+                                                        if(datatype==INT){
+                                                                if(((QComboBox*)treeWidget->itemWidget(child,OPTIONS))->currentText().toAscii()==tr("Binary code")){
+                                                                        QString binary;
+                                                                        toBinary(elementvalue.toInt(),&binary);
+                                                                        child->setText(VARVALUE,binary);
+                                                                }
+                                                                else if(((QComboBox*)treeWidget->itemWidget(child,OPTIONS))->currentText().toAscii()==tr("Hex code")){
+                                                                        QString hex;
+                                                                        toHex(elementvalue.toInt(),&hex);
+                                                                        child->setText(VARVALUE,hex);
+                                                                }
+                                                                else
+                                                                        child->setText(VARVALUE,elementvalue);
+                                                        }
+                                                        //altro tipo di dato
+                                                        else{
+                                                                child->setText(VARVALUE,elementvalue);
+                                                                //qDebug() << "Nome variabile: " << item->child(i)->text(1) << " tipo dato: " << datatype;
+                                                        }
+                                                }
+                                                else{
+                                                //add value
+                                                        QTreeWidgetItem *child = new QTreeWidgetItem();
+                                                        child->setText(VARNAME,kukavar->getStructureMember(i));
+                                                        child->setText(VARVALUE,kukavar->getStructureValue(i,datatype));
+                                                        item->insertChild(i,child);
+                                                        if(datatype==INT){
+                                                                addCombo(child);
+                                                        }
+                                                }
+                                        }
+                                        break;
+                                }
+                                case INT:
+                                {
+                                        if(QComboBox* comboBox = dynamic_cast<QComboBox*>(treeWidget->itemWidget(item,OPTIONS))){
+                                                if(comboBox->currentText().toAscii()==tr("Binary code")){
+                                                        QString binary;
+                                                        toBinary(value.toInt(),&binary);
+                                                        item->setText(VARVALUE,binary);
+                                                }
+                                                else if(comboBox->currentText().toAscii()==tr("Hex code")){
+                                                        QString hex;
+                                                        toHex(value.toInt(),&hex);
+                                                        item->setText(VARVALUE,hex);
+                                                }
+                                                else
+                                                        item->setText(VARVALUE,value);
+
+                                        }
+                                        else
+                                                addCombo(item);
+                                        break;
+                                }
+                                default:
+                                {
+
+                                        break;
+                                }
+                        }//case
+                        treeWidget->resizeColumnToContents(VARNAME);
+                        delete kukavar;
+                        kukavar=NULL;
+
+                }//if
+        }//for
+
+        cLog.writeList(treeWidget);
+}
+
 
 ///\todo Impostare correttamente l'ip della variabile da correggere
 
@@ -520,4 +566,123 @@ void OpenShowVarTree::on_stateChanged(int state)
 		qDebug() << QString::number(0xffffffff^Qt::WindowStaysOnTopHint,2);
 		this->setVisible(true);
 	}
+}
+
+void OpenShowVarTree::splitvaluetoview(QTreeWidgetItem *item, QString varname, QString varvalue)
+{
+
+    QByteArray value;
+
+    kukavar = new KukaVar(&varname.toAscii(),&varvalue.toAscii());
+
+    int datatype;
+
+    qDebug() << "Tipo variabile: " << kukavar->getVarType();
+    qDebug() << "Numero elementi: " << kukavar->getElementsNumber();
+
+    switch(kukavar->getVarType()){
+            case STRUCTURE:
+            {
+                    QSet<QString> darobot;
+                    QHash<QString, int> dalista;
+                    for(int i=0;i<kukavar->getElementsNumber();i++)
+                            darobot.insert(kukavar->getStructureMember(i));
+
+                    for(int i=0;i<item->childCount();i++)
+                            dalista.insert(item->child(i)->text(VARNAME),i);
+
+                    QHashIterator<QString, int> i(dalista);
+                    while (i.hasNext()){
+                            i.next();
+                            if(!darobot.contains(i.key())){
+                            //remove this child
+                                    QTreeWidgetItem *child = item->child(i.value());
+                                    item->removeChild(child);
+                                    delete child;
+                                    child=NULL;
+                            }
+                    }
+
+                    for(int i=0;i<kukavar->getElementsNumber();i++){
+                            if(dalista.contains(kukavar->getStructureMember(i))){
+                            //update vale
+                                    QTreeWidgetItem *child = item->child(i);
+                                    QByteArray elementvalue=kukavar->getStructureValue(i,datatype);
+                                    //tipo di dato struttura intero
+                                    switch(datatype)
+                                    {
+                                    case INT:
+                                    {
+                                            if(((QComboBox*)treeWidget->itemWidget(child,OPTIONS))->currentText().toAscii()==tr("Binary code")){
+                                                    QString binary;
+                                                    toBinary(elementvalue.toInt(),&binary);
+                                                    child->setText(VARVALUE,binary);
+                                            }
+                                            else if(((QComboBox*)treeWidget->itemWidget(child,OPTIONS))->currentText().toAscii()==tr("Hex code")){
+                                                    QString hex;
+                                                    toHex(elementvalue.toInt(),&hex);
+                                                    child->setText(VARVALUE,hex);
+                                            }
+                                            else
+                                                    child->setText(VARVALUE,elementvalue);
+                                    break;
+                                    }
+                                    case STRUCTURE:
+                                    {
+                                        qDebug() << "OK, nuova struttura. Che faccio?";
+                                                break;
+                                    }
+                                    //altro tipo di dato
+                                    default:
+                                    {
+                                            child->setText(VARVALUE,elementvalue);
+                                            //qDebug() << "Nome variabile: " << item->child(i)->text(1) << " tipo dato: " << datatype;
+                                            break;
+                                        }
+                                    }
+                            }
+                            else{
+                            //add value
+                                    QTreeWidgetItem *child = new QTreeWidgetItem();
+                                    child->setText(VARNAME,kukavar->getStructureMember(i));
+                                    child->setText(VARVALUE,kukavar->getStructureValue(i,datatype));
+                                    item->insertChild(i,child);
+                                    if(datatype==INT){
+                                            addCombo(child);
+                                    }
+                            }
+                    }
+                    break;
+            }
+            case INT:
+            {
+                    if(QComboBox* comboBox = dynamic_cast<QComboBox*>(treeWidget->itemWidget(item,OPTIONS))){
+                            if(comboBox->currentText().toAscii()==tr("Binary code")){
+                                    QString binary;
+                                    toBinary(value.toInt(),&binary);
+                                    item->setText(VARVALUE,binary);
+                            }
+                            else if(comboBox->currentText().toAscii()==tr("Hex code")){
+                                    QString hex;
+                                    toHex(value.toInt(),&hex);
+                                    item->setText(VARVALUE,hex);
+                            }
+                            else
+                                    item->setText(VARVALUE,value);
+
+                    }
+                    else
+                            addCombo(item);
+                    break;
+            }
+            default:
+            {
+
+                    break;
+            }
+    }//case
+
+    treeWidget->resizeColumnToContents(VARNAME);
+    delete kukavar;
+    kukavar=NULL;
 }

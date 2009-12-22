@@ -45,4 +45,5 @@ SOURCES += src/broadcast.cpp \
 TRANSLATIONS += lang/openshowvar_de.ts \
                 lang/openshowvar_en.ts \
                 lang/openshowvar_it.ts
-#RC_FILE = openshowvar.rc
+
+RC_FILE = openshowvar.rc
