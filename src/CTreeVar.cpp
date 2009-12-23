@@ -81,24 +81,43 @@ void CTreeVar::mouseMoveEvent(QMouseEvent *event)
 
 void CTreeVar::startDrag()
 {
-	QTreeWidgetItem *item;
-	if(this->currentItem()!=NULL){
-		if(this->currentItem()->parent()!=NULL)
-			item=this->currentItem()->parent();
-		else
-			item=this->currentItem();
-	}
-	
-        //Se la variabile e' una struttura elimino il tipo di dato e passo solo il valore
-        KukaVar *kukavar = new KukaVar(&item->text(VARNAME).toAscii(),&item->text(VARVALUE).toAscii());
+    QByteArray varvalue;
+    QTreeWidgetItem *item;
+    if(this->currentItem()!=NULL){
+        if(this->currentItem()->parent()!=NULL)
+            item=this->currentItem()->parent();
+        else
+            item=this->currentItem();
+    }
 
-        //qDebug() << "kukavar membro " << kukavar->getStructureValue();
+    //Se la variabile e' una struttura elimino il tipo di dato e passo solo il valore
+    KukaVar *kukavar = new KukaVar(&item->text(VARNAME).toAscii(),&item->text(VARVALUE).toAscii());
 
-	QMimeData *mimeData = new QMimeData;
-        mimeData->setText(kukavar->getStructureValue());
-	QDrag *drag = new QDrag(this);
-	drag->setMimeData(mimeData);
-	
-	Qt::DropAction dropAction = drag->exec();
+    switch(kukavar->getVarType()){
+    case STRUCTURE:
+        {
+            varvalue=kukavar->getStructureValue();
+            break;
+        }
+    default:
+        {
+            varvalue=kukavar->getValue();
+            break;
+        }
+    }
+
+    QMimeData *mimeData = new QMimeData;
+    mimeData->setText(varvalue);
+    QDrag *drag = new QDrag(this);
+    drag->setMimeData(mimeData);
+
+    //QPixmap pixmap("C:/Documents and Settings/mfa/Documenti/GIT/openshowvar/AWESOM-O.png");
+    QPixmap pixmap("AWESOM-O.png");
+    QPixmap alphaChannel(pixmap.width(), pixmap.height());
+    alphaChannel.fill(QColor(128,128,128));
+    pixmap.setAlphaChannel(alphaChannel);
+    drag->setPixmap(pixmap);
+
+    Qt::DropAction dropAction = drag->exec();
 }
 
