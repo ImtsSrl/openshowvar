@@ -109,13 +109,15 @@ void ClientCross::run()
                                         if(listvar[index]->getNewValue(&vartowrite))
                                                 socket.write(formatMsg(listvar[index]->getVarName(),vartowrite));
                                         else
-						socket.write(formatMsg(listvar[index]->getVarName()));
-					
-					if(!socket.waitForBytesWritten(Timeout))
-					{
-						qDebug() << "Timeout invio";
-						err=true;
-					}
+                                                socket.write(formatMsg(listvar[index]->getVarName()));
+
+                                        if(!socket.waitForBytesWritten(Timeout))
+                                        {
+                                                qDebug() << "Timeout invio";
+                                                err=true;
+                                        }
+                                        else
+                                            idmsgtosend++;
 					
 					while (socket.bytesAvailable() == 0) {
 						if (!socket.waitForReadyRead(Timeout)) {
@@ -259,6 +261,7 @@ QByteArray ClientCross::formatMsg(QByteArray msg){
         QByteArray header, block;
         int lunghezza,varnamelen;
         unsigned char hbyte, lbyte;
+        unsigned char hbytemsg,lbytemsg;
 	
         varnamelen=msg.size();
         hbyte=(varnamelen & 0xff00) >> 8;
@@ -270,7 +273,10 @@ QByteArray ClientCross::formatMsg(QByteArray msg){
         hbyte=(lunghezza & 0xff00) >> 8;
         lbyte=(lunghezza & 0x00ff);
 
-        header.append((char)0).append((char)0).append(hbyte).append(lbyte);
+        hbytemsg=(idmsgtosend & 0xff00) >> 8;
+        lbytemsg=(idmsgtosend & 0x00ff);
+
+        header.append(hbytemsg).append(lbytemsg).append(hbyte).append(lbyte);
         block.prepend(header);
         //qDebug() << block.toHex();
 
@@ -342,11 +348,11 @@ QByteArray ClientCross::formatMsg(QByteArray msg, QByteArray value){
  */
 
 QByteArray ClientCross::clearMsg(QByteArray msg){
-    short idmsg,lenmsg,func,lenmsg1;
+    short lenmsg,func,lenmsg1;
 	if(msg.length() > 0){
             //ID Messaggio
-            idmsg=((int)msg[0])<<8 | ((int)msg[1]);
-            //qDebug() << "ID Messaggio: " << idmsg;
+            idreadmsg=((int)msg[0])<<8 | ((int)msg[1]);
+            //qDebug() << "ID Messaggio: " << idreadmsg;
 
             //Lunghezza messaggio
             lenmsg=((int)msg[2])<<8 | ((int)msg[3]);

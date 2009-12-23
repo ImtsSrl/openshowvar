@@ -57,7 +57,7 @@ class KukaVar : public QObject
 		QByteArray getValue();
 		
 	protected:
-		void setValue(QByteArray varvalue);
+                void setValue(QByteArray varvalue);
 		
 	private:
 		int elementsnumber, intvartype;

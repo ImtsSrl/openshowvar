@@ -56,11 +56,11 @@
 */
 
 KukaVar::KukaVar(const QByteArray* varname, const QByteArray* varvalue)
-{	
+{
 	this->varname=*varname;
 	this->varvalue=*varvalue;
 	
-	setValue(this->varvalue);
+        setValue(this->varvalue);
 }
 
 KukaVar::KukaVar(const QByteArray varname)
@@ -115,7 +115,7 @@ QByteArray KukaVar::getVarTypeName()
 
 int KukaVar::getElementsNumber()
 {
-	return elementsnumber;
+    return elementsnumber;
 }
 
 QByteArray KukaVar::getVarName()
@@ -131,11 +131,10 @@ QByteArray KukaVar::getStructureName()
 //TODO Restituire per valore anche il tipo di dato
 QByteArray KukaVar::getStructureValue(const int &fieldposition, int &datatype)
 {
-	QList<QByteArray> field = arrayvalue[fieldposition].split(' ');
-	QByteArray *fieldelement = new QByteArray(field[1]);
+        QByteArray *fieldelement = new QByteArray(arrayvalue[fieldposition].right(arrayvalue[fieldposition].length()-arrayvalue[fieldposition].indexOf(' ')));
 	//qDebug() << "Vartype: " << VarType(fieldelement->trimmed());
-	datatype = VarType(fieldelement->trimmed());
-	return fieldelement->trimmed();
+        datatype = VarType(fieldelement->trimmed());
+        return *fieldelement;
 }
 
 QByteArray KukaVar::getStructureValue(const QByteArray *fieldname, int &datatype)
@@ -147,12 +146,22 @@ QByteArray KukaVar::getStructureValue(const QByteArray *fieldname, int &datatype
 		return NULL;
 }
 
+/*! \brief Prende il nome du un membro della struttura
+ *
+ *  Imposta il valore della variabile letta da robot
+ *
+ *  \param fieldposition indice del campo
+ *
+ *  Riceve l'indice della posizione del campo e restituisce il nome della variabile
+ *
+ */
+
 QByteArray KukaVar::getStructureMember(const int &fieldposition)
 {
-	QList<QByteArray> field = arrayvalue[fieldposition].split(' ');
-        qDebug() << "Contenuto di fieldposition " << arrayvalue[fieldposition];
-	QByteArray fieldelement(field[0]);
-	return fieldelement.trimmed();
+    QList<QByteArray> field = arrayvalue[fieldposition].split(' ');
+    //qDebug() << "Contenuto di fieldposition " << arrayvalue[fieldposition];
+    QByteArray fieldelement(field[0]);
+    return fieldelement.trimmed();
 }
 
 QByteArray KukaVar::getStructureElement(const int &elementposition)
@@ -175,95 +184,175 @@ void KukaVar::setFieldValue(const QByteArray &value,const int &fieldposition)
 	newarrayvalue[fieldposition]=getStructureMember(fieldposition) + " " + value;
 }
 
-/*!	\brief Imposta il valore della variabile
+/*! \brief Imposta il valore della variabile
  *	
- *	Imposta il valore della variabile letta da robot
+ *  Imposta il valore della variabile letta da robot
  *
- *	\param varvalue Valore variabile
+ *  \param varvalue Valore variabile
  *
+ *  Nel caso di struttura il discorso e' piu' complesso. Le strutture possono prevedere
+ *  altre strutture annidate a piu' livelli, per questo il metodo di separazione con split
+ *  non puo' andare bene. Questa funzione deve separare i campi della struttura principale
+ *  e non intaccare le strutture sottostanti che devono essere riportate alla stessa maniera
+ *  Una chiamata ricorsiva di questa struttura provvedera' a dividere le altre strutture
+ *  eventualmente presenti
  */
 
 void KukaVar::setValue(QByteArray varvalue)
 {
-	this->varvalue=varvalue;
+    QByteArray test;
+
+    this->varvalue=varvalue;
 	
-	intvartype=VarType(varvalue.data());
-	
-	switch(intvartype){
-		case STRUCTURE:
-		{
-			//verify the start position
-			int starttype=varvalue.indexOf("{");
-			int stoptype=varvalue.indexOf(":");
-		
-			int lenvartype=stoptype-starttype-1;
-			structurename=varvalue.mid(starttype+1,lenvartype);
-		
-			//Pulizia stringa da parte iniziale e finale, comprese le parentesi graffe
-			int lenstructure=varvalue.size()-(stoptype+2)-1;
-			value=varvalue.mid(stoptype+2,lenstructure);
-			
-			/*
-			Se la variabile non e' impostata nel config del robot, ritorna una struttura
-			con i campi vuoti, tipo questa:
-			{E6POS: }
-			con uno o più spazi dopo il carattere ":" prima della parentesi graffa di chiusura
-			*/
-			value.trimmed();
-			if(!value.isEmpty()){
-				//separazione dei campi e valori in una lista
-				arrayvalue=value.split(',');
-				elementsnumber=arrayvalue.count();
-				for(int i=0;i<arrayvalue.count();i++)
-				{
-					QByteArray trimelement(arrayvalue[i]);
-					arrayvalue[i] = trimelement.trimmed();
-					QList<QByteArray> field = arrayvalue[i].split(' ');
-					elements.insert(field[0], field[1]);
-				}
-			
-				newarrayvalue=arrayvalue;
-			}
-			else{
-				elementsnumber=0;
-			}
-			//MFA 01/02/2008
-			newvarvalue=this->varvalue;
-			break;
-		}		
-		case INT:
-		{
-			elementsnumber=1;
-			
-			newvarvalue=this->varvalue;
-			break;
-		}		
-		case REAL:
-		{
-			elementsnumber=1;
-			
-			newvarvalue=this->varvalue;
-			break;
-		}		
-		case BOOL:
-		{
-			elementsnumber=1;
-		
-			newvarvalue=this->varvalue;
-			break;
-		}
-		case CHAR:
-		{
-			elementsnumber=1;
-		
-			newvarvalue=this->varvalue;
-			break;
-		}
-		default:
-		{
-			break;
-		}
-	}
+    intvartype=VarType(varvalue.data());
+
+    //qDebug() << "varvalue in kukavar " << this->varvalue;
+    //qDebug() << "lunghezza in kukavar" << this->varvalue.length();
+
+    switch(intvartype){
+    case STRUCTURE:
+        {
+            //verify the start position
+            int starttype=varvalue.indexOf("{");
+            int stoptype=varvalue.indexOf(":");
+
+            int lenvartype=stoptype-starttype-1;
+            structurename=varvalue.mid(starttype+1,lenvartype);
+
+            //Pulizia stringa da parte iniziale e finale, comprese le parentesi graffe
+            int lenstructure=varvalue.size()-(stoptype+2)-1;
+            test=varvalue.mid(stoptype+2,lenstructure);
+
+            /*
+            Se la variabile non e' impostata nel config del robot, ritorna una struttura
+            con i campi vuoti, tipo questa:
+            {E6POS: }
+            con uno o più spazi dopo il carattere ":" prima della parentesi graffa di chiusura
+            */
+
+            test=test.trimmed();
+            if(!test.isEmpty()){
+                //separazione dei campi e valori in una lista
+
+                int intstruct=0,initpos=0;
+                bool finestruttura=false;
+                QByteArray varnameandvalue;
+                arrayvalue.clear();
+
+                //qDebug() << "valore di test" << test << "lunghezza di test " << test.length();
+                for(int charpos=0;charpos<test.length();charpos++)
+                {
+                    switch(test[charpos])
+                    {
+                    case ',':
+                        {
+                            if(intstruct==0){
+                                varnameandvalue=test.mid(initpos,charpos-initpos);
+                                if(!finestruttura)
+                                {
+                                    QList<QByteArray> field = varnameandvalue.split(' ');
+                                    elements.insert(field[0], field[1]);
+                                    initpos=charpos+2;
+
+                                    arrayvalue.append(varnameandvalue);
+                                    //qDebug() << "Variabile: " << field[0] << " valore " << field[1];
+                                }
+                                finestruttura=false;
+                            }
+                            else{
+                                //qDebug() << "Campo interno alla struttura";
+                            }
+                            break;
+                        }
+                    case '{':
+                        {
+                            intstruct++;
+                            //qDebug() << "Trovata nuova struttura";
+                            break;
+                        }
+                    case '}':
+                        {
+                            if(intstruct==1){
+                                varnameandvalue=test.mid(initpos,charpos-initpos+1);
+                                int posstartstr=varnameandvalue.indexOf('{');
+                                QList<QByteArray> field;
+                                field.append(varnameandvalue.mid(0,posstartstr-1));
+                                field.append(varnameandvalue.mid(posstartstr,charpos-posstartstr));
+                                elements.insert(field[0], field[1]);
+                                initpos=charpos+3;
+
+                                arrayvalue.append(varnameandvalue);
+                                finestruttura=true;
+                                //qDebug() << "Variabile: " << field[0] << " valore " << field[1];
+                                //qDebug() << "Chiusura struttura aperta";
+                            }
+                            else
+                                //qDebug() << "Chiusura struttura non aperta";
+                                intstruct--;
+                            break;
+                        }
+                    default:
+                        break;
+                    }
+                }
+
+                if(initpos<test.length()){
+                    varnameandvalue=test.mid(initpos,test.length()-initpos);
+                    QList<QByteArray> field = varnameandvalue.split(' ');
+                    elements.insert(field[0], field[1]);
+
+                    arrayvalue.append(varnameandvalue);
+                    //qDebug() << "Variabile: " << field[0] << " valore " << field[1];
+                }
+
+            }
+            else{
+                elementsnumber=0;
+                qDebug() << "Struttura vuota";
+            }
+
+            newarrayvalue=arrayvalue;
+            elementsnumber=newarrayvalue.size();
+            //qDebug() << "numero elementi array " << elementsnumber;
+            //qDebug() << "Array " << newarrayvalue << " valori " << elementsnumber;
+            //qDebug() << "Elements " << elements;
+
+            newvarvalue=this->varvalue;
+            break;
+        }
+    case INT:
+        {
+            elementsnumber=1;
+
+            newvarvalue=this->varvalue;
+            break;
+        }
+    case REAL:
+        {
+            elementsnumber=1;
+
+            newvarvalue=this->varvalue;
+            break;
+        }
+    case BOOL:
+        {
+            elementsnumber=1;
+
+            newvarvalue=this->varvalue;
+            break;
+        }
+    case CHAR:
+        {
+            elementsnumber=1;
+
+            newvarvalue=this->varvalue;
+            break;
+        }
+    default:
+        {
+            break;
+        }
+    }
 }
 
 QByteArray KukaVar::createStructure()

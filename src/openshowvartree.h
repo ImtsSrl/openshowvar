@@ -76,7 +76,6 @@ private slots:
 	void insertNew(const QString &variabile, const QString &robotip);
 	void insertClose();
 	void lettura();
-        void letturaold();
 	void updateGraph();
 	void writeVariable(const QByteArray &varname, const QByteArray &value, const QHostAddress &varip);
 	void closeEvent(QCloseEvent * event);

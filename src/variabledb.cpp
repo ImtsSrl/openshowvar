@@ -74,7 +74,7 @@ VariableDB::~VariableDB()
 bool VariableDB::readVar(QByteArray varname, QHostAddress robotip, QByteArray* varvalue, int* readtime)
 {
 	for(int i=0;i<listvar.count();i++){
-		//qDebug() << "Indice: " << i << " robotip: " << listvar[i]->getRobotIP() << " nome variabile: " << listvar[i]->getVarName() << " valore variabile: " << listvar[i]->getValue();
+                //qDebug() << "Indice: " << i << " robotip: " << listvar[i]->getRobotIP() << " nome variabile: " << listvar[i]->getVarName() << " valore variabile: " << listvar[i]->getValue();
 		if(listvar[i]->getRobotIP() == robotip && listvar[i]->getVarName() == varname){
 			int threadid=getThreadIndex(robotip);
 			robotServer[threadid]->mutex.lock();

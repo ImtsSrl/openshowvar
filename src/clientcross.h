@@ -60,6 +60,7 @@ class ClientCross : public QThread
 		quint16 robotport;
 		int readfreq;
 		int threadarrayindex;
+                unsigned short idmsgtosend,idreadmsg; //ID messaggio da inviare
 		QTime readtime;
 		
 		QList<RobotVar *> listvar;
