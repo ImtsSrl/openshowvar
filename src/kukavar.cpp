@@ -146,7 +146,18 @@ QByteArray KukaVar::getStructureValue(const QByteArray *fieldname, int &datatype
 		return NULL;
 }
 
-/*! \brief Prende il nome du un membro della struttura
+/*! \brief Contenuto struttura
+ *
+ *  Ritorna il valore della struttura pulito dal tipo di struttura
+ *
+ */
+
+QByteArray KukaVar::getStructureValue()
+{
+        return structurevalue;
+}
+
+/*! \brief Prende il nome di un membro della struttura
  *
  *  Imposta il valore della variabile letta da robot
  *
@@ -231,6 +242,8 @@ void KukaVar::setValue(QByteArray varvalue)
             */
 
             test=test.trimmed();
+            structurevalue=structurevalue.append('{').append(test).append('}');
+
             if(!test.isEmpty()){
                 //separazione dei campi e valori in una lista
 

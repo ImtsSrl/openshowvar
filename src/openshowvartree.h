@@ -50,8 +50,6 @@ private:
 
         void splitvaluetoview(QTreeWidgetItem *item, QString varname, QString varvalue);
 	
-	enum ColumName {VARNAME,VARVALUE,OPTIONS,TIME,ROBOTIP};
-	
 	static int VarValue;
 	
 	//grafico

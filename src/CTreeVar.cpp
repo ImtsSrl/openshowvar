@@ -21,8 +21,8 @@
 /*!	\file
  *	\class CTreeVar
  *	\author Massimiliano Fago
- *	\version 1.0
- *	\date 2007
+ *	\version 1.1
+ *	\date 2009
  *	\brief Reimplementazione TreeWidget per gestione Drop
  *
  */
@@ -89,8 +89,13 @@ void CTreeVar::startDrag()
 			item=this->currentItem();
 	}
 	
+        //Se la variabile e' una struttura elimino il tipo di dato e passo solo il valore
+        KukaVar *kukavar = new KukaVar(&item->text(VARNAME).toAscii(),&item->text(VARVALUE).toAscii());
+
+        //qDebug() << "kukavar membro " << kukavar->getStructureValue();
+
 	QMimeData *mimeData = new QMimeData;
-	mimeData->setText(item->text(1));
+        mimeData->setText(kukavar->getStructureValue());
 	QDrag *drag = new QDrag(this);
 	drag->setMimeData(mimeData);
 	

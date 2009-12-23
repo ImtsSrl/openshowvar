@@ -39,6 +39,14 @@ enum RobotVarType {
 	CHAR		/*!< Tipo di dato char. */
 };
 
+enum ColumName {
+    VARNAME,
+    VARVALUE,
+    OPTIONS,
+    TIME,
+    ROBOTIP
+};
+
 #define DEBUGWIN 0;
 
 #endif

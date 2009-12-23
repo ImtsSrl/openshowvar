@@ -1,6 +1,9 @@
 #ifndef CTREEVAR_H
 #define CTREEVAR_H
 
+#include "showvarconst.h"
+#include "kukavar.h"
+
 #include <QtGui>
 #include <QTreeWidget>
 

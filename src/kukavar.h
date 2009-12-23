@@ -46,6 +46,7 @@ class KukaVar : public QObject
 		QByteArray getStructureName();
 		QByteArray getStructureValue(const int &fieldposition,int &datatype);
 		QByteArray getStructureValue(const QByteArray *fieldname, int &datatype);
+                QByteArray getStructureValue();
 		QByteArray getStructureMember(const int &fieldposition);
 		QByteArray getStructureElement(const int &fieldposition);
 		QByteArray getNewValue();
@@ -61,7 +62,7 @@ class KukaVar : public QObject
 		
 	private:
 		int elementsnumber, intvartype;
-		QByteArray vartype,value,varname,varvalue,structurename,newvarvalue;
+                QByteArray vartype,value,varname,varvalue,structurename,newvarvalue,structurevalue;
 		QList<QByteArray> arrayvalue,newarrayvalue;
 		QHash<QByteArray, QByteArray> elements;
 		
