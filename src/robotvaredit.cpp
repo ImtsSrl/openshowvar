@@ -44,205 +44,200 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
 	QVBoxLayout *topLayout = new QVBoxLayout;
 	QGridLayout *leftLayout = new QGridLayout;
 	QHBoxLayout *bottomLayout = new QHBoxLayout;
-	QSignalMapper* mapper[40];
-	
-	switch(robotvar->getVarType()){
-		case STRUCTURE:
-		{
-			//top labels
-			QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
-			titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-			
-			QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getStructureName()));
-			structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-			topLayout->addWidget(titleLabel);
-			topLayout->addWidget(structureLabel);
-			topLayout->addStretch();
-			
-			for (int i=0;i<robotvar->getElementsNumber();i++)
-			{
-				int tipodato;
-				robotvar->getStructureValue(i,tipodato);
-				
-				widget[i] = new QLabel(robotvar->getStructureMember(i));
-				switch(tipodato){
-					case INT:
-						widget[i+robotvar->getElementsNumber()] = new QSpinBox();
-						((QSpinBox*)widget[i+robotvar->getElementsNumber()])->setRange(-9999,9999);
-						((QSpinBox*)widget[i+robotvar->getElementsNumber()])->setValue(robotvar->getStructureValue(i,tipodato).toInt());
-						
-						mapper[i] = new QSignalMapper(this);
-						connect(widget[i+robotvar->getElementsNumber()], SIGNAL(valueChanged(const QString&)),mapper[i], SLOT(map()));
-						mapper[i]->setMapping(widget[i+robotvar->getElementsNumber()], i);
-						connect(mapper[i], SIGNAL(mapped(int)), this, SLOT(on_Changed(int)));
-						
-						break;
-					case REAL:
-						widget[i+robotvar->getElementsNumber()] = new QDoubleSpinBox();
-						((QDoubleSpinBox*)widget[i+robotvar->getElementsNumber()])->setDecimals(6);
-						((QDoubleSpinBox*)widget[i+robotvar->getElementsNumber()])->setRange(-9999,9999);
-						((QDoubleSpinBox*)widget[i+robotvar->getElementsNumber()])->setValue(robotvar->getStructureValue(i,tipodato).toDouble());
-						
-						mapper[i] = new QSignalMapper(this);
-						connect(widget[i+robotvar->getElementsNumber()], SIGNAL(valueChanged(const QString&)),mapper[i], SLOT(map()));
-						mapper[i]->setMapping(widget[i+robotvar->getElementsNumber()], i);
-						connect(mapper[i], SIGNAL(mapped(int)), this, SLOT(on_Changed(int)));
-						
-						break;
-					case BOOL:
-						widget[i+robotvar->getElementsNumber()] = new QComboBox();
-						((QComboBox*)widget[i+robotvar->getElementsNumber()])->addItem("TRUE");
-						((QComboBox*)widget[i+robotvar->getElementsNumber()])->addItem("FALSE");
-						((QComboBox*)widget[i+robotvar->getElementsNumber()])->setCurrentIndex(((QComboBox*)widget[i+robotvar->getElementsNumber()])->findText(robotvar->getStructureValue(i,tipodato)));
-						
-						mapper[i] = new QSignalMapper(this);
-						connect(widget[i+robotvar->getElementsNumber()], SIGNAL(currentIndexChanged(const QString&)),mapper[i], SLOT(map()));
-						mapper[i]->setMapping(widget[i+robotvar->getElementsNumber()], i);
-						connect(mapper[i], SIGNAL(mapped(int)), this, SLOT(on_Changed(int)));
-						
-						break;
-					case CHAR:
-					{
-						widget[i+robotvar->getElementsNumber()] = new QLineEdit(robotvar->getStructureValue(i,tipodato));
-			
-						QRegExp regExp("[A-Za-z0-9]{1}");
-						((QLineEdit*)widget[i+robotvar->getElementsNumber()])->setValidator(new QRegExpValidator(regExp, this));
-						
-						mapper[i] = new QSignalMapper(this);
-						connect(widget[i+robotvar->getElementsNumber()], SIGNAL(textChanged(const QString&)),mapper[i], SLOT(map()));
-						mapper[i]->setMapping(widget[i+robotvar->getElementsNumber()], i);
-						connect(mapper[i], SIGNAL(mapped(int)), this, SLOT(on_Changed(int)));
-						
-						break;
-					}
-					default:
-						widget[i+robotvar->getElementsNumber()] = new QLineEdit(robotvar->getStructureValue(i,tipodato));
-						break;
-				}
-				
-				//QRegExp regExp("[A-Za-z0-9]{1,30}");
-				//namedLineEdit[i]->setValidator(new QRegExpValidator(regExp, this));
-				//connect(widget[i+robotvar->getElementsNumber()], SIGNAL(textChanged(const QString &)), this, SLOT(on_namedLineEdit_textChanged(const QString &)));
-			
-				leftLayout->addWidget(widget[i],i,0);
-				leftLayout->addWidget(widget[i+robotvar->getElementsNumber()],i,1);
-			}
-			break;
-		}
-		case INT:
-		{
-			//INT
-			//top labels
-			QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
-			titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-			QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
-			structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-			topLayout->addWidget(titleLabel);
-			topLayout->addWidget(structureLabel);
-			topLayout->addStretch();
-			
-			widget[0] = new QLabel(robotvar->getVarName());
-			widget[1] = new QSpinBox();
-			((QSpinBox*)widget[1])->setRange(-(9999999),(9999999));
-			((QSpinBox*)widget[1])->setValue(robotvar->getValue().toInt());
-			
-			leftLayout->addWidget(widget[0],0,0);
-			leftLayout->addWidget(widget[1],0,1);
-			
-			mapper[0] = new QSignalMapper(this);
-			connect(widget[1], SIGNAL(valueChanged(const QString&)),mapper[0], SLOT(map()));
-			mapper[0]->setMapping(widget[1], 0);
-			connect(mapper[0], SIGNAL(mapped(int)), this, SLOT(on_Changed(int)));
-			
-			break;
-		}
-		case REAL:
-		{
-			//REAL
-			//top labels
-			QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
-			titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-			QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
-			structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-			topLayout->addWidget(titleLabel);
-			topLayout->addWidget(structureLabel);
-			topLayout->addStretch();
-			
-			widget[0] = new QLabel(robotvar->getVarName());
-			widget[1] = new QDoubleSpinBox();
-			((QDoubleSpinBox*)widget[1])->setDecimals(4);
-			((QDoubleSpinBox*)widget[1])->setRange(-9999,9999);
-			((QDoubleSpinBox*)widget[1])->setValue(robotvar->getValue().toDouble());
-		
-			leftLayout->addWidget(widget[0],0,0);
-			leftLayout->addWidget(widget[1],0,1);
-			
-			mapper[0] = new QSignalMapper(this);
-			connect(widget[1], SIGNAL(valueChanged(const QString&)),mapper[0], SLOT(map()));
-			mapper[0]->setMapping(widget[1], 0);
-			connect(mapper[0], SIGNAL(mapped(int)), this, SLOT(on_Changed(int)));
-			
-			break;
-		}
-		case BOOL:
-		{
-			//BOOL
-			//top labels
-			QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
-			titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-			QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
-			structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-			topLayout->addWidget(titleLabel);
-			topLayout->addWidget(structureLabel);
-			topLayout->addStretch();
-			
-			widget[0] = new QLabel(robotvar->getVarName());
-			widget[1] = new QComboBox();
-			((QComboBox*)widget[1])->addItem("TRUE");
-			((QComboBox*)widget[1])->addItem("FALSE");
-			((QComboBox*)widget[1])->setCurrentIndex(((QComboBox*)widget[1])->findText(robotvar->getValue()));
-			
-			leftLayout->addWidget(widget[0],0,0);
-			leftLayout->addWidget(widget[1],0,1);
-			
-			mapper[0] = new QSignalMapper(this);
-			connect(widget[1], SIGNAL(currentIndexChanged(const QString&)),mapper[0], SLOT(map()));
-			mapper[0]->setMapping(widget[1], 0);
-			connect(mapper[0], SIGNAL(mapped(int)), this, SLOT(on_Changed(int)));
-			
-			break;
-		}
-		case CHAR:
-		{
-			//CHAR
-			//top labels
-			QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
-			titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-			QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
-			structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-			topLayout->addWidget(titleLabel);
-			topLayout->addWidget(structureLabel);
-			topLayout->addStretch();
-			
-			widget[0] = new QLabel(robotvar->getVarName());
-			widget[1] = new QLineEdit(robotvar->getValue());
-			
-			QRegExp regExp("[A-Za-z0-9]{1}");
-			((QLineEdit*)widget[1])->setValidator(new QRegExpValidator(regExp, this));
-			connect(widget[1], SIGNAL(textChanged(const QString &)), this, SLOT(on_namedLineEdit_textChanged(const QString &)));
-		
-			leftLayout->addWidget(widget[0],0,0);
-			leftLayout->addWidget(widget[1],0,1);
-			
-			mapper[0] = new QSignalMapper(this);
-			connect(widget[1], SIGNAL(valueChanged(const QString&)),mapper[0], SLOT(map()));
-			mapper[0]->setMapping(widget[1], 0);
-			connect(mapper[0], SIGNAL(mapped(int)), this, SLOT(on_Changed(int)));
-			
-			break;
-		}
-	}
-	
+        //QSignalMapper* mapper[40];
+
+/*
+        QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
+        titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+        //QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getStructureName()));
+        QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
+        structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+        topLayout->addWidget(titleLabel);
+        topLayout->addWidget(structureLabel);
+        topLayout->addStretch();
+
+        
+        //QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
+        //titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+        
+        for(int index=0;index<robotvar->getElementsNumber();index++)
+        {
+            
+
+            //qDebug() << "Tipo dato: " << robotvar->getVarType();
+
+            switch(robotvar->getVarType()){
+            case STRUCTURE:
+                {
+                    break;
+                }
+            case INT:
+                {
+                    addInt(1,robotvar->getVarName(),robotvar->getValue().toInt());
+                    break;
+                }
+            case REAL:
+                {
+                    addReal(1,robotvar->getVarName(),robotvar->getValue().toDouble());
+                    break;
+                }
+            case BOOL:
+                {
+                    addBool(1,robotvar->getVarName(),robotvar->getValue());
+                    break;
+                }
+            case CHAR:
+                {
+                    addChar(1,robotvar->getVarName(),robotvar->getValue());
+                    break;
+                }
+            }
+
+            leftLayout->addWidget(widget[0],0,0);
+            leftLayout->addWidget(widget[1],0,1);
+            addMap(index+1,0,robotvar->getVarType());
+
+        }
+*/
+
+        switch(robotvar->getVarType()){
+                case STRUCTURE:
+                {
+                        //top labels
+                        QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
+                        titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+                        QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getStructureName()));
+                        structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+                        topLayout->addWidget(titleLabel);
+                        topLayout->addWidget(structureLabel);
+                        topLayout->addStretch();
+
+                        for (int i=0;i<robotvar->getElementsNumber();i++)
+                        {
+                                int tipodato;
+                                robotvar->getStructureValue(i,tipodato);
+
+                                widget[i] = new QLabel(robotvar->getStructureMember(i));
+                                switch(tipodato){
+                                        case INT:
+                                                addInt(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato).toInt());
+                                                addMap(i+robotvar->getElementsNumber(),i,tipodato);
+
+                                                break;
+                                        case REAL:
+                                                addInt(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato).toDouble());
+                                                addMap(i+robotvar->getElementsNumber(),i,tipodato);
+
+                                                break;
+                                        case BOOL:
+                                                addBool(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato));
+                                                addMap(i+robotvar->getElementsNumber(),i,tipodato);
+
+                                                break;
+                                        case CHAR:
+                                        {
+                                                addChar(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato));
+                                                addMap(i+robotvar->getElementsNumber(),i,tipodato);
+                                                break;
+                                        }
+                                        default:
+                                                widget[i+robotvar->getElementsNumber()] = new QLineEdit(robotvar->getStructureValue(i,tipodato));
+                                                break;
+                                }
+
+                                leftLayout->addWidget(widget[i],i,0);
+                                leftLayout->addWidget(widget[i+robotvar->getElementsNumber()],i,1);
+                        }
+                        break;
+                }
+                case INT:
+                {
+                        //INT
+                        //top labels
+                        QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
+                        titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+                        QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
+                        structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+                        topLayout->addWidget(titleLabel);
+                        topLayout->addWidget(structureLabel);
+                        topLayout->addStretch();
+
+                        addInt(1,robotvar->getVarName(),robotvar->getValue().toInt());
+
+                        leftLayout->addWidget(widget[0],0,0);
+                        leftLayout->addWidget(widget[1],0,1);
+
+                        addMap(1,0,robotvar->getVarType());
+
+                        break;
+                }
+                case REAL:
+                {
+                        //REAL
+                        //top labels
+                        QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
+                        titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+                        QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
+                        structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+                        topLayout->addWidget(titleLabel);
+                        topLayout->addWidget(structureLabel);
+                        topLayout->addStretch();
+
+                        addReal(1,robotvar->getVarName(),robotvar->getValue().toDouble());
+
+                        leftLayout->addWidget(widget[0],0,0);
+                        leftLayout->addWidget(widget[1],0,1);
+
+                        addMap(1,0,robotvar->getVarType());
+
+                        break;
+                }
+                case BOOL:
+                {
+                        //BOOL
+                        //top labels
+                        QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
+                        titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+                        QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
+                        structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+                        topLayout->addWidget(titleLabel);
+                        topLayout->addWidget(structureLabel);
+                        topLayout->addStretch();
+
+                        addBool(1,robotvar->getVarName(),robotvar->getValue());
+
+                        leftLayout->addWidget(widget[0],0,0);
+                        leftLayout->addWidget(widget[1],0,1);
+
+                        addMap(1,0,robotvar->getVarType());
+
+                        break;
+                }
+                case CHAR:
+                {
+                        //CHAR
+                        //top labels
+                        QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
+                        titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+                        QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
+                        structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+                        topLayout->addWidget(titleLabel);
+                        topLayout->addWidget(structureLabel);
+                        topLayout->addStretch();
+
+                        addChar(1,robotvar->getVarName(),robotvar->getValue());
+
+                        leftLayout->addWidget(widget[0],0,0);
+                        leftLayout->addWidget(widget[1],0,1);
+
+                        addMap(1,0,robotvar->getVarType());
+
+                        break;
+                }
+        }
+
+
 	//bottom commands
 	QPushButton *okButton = new QPushButton(tr("OK"));
 	QPushButton *abortButton = new QPushButton(tr("Abort"));
@@ -386,4 +381,113 @@ void RobotVarEdit::on_Accept()
 		else
 			((QLabel*)widget[i])->setText(robotvar->getVarName());
 	}
+}
+
+/*!	\brief Inserimento elemento di tipo intero
+ *
+ *	Inserisce un elemento di tipo intero alla finestra
+ *
+ */
+
+void RobotVarEdit::addInt(int widgetindex, QByteArray varName, int value){
+
+    //qDebug() << "Indice widget: " << widgetindex << " valore: " << value;
+
+    widget[widgetindex-1] = new QLabel(varName);
+    widget[widgetindex] = new QSpinBox();
+    ((QSpinBox*)widget[widgetindex])->setRange(-(9999999),(9999999));
+    ((QSpinBox*)widget[widgetindex])->setValue(value);
+}
+
+/*!	\brief Inserimento elemento di tipo reale
+ *
+ *	Inserisce un elemento di tipo real alla finestra
+ *
+ */
+
+void RobotVarEdit::addReal(int widgetIndex, QByteArray varName, double value){
+    widget[widgetIndex-1] = new QLabel(varName);
+    widget[widgetIndex] = new QDoubleSpinBox();
+    ((QDoubleSpinBox*)widget[widgetIndex])->setDecimals(4);
+    ((QDoubleSpinBox*)widget[widgetIndex])->setRange(-9999,9999);
+    ((QDoubleSpinBox*)widget[widgetIndex])->setValue(value);
+}
+
+/*!	\brief Inserimento elemento di tipo char
+ *
+ *	Inserisce un elemento di tipo char alla finestra
+ *
+ */
+
+void RobotVarEdit::addChar(int widgetindex, QByteArray varName, QByteArray value){
+
+    widget[widgetindex-1] = new QLabel(varName);
+    widget[widgetindex] = new QLineEdit(value);
+
+    //QRegExp regExp("[A-Za-z0-9]{1-30}");
+    //((QLineEdit*)widget[widgetindex])->setValidator(new QRegExpValidator(regExp, this));
+    connect(widget[widgetindex], SIGNAL(textChanged(const QString &)), this, SLOT(on_namedLineEdit_textChanged(const QString &)));
+}
+
+/*!	\brief Inserimento elemento di tipo intero
+ *
+ *	Inserisce un elemento di tipo intero alla finestra
+ *
+ */
+
+void RobotVarEdit::addBool(int widgetindex, QByteArray varName, QByteArray value){
+
+    //qDebug() << "Indice widget: " << widgetindex << " valore: " << value;
+
+    widget[widgetindex-1] = new QLabel(varName);
+    widget[widgetindex] = new QComboBox();
+    ((QComboBox*)widget[widgetindex])->addItem("TRUE");
+    ((QComboBox*)widget[widgetindex])->addItem("FALSE");
+    ((QComboBox*)widget[widgetindex])->setCurrentIndex(((QComboBox*)widget[widgetindex])->findText(value));
+
+}
+
+/*!	\brief Inserimento elemento di tipo struttura
+ *
+ *	Inserisce un elemento di tipo struttura alla finestra
+ *
+ */
+
+void RobotVarEdit::addStructure(int widgetindex, int value){
+
+    //qDebug() << "Indice widget: " << widgetindex << " valore: " << value;
+    widget[widgetindex] = new QSpinBox();
+    ((QSpinBox*)widget[widgetindex])->setRange(-(9999999),(9999999));
+    ((QSpinBox*)widget[widgetindex])->setValue(value);
+}
+
+/*!	\brief Inserimento elemento di tipo struttura
+ *
+ *	Inserisce un elemento di tipo struttura alla finestra
+ *
+ */
+
+void RobotVarEdit::addMap(int widgetIndex, int mapIndex, int tipodato){
+    qDebug() << "Indice widget: " << widgetIndex << " mapIndex: " << mapIndex << " tipo dato: " << tipodato;
+    mapper[mapIndex] = new QSignalMapper(this);
+    switch(tipodato){
+    case BOOL:
+        {
+            connect(widget[widgetIndex], SIGNAL(currentIndexChanged(const QString&)),mapper[mapIndex], SLOT(map()));
+            break;
+        }
+    case CHAR:
+        {
+            connect(widget[widgetIndex], SIGNAL(textChanged(const QString&)),mapper[mapIndex], SLOT(map()));
+            break;
+        }
+    default:
+        {
+            connect(widget[widgetIndex], SIGNAL(valueChanged(const QString&)),mapper[mapIndex], SLOT(map()));
+            break;
+        }
+    }
+
+    mapper[mapIndex]->setMapping(widget[widgetIndex], mapIndex);
+    connect(mapper[mapIndex], SIGNAL(mapped(int)), this, SLOT(on_Changed(int)));
 }

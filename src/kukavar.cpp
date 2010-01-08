@@ -65,7 +65,7 @@ KukaVar::KukaVar(const QByteArray* varname, const QByteArray* varvalue)
 
 KukaVar::KukaVar(const QByteArray varname)
 {
-	qDebug() << "Costruttore KukaVar: " << varname;
+        //qDebug() << "Costruttore KukaVar: " << varname;
 }
 
 KukaVar::~KukaVar()
@@ -84,6 +84,7 @@ KukaVar::~KukaVar()
 
 int KukaVar::VarType(const QByteArray variabile)
 {
+    //qDebug() << "Variabile " << variabile;
 	if(variabile.startsWith("{") && variabile.endsWith("}"))
 		return STRUCTURE;
 	
@@ -96,9 +97,10 @@ int KukaVar::VarType(const QByteArray variabile)
 	if((variabile.data()==QByteArray("TRUE")) || (variabile.data()==QByteArray("FALSE")))
 		return BOOL;
 	
-	//if((!variabile.toLong() && variabile.size()==1))
-	if(variabile.endsWith("]"))
+        if((!variabile.toLong() && variabile.size()>=1)){
+        //if(variabile.endsWith("]"))
 		return CHAR;
+            }
 	
 	return ERRTYPE;
 }

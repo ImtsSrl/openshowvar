@@ -38,8 +38,16 @@ class RobotVarEdit : public QDialog
 		KukaVar *robotvar;
 		QWidget *widget[40];
 		QHostAddress varip;
+                QSignalMapper* mapper[40];
 		
 		void on_Accept();
+                void addInt(int widgetindex, QByteArray varName, int value);
+                void addBool(int widgetindex, QByteArray varName, QByteArray value);
+                void addReal(int widgetIndex, QByteArray varName, double value);
+                void addChar(int widgetindex, QByteArray varName, QByteArray value);
+                void addStructure(int widgetindex,int value);
+
+                void addMap(int widgetIndex, int mapIndex,int tipodato);
 		
 	private slots:
 		void on_okButton();

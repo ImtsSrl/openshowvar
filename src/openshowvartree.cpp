@@ -84,7 +84,7 @@ OpenShowVarTree::OpenShowVarTree(QWidget *parent)
     QHBoxLayout *hBox = new QHBoxLayout();
     hBox->addStretch(10);
     gridLayout->addLayout(hBox,0,0);
-    //gridLayout->addWidget(graphButton,0,1);
+    gridLayout->addWidget(graphButton,0,1);
     gridLayout->addWidget(sotCheckBox,0,0);
     gridLayout->addWidget(startButton,0,2);
     gridLayout->addWidget(stopButton,1,2);
@@ -277,6 +277,7 @@ void OpenShowVarTree::on_graphButton_clicked()
 		m_Window->setWindowTitle(tr("Graph of: %1").arg(treeWidget->currentItem()->text(VARNAME)));
 		
 		m_Window->show();
+                m_Window->resize(500,400);
 	}
 }
 

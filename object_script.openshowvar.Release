@@ -31,4 +31,5 @@ INPUT(
 ./release\moc_robotvar.o
 ./release\moc_robotvaredit.o
 ./release\moc_variabledb.o
+./release\qrc_openshowvar.o
 );

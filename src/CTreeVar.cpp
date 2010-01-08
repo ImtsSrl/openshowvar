@@ -43,8 +43,8 @@ CTreeVar::~CTreeVar()
 void CTreeVar::dropEvent(QDropEvent *event)
 {
 	event->acceptProposedAction();
-	
-	emit dropVar(&event->mimeData()->text());
+        if(event->source()!=this)
+            emit dropVar(&event->mimeData()->text());
 }
 
 void CTreeVar::dragEnterEvent(QDragEnterEvent *event)
@@ -111,11 +111,11 @@ void CTreeVar::startDrag()
     QDrag *drag = new QDrag(this);
     drag->setMimeData(mimeData);
 
-    //QPixmap pixmap("C:/Documents and Settings/mfa/Documenti/GIT/openshowvar/AWESOM-O.png");
-    QPixmap pixmap("AWESOM-O.png");
-    QPixmap alphaChannel(pixmap.width(), pixmap.height());
-    alphaChannel.fill(QColor(128,128,128));
-    pixmap.setAlphaChannel(alphaChannel);
+    //QPixmap pixmap("AWESOM-O.png");
+    QPixmap pixmap(":images/AWESOM-O.png");
+    //QPixmap alphaChannel(pixmap.width(), pixmap.height());
+    //alphaChannel.fill(QColor(128,128,128));
+    //pixmap.setAlphaChannel(alphaChannel);
     drag->setPixmap(pixmap);
 
     Qt::DropAction dropAction = drag->exec();

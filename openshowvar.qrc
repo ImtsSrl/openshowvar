@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/AWESOM-O.png</file>
+        <file>images/bender.png</file>
+        <file>images/openshowvar.png</file>
+        <file>images/Cartman-AWESOM-O.ico</file>
+    </qresource>
+</RCC>

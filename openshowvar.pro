@@ -6,6 +6,7 @@ TEMPLATE = app
 TARGET = 
 DEPENDPATH += . lang src
 QT += network xml
+#DESTDIR=./release
 
 # Input
 HEADERS += src/broadcast.h \
@@ -47,3 +48,4 @@ TRANSLATIONS += lang/openshowvar_de.ts \
                 lang/openshowvar_it.ts
 
 RC_FILE = openshowvar.rc
+RESOURCES = openshowvar.qrc
