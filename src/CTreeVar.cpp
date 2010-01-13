@@ -94,7 +94,7 @@ void CTreeVar::startDrag()
     KukaVar *kukavar = new KukaVar(&item->text(VARNAME).toAscii(),&item->text(VARVALUE).toAscii());
 
     switch(kukavar->getVarType()){
-    case STRUCTURE:
+    case KukaVar::STRUCTURE:
         {
             varvalue=kukavar->getStructureValue();
             break;

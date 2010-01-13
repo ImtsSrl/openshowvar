@@ -443,7 +443,7 @@ void OpenShowVarTree::splitvaluetoview(QTreeWidgetItem *item, QString varname, Q
     //qDebug() << "Tipo variabile: " << kukavarloc->getVarType();
 
     switch(kukavarloc->getVarType()){
-            case STRUCTURE:
+            case KukaVar::STRUCTURE:
             {
                     QSet<QString> darobot;
                     QHash<QString, int> dalista;
@@ -477,7 +477,7 @@ void OpenShowVarTree::splitvaluetoview(QTreeWidgetItem *item, QString varname, Q
                                     //tipo di dato struttura intero
                                     switch(datatype)
                                     {
-                                    case INT:
+                                    case KukaVar::INT:
                                     {
                                             if(((QComboBox*)treeWidget->itemWidget(child,OPTIONS))->currentText().toAscii()==tr("Binary code")){
                                                     QString binary;
@@ -493,7 +493,7 @@ void OpenShowVarTree::splitvaluetoview(QTreeWidgetItem *item, QString varname, Q
                                                     child->setText(VARVALUE,elementvalue);
                                     break;
                                     }
-                                    case STRUCTURE:
+                                    case KukaVar::STRUCTURE:
                                     {
                                         //qDebug() << "OK, " << kukavarloc->getStructureMember(i) << " è una nuova struttura. Che faccio?";
                                         this->splitvaluetoview(child,kukavarloc->getStructureMember(i),kukavarloc->getStructureValue(i,datatype));
@@ -514,14 +514,14 @@ void OpenShowVarTree::splitvaluetoview(QTreeWidgetItem *item, QString varname, Q
                                     child->setText(VARNAME,kukavarloc->getStructureMember(i));
                                     child->setText(VARVALUE,kukavarloc->getStructureValue(i,datatype));
                                     item->insertChild(i,child);
-                                    if(datatype==INT){
+                                    if(datatype==KukaVar::INT){
                                             addCombo(child);
                                     }
                             }
                     }
                     break;
             }
-            case INT:
+            case KukaVar::INT:
             {
                     if(QComboBox* comboBox = dynamic_cast<QComboBox*>(treeWidget->itemWidget(item,OPTIONS))){
                             if(comboBox->currentText().toAscii()==tr("Binary code")){

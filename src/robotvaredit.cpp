@@ -101,7 +101,7 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
 */
 
         switch(robotvar->getVarType()){
-                case STRUCTURE:
+                case KukaVar::STRUCTURE:
                 {
                         //top labels
                         QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
@@ -120,22 +120,22 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
 
                                 widget[i] = new QLabel(robotvar->getStructureMember(i));
                                 switch(tipodato){
-                                        case INT:
+                                        case KukaVar::INT:
                                                 addInt(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato).toInt());
                                                 addMap(i+robotvar->getElementsNumber(),i,tipodato);
 
                                                 break;
-                                        case REAL:
+                                        case KukaVar::REAL:
                                                 addInt(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato).toDouble());
                                                 addMap(i+robotvar->getElementsNumber(),i,tipodato);
 
                                                 break;
-                                        case BOOL:
+                                        case KukaVar::BOOL:
                                                 addBool(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato));
                                                 addMap(i+robotvar->getElementsNumber(),i,tipodato);
 
                                                 break;
-                                        case CHAR:
+                                        case KukaVar::CHAR:
                                         {
                                                 addChar(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato));
                                                 addMap(i+robotvar->getElementsNumber(),i,tipodato);
@@ -151,7 +151,7 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
                         }
                         break;
                 }
-                case INT:
+                case KukaVar::INT:
                 {
                         //INT
                         //top labels
@@ -172,7 +172,7 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
 
                         break;
                 }
-                case REAL:
+                case KukaVar::REAL:
                 {
                         //REAL
                         //top labels
@@ -193,7 +193,7 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
 
                         break;
                 }
-                case BOOL:
+                case KukaVar::BOOL:
                 {
                         //BOOL
                         //top labels
@@ -214,7 +214,7 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
 
                         break;
                 }
-                case CHAR:
+                case KukaVar::CHAR:
                 {
                         //CHAR
                         //top labels
@@ -263,7 +263,7 @@ RobotVarEdit::~RobotVarEdit()
 void RobotVarEdit::on_okButton()
 {
 	switch(robotvar->getVarType()){
-		case STRUCTURE:
+                case KukaVar::STRUCTURE:
 		{
 			//set new value for robotvar
 			for (int i=0;i<robotvar->getElementsNumber();i++){
@@ -289,28 +289,28 @@ void RobotVarEdit::on_okButton()
 			emit writevalue(robotvar->getVarName(),QByteArray(robotvar->createStructure()), varip);
 			break;
 		}
-		case INT:
+                case KukaVar::INT:
 		{
 			//INT
 			robotvar->setValue(((QSpinBox*)widget[1])->text().toAscii());
 			emit writevalue(robotvar->getVarName(),robotvar->getNewValue(), varip);
 			break;
 		}
-		case REAL:
+                case KukaVar::REAL:
 		{
 			//REAL
 			robotvar->setValue(((QDoubleSpinBox*)widget[1])->text().replace(",",".").toAscii());
 			emit writevalue(robotvar->getVarName(),robotvar->getNewValue(), varip);
 			break;
 		}
-		case BOOL:
+                case KukaVar::BOOL:
 		{
 			//BOOL
 			robotvar->setValue(((QComboBox*)widget[1])->currentText().toAscii());
 			emit writevalue(robotvar->getVarName(),robotvar->getNewValue(), varip);
 			break;
 		}
-		case CHAR:
+                case KukaVar::CHAR:
 		{
 			//CHAR
 			robotvar->setValue(((QLineEdit*)widget[1])->text().toAscii());
@@ -356,7 +356,7 @@ void RobotVarEdit::on_Changed(int index)
 	widget[index]->setPalette(p);
 	widget[index]->setAutoFillBackground(true);
 	
-	if (robotvar->getVarType()==STRUCTURE)
+        if (robotvar->getVarType()==KukaVar::STRUCTURE)
 		((QLabel*)widget[index])->setText(robotvar->getStructureMember(index) + " (" + robotvar->getStructureValue(index,datatype) + ")");
 	else
 		((QLabel*)widget[index])->setText(robotvar->getVarName() + " (" + robotvar->getValue() + ")");
@@ -376,7 +376,7 @@ void RobotVarEdit::on_Accept()
 		widget[i]->setPalette(p);
 		widget[i]->setAutoFillBackground(true);
 		
-		if (robotvar->getVarType()==STRUCTURE)
+                if (robotvar->getVarType()==KukaVar::STRUCTURE)
 			((QLabel*)widget[i])->setText(robotvar->getStructureMember(i));
 		else
 			((QLabel*)widget[i])->setText(robotvar->getVarName());
@@ -471,12 +471,12 @@ void RobotVarEdit::addMap(int widgetIndex, int mapIndex, int tipodato){
     qDebug() << "Indice widget: " << widgetIndex << " mapIndex: " << mapIndex << " tipo dato: " << tipodato;
     mapper[mapIndex] = new QSignalMapper(this);
     switch(tipodato){
-    case BOOL:
+    case KukaVar::BOOL:
         {
             connect(widget[widgetIndex], SIGNAL(currentIndexChanged(const QString&)),mapper[mapIndex], SLOT(map()));
             break;
         }
-    case CHAR:
+    case KukaVar::CHAR:
         {
             connect(widget[widgetIndex], SIGNAL(textChanged(const QString&)),mapper[mapIndex], SLOT(map()));
             break;
