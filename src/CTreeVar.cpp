@@ -93,18 +93,18 @@ void CTreeVar::startDrag()
 	//Se la variabile e' una struttura elimino il tipo di dato e passo solo il valore
 	KukaVar *kukavar = new KukaVar(&item->text(VARNAME).toAscii(),&item->text(VARVALUE).toAscii());
 
-	switch(kukavar->getVarType()){
-	case STRUCTURE:
-		{
-			varvalue=kukavar->getStructureValue();
-			break;
-		}
-	default:
-		{
-			varvalue=kukavar->getValue();
-			break;
-		}
-	}
+    switch(kukavar->getVarType()){
+    case KukaVar::STRUCTURE:
+        {
+            varvalue=kukavar->getStructureValue();
+            break;
+        }
+    default:
+        {
+            varvalue=kukavar->getValue();
+            break;
+        }
+    }
 
 	QMimeData *mimeData = new QMimeData;
 	mimeData->setText(varvalue);

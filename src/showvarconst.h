@@ -30,15 +30,6 @@ const char WRITEVARIABLE=1;
 
 const int NUMBYTEINT=3;
 
-enum RobotVarType {
-	ERRTYPE,	/*!< Tipo di dato errato. */
-	STRUCTURE,	/*!< Tipo di dato struttura. */
-	INT,		/*!< Tipo di dato intero. */
-	REAL,		/*!< Tipo di dato reale. */
-	BOOL,		/*!< Tipo di dato booleano. */
-	CHAR		/*!< Tipo di dato char. */
-};
-
 enum ColumName {
     VARNAME,
     VARVALUE,

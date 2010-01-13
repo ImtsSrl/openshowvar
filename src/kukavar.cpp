@@ -223,7 +223,7 @@ void KukaVar::setValue(QByteArray varvalue)
     //qDebug() << "lunghezza in kukavar" << this->varvalue.length();
 
     switch(intvartype){
-    case STRUCTURE:
+    case KukaVar::STRUCTURE:
         {
             //verify the start position
             int starttype=varvalue.indexOf("{");

@@ -56,7 +56,9 @@ class KukaVar : public QObject
 		void setFieldValue(const QByteArray &value, const int &fieldposition);
 		
 		QByteArray getValue();
-		
+
+                static const char ERRTYPE=0,STRUCTURE=1,INT=2,REAL=3,BOOL=4,CHAR=5;
+
 	protected:
                 void setValue(QByteArray varvalue);
 		
