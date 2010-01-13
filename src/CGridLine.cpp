@@ -37,10 +37,14 @@ CGridLine::CGridLine(){
 	m_minValue = 999999;
 }
 
+QColor CGridLine::color() const {
+	return m_color;
+}
+
 void	CGridLine::getMinTimeValue( QTime* t ){
 	if( m_values->size() < 1 ) return;
 
-	t->fromString( m_values->at(0)->m_time.toString( "hh:mm:ss.zzz" ) , "hh:mm:ss.zzz" );
+	*t = m_values->at(0)->m_time;
 }
 
 void	CGridLine::getMaxMinValues(double* max,double* min){
@@ -51,7 +55,7 @@ void	CGridLine::getMaxMinValues(double* max,double* min){
 	*min = m_minValue;
 }
 
-void CGridLine::drawInWidget(QWidget* qw,QPainter* paint,QRect* drawR){
+void CGridLine::drawInWidget(QWidget* qw,QPainter* paint,QRect* drawR,double maxRange , double minRange , QTime* minTime ){
 	int	items = m_values->size();
 	double 	px,py;
 	double	tx,ty;
@@ -63,7 +67,7 @@ void CGridLine::drawInWidget(QWidget* qw,QPainter* paint,QRect* drawR){
 
 	if( items < 2 || drawR == 0)
 		return;
-
+#if 0
 	totalTime = ((*m_values)[m_values->size()-1])->m_time.msecsTo(((*m_values)[0])->m_time);
 
 	px = 0.0;
@@ -76,6 +80,31 @@ void CGridLine::drawInWidget(QWidget* qw,QPainter* paint,QRect* drawR){
 		tx *= drawR->width();
 
 		ty = (1 - (( m_values->at(i)->m_value - m_minValue ) / ( m_maxValue - m_minValue ))) * drawR->height();
+
+		paint->drawLine(
+			px + drawR->x(),
+			py + drawR->y(),
+
+			tx + drawR->x(),
+			ty + drawR->y());
+
+		px = tx;
+		py = ty;
+	}
+#endif
+
+	totalTime = ((*m_values)[m_values->size()-1])->m_time.msecsTo(*minTime);
+
+	px = 0.0;
+	py = (1 - (( m_values->at(0)->m_value - minRange ) / ( maxRange - minRange ))) * drawR->height();
+
+	CGridValue* val = 0;
+
+	for(int i=1;i<items;i++){
+		tx = ((*m_values)[i])->m_time.msecsTo(*minTime) / totalTime;
+		tx *= drawR->width();
+
+		ty = (1 - (( m_values->at(i)->m_value - minRange ) / ( maxRange - minRange ))) * drawR->height();
 
 		paint->drawLine(
 			px + drawR->x(),

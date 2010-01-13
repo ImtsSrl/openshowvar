@@ -53,7 +53,7 @@ class CGridLine  : public QObject {
 		CGridLine();
 		~CGridLine();
 
-		void 	drawInWidget(QWidget* ,QPainter* ,QRect* );
+		void 	drawInWidget(QWidget* ,QPainter* ,QRect* , double maxRange , double minRange , QTime* minTime );
 
 		void	getMaxMinValues(double* max,double* min);
 		void	getMinTimeValue( QTime* );
@@ -64,6 +64,8 @@ class CGridLine  : public QObject {
 		void	setMaxTime(int );
 
 		void 	setColor(QColor col);
+		QColor	color() const;
+
 		void	setTooltip(const QString& );
 
 	signals:

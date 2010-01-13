@@ -17,6 +17,7 @@ INPUT(
 ./debug\robotvaredit.o
 ./debug\variabledb.o
 ./debug\cvarsgrid.o
+./debug\cvarsgridlinelegend.o
 ./debug\moc_broadcast.o
 ./debug\moc_CDebug.o
 ./debug\moc_CGridField.o
@@ -33,5 +34,6 @@ INPUT(
 ./debug\moc_robotvaredit.o
 ./debug\moc_variabledb.o
 ./debug\moc_cvarsgrid.o
+./debug\moc_cvarsgridlinelegend.o
 ./debug\qrc_openshowvar.o
 );

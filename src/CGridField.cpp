@@ -44,11 +44,12 @@ int CGridField::getMaxTime(){
 }
 
 CGridField::CGridField(){
-	setMinimumSize(100,100);
 
 	m_MarkPrec = 4;
 	m_MaxTimeMSec = 3000;
 	m_MarkOpacity = 0.3;
+
+	setSizePolicy( QSizePolicy::Minimum , QSizePolicy::Minimum );
 
 }
 
@@ -64,14 +65,40 @@ void CGridField::setMarkOpacity(float v){
 
 void CGridField::paintEvent(QPaintEvent* qpEve){
 	QPainter paint(this);
-	double	max,min;
+	double	max = -999999,min = 999999;
 
 	paint.setRenderHints(QPainter::Antialiasing);
 
 	QRect	r(50,10,width()-55,height()-20);
+	QTime	minTime; minTime = QTime::currentTime();
+
+	CGridLine* ll;
+	double tmin = min,tmx = max;
+	QTime	ttime;
+
+	// Calcolo il range dei valori per tutte le linee
+	foreach( ll , m_lineValue ){
+		ll->getMaxMinValues(&tmx,&tmin);
+
+		max = qMax( tmx , max );
+		min = qMin( tmin , min );
+
+		ll->getMinTimeValue( &ttime );
+		if( ttime.isNull() )
+			minTime = ttime;
+		else {
+			minTime = qMin( ttime , minTime );
+		}
+	}
+
+	// Ci aggiungo una tolleranza per evitare che i valori massimi e
+	// minimi coincidano graficamente
+	double plus = (max - min) * 0.15;
+	min -= plus;
+	max += plus;
 
 	if( m_lineValue.size() > 0 ){
-		m_lineValue[0]->getMaxMinValues(&max,&min);
+		//m_lineValue[0]->getMaxMinValues(&max,&min);
 
 		paint.drawRect(r);
 		paint.drawText(	5,	20,
@@ -81,7 +108,7 @@ void CGridField::paintEvent(QPaintEvent* qpEve){
 					QString::number(min));
 
 		int co = m_MarkPrec - 2;
-		int jump = 0;
+		double jump = 0;
 		float posy = r.height()+r.top();
 		double val = 0;
 
@@ -103,11 +130,11 @@ void CGridField::paintEvent(QPaintEvent* qpEve){
 					posy -= r.height() / (float)(co+1);
 
 					paint.setPen(pen_black);
-					paint.drawText(	5,	posy,
+					paint.drawText(	5,	(int)posy,
 							QString::number(val));
 
 					paint.setPen(pen_line);
-					paint.drawLine(r.left(),posy,r.right(),posy);
+					paint.drawLine(r.left(),(int)posy,r.right(),(int)posy);
 				}
 			}
 		}
@@ -116,7 +143,7 @@ void CGridField::paintEvent(QPaintEvent* qpEve){
 	int nLines = m_lineValue.count();
 
 	for(int i=0;i<nLines;i++)
-		m_lineValue[i]->drawInWidget(this,&paint,&r);
+		m_lineValue[i]->drawInWidget(this,&paint,&r,max,min,&minTime);
 }
 
 void CGridField::updateState(){

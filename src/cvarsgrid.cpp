@@ -5,7 +5,13 @@ CVarsGrid::CVarsGrid( VariableDB* db ){
 
 	QHBoxLayout* lay = new QHBoxLayout();
 	lay->addWidget( &m_field );
+
+	m_field.setMarkPrecision( 10 );
 	m_field.setMaxTime( 60000 );
+
+	m_legendsLayout = new QVBoxLayout();
+
+	lay->addLayout( m_legendsLayout );
 
 	setLayout( lay );
 	show();
@@ -28,6 +34,7 @@ void CVarsGrid::dragEnterEvent(QDragEnterEvent *event) {
  }
 
 void CVarsGrid::addVar(const QString& str , const QString& ip){
+
 	CGridLine* ml = new CGridLine();
 
 	m_field.addLine( ml );
@@ -35,6 +42,11 @@ void CVarsGrid::addVar(const QString& str , const QString& ip){
 
 	m_linesVar.append( str );
 	m_linesIP.append( ip );
+
+	CVarsGridLineLegend* leg = new CVarsGridLineLegend( ml , str );
+	m_legends.append( leg );
+
+	m_legendsLayout->addWidget( leg );
 }
 
 void CVarsGrid::update(){
@@ -48,9 +60,17 @@ void CVarsGrid::update(){
 		m_dbVar->readVar( m_linesVar.at(i).toAscii() ,  QHostAddress( m_linesIP.at( i ) ) , &value , &temp );
 
 		m_lines.at(i)->addValue( QString(value).toDouble() );
-
-		i++;
 	}
 
 	repaint();
+}
+
+CVarsGrid::~CVarsGrid(){
+	int i=0;
+
+	for(i=0; i < m_lines.size() ; i++ ){
+
+		delete m_lines.at(i);
+		delete m_legends.at(i);
+	}
 }
