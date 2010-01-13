@@ -13,6 +13,9 @@
 #include "CLog.h"
 #include "CTreeVar.h"
 
+#include "robot_view/ckukarobot.h"
+
+
 class QPushButton;
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -43,6 +46,10 @@ private:
 	QPushButton *findRobot;
 	QPushButton *graphButton;
 	QCheckBox *sotCheckBox;
+
+        QPushButton *showRobotButton;
+        CKUKARobot* m_robotView;
+
 	
 	void addCombo(QTreeWidgetItem *child);
 	void toBinary(int value, QString *binary);
@@ -62,6 +69,7 @@ private:
 	//xml
 	ListVarXml listVar;
 	CLog cLog;
+
 	
 private slots:
 	void DoubleClicked(QTreeWidgetItem * item, int column);
@@ -71,6 +79,9 @@ private slots:
 	void on_startButton_clicked();
 	void on_stopButton_clicked();
 	void on_graphButton_clicked();
+
+        void on_showRobotButton_clicked();
+
 	void insertNew(const QString &variabile, const QString &robotip);
 	void insertClose();
 	void lettura();

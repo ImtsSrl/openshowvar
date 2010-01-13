@@ -59,6 +59,7 @@ OpenShowVarTree::OpenShowVarTree(QWidget *parent)
     startButton = new QPushButton(tr("Start"));
     stopButton = new QPushButton(tr("Stop"));
     graphButton = new QPushButton(tr("Graph"));
+    showRobotButton = new QPushButton(tr("ShowRobot"));
     
     sotCheckBox = new QCheckBox(tr("Always on top"), this);
 
@@ -74,6 +75,7 @@ OpenShowVarTree::OpenShowVarTree(QWidget *parent)
     connect(startButton, SIGNAL(clicked()), this, SLOT(on_startButton_clicked()));
     connect(stopButton, SIGNAL(clicked()), this, SLOT(on_stopButton_clicked()));
     connect(graphButton, SIGNAL(clicked()), this, SLOT(on_graphButton_clicked()));
+    connect(showRobotButton, SIGNAL(clicked()), this, SLOT(on_showRobotButton_clicked()));
     
     connect(&listVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
 
@@ -90,10 +92,13 @@ OpenShowVarTree::OpenShowVarTree(QWidget *parent)
     gridLayout->addWidget(stopButton,1,2);
     gridLayout->addWidget(addButton,0,3);
     gridLayout->addWidget(delButton,1,3);
+    gridLayout->addWidget(showRobotButton,1,1);
     
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(treeWidget);
     mainLayout->addLayout(gridLayout);
+    m_robotView = new CKUKARobot( );
+    mainLayout->addWidget(m_robotView);
     setLayout(mainLayout);
 
     connect(&qtimeLettura, SIGNAL(timeout()), this, SLOT(lettura()));
@@ -183,6 +188,10 @@ void OpenShowVarTree::insertVar(const QString *varName)
 	insertVar->activateWindow();
 	
 	addButton->setEnabled(false);
+}
+
+void OpenShowVarTree::on_showRobotButton_clicked(){
+    m_robotView->setVisible(!m_robotView->isVisible());
 }
 
 void OpenShowVarTree::on_addButton_clicked()
@@ -318,7 +327,7 @@ void OpenShowVarTree::lettura()
 		qsVariabile=treeWidget->topLevelItem(row)->text(VARNAME);
 		qbVariabile.append(qsVariabile);
 
-		if(database->readVar(qsVariabile.toAscii(),(QHostAddress)treeWidget->topLevelItem(row)->text(ROBOTIP), &value, &readtime)){
+                if(database->readVar(qsVariabile.toAscii(),(QHostAddress)treeWidget->topLevelItem(row)->text(ROBOTIP), &value, &readtime)){
 
                         //qDebug() << "Trovato " << value << " Tempo di lettura: " << readtime << " [ms]";
 			
@@ -342,6 +351,22 @@ void OpenShowVarTree::lettura()
 			
 			item->setForeground(VARVALUE,brush);
 
+                        if(qsVariabile.toUpper().contains("$AXIS_ACT")){
+                            if(m_robotView->isVisible()){
+                                KukaVar *kukavarloc  = new KukaVar(&qsVariabile.toAscii(),&value);
+                                int i=0;
+                                int type = kukavarloc->getVarType();
+                                int r1 = (int)kukavarloc->getStructureValue( i++, type ).trimmed().toFloat();
+                                int r2 = (int)kukavarloc->getStructureValue( i++, type ).trimmed().toFloat();
+                                int r3 = (int)kukavarloc->getStructureValue( i++, type ).trimmed().toFloat();
+                                int r4 = (int)kukavarloc->getStructureValue( i++, type ).trimmed().toFloat();
+                                int r5 = (int)kukavarloc->getStructureValue( i++, type ).trimmed().toFloat();
+                                i=1;
+                                qDebug() << "ROBOT MOVE: " << kukavarloc->getStructureValue( i++, type ) << kukavarloc->getStructureValue( i++, type ) << r3 << r4 << r5;
+                                m_robotView->setRobotPosition( r1, r2, r3, r4, r5 );
+                                delete kukavarloc;
+                            }
+                        }
 
                         this->splitvaluetoview(item, item->text(VARNAME), item->text(VARVALUE));
 		}//if
@@ -443,7 +468,7 @@ void OpenShowVarTree::splitvaluetoview(QTreeWidgetItem *item, QString varname, Q
     //qDebug() << "Tipo variabile: " << kukavarloc->getVarType();
 
     switch(kukavarloc->getVarType()){
-            case KukaVar::STRUCTURE:
+    case KukaVar::STRUCTURE:
             {
                     QSet<QString> darobot;
                     QHash<QString, int> dalista;
