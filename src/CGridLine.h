@@ -24,44 +24,50 @@
 #include <QList>
 #include <QPainter>
 #include <QWidget>
+#include <QLabel>
 
 #include "CGridValue.h"
 
 class CGridField;
 
 class CGridLine  : public QObject {
-			
+
 	Q_OBJECT
-			
+
 	friend class CGridField;
 
 	private:
-		
+
 		int			m_msecMax;
 
 		QColor			m_color;
 		QList<CGridValue*>	*m_values;
-		
+
 		double		m_maxValue;
 		double		m_minValue;
-		
+
+		QLabel*		m_tooltip;
+
 	public:
-		
+
 		CGridLine();
 		~CGridLine();
-		
+
 		void 	drawInWidget(QWidget* ,QPainter* ,QRect* );
-		
+
 		void	getMaxMinValues(double* max,double* min);
+		void	getMinTimeValue( QTime* );
+
 		void 	addValue(double );
 		void 	clearAll();
-		
+
 		void	setMaxTime(int );
 
 		void 	setColor(QColor col);
-		
+		void	setTooltip(const QString& );
+
 	signals:
-		
+
 		void 	stateChanged();
 };
 

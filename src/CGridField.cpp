@@ -32,7 +32,7 @@
 
 void CGridField::setMaxTime(int msec){
 	m_MaxTimeMSec = msec;
-	
+
 	//Aggiorniamo tutte le linee del gra-fico
 	int nLines = m_lineValue.count();
 	for(int i=0;i<nLines;i++)
@@ -44,13 +44,13 @@ int CGridField::getMaxTime(){
 }
 
 CGridField::CGridField(){
-	setMinimumSize(600,100);
+	setMinimumSize(100,100);
 
 	m_MarkPrec = 4;
 	m_MaxTimeMSec = 3000;
 	m_MarkOpacity = 0.3;
-}
 
+}
 
 void CGridField::setMarkPrecision(int mp){
 	if( mp > 0 )
@@ -65,19 +65,19 @@ void CGridField::setMarkOpacity(float v){
 void CGridField::paintEvent(QPaintEvent* qpEve){
 	QPainter paint(this);
 	double	max,min;
-	
-	paint.setRenderHints(QPainter::Antialiasing);
-	
-	QRect	r(50,10,width()-60,height()-60);
 
-	{
+	paint.setRenderHints(QPainter::Antialiasing);
+
+	QRect	r(50,10,width()-55,height()-20);
+
+	if( m_lineValue.size() > 0 ){
 		m_lineValue[0]->getMaxMinValues(&max,&min);
 
 		paint.drawRect(r);
 		paint.drawText(	5,	20,
 					QString::number(max));
 
-		paint.drawText(	5,	height()-50,
+		paint.drawText(	5,	height(),
 					QString::number(min));
 
 		int co = m_MarkPrec - 2;
@@ -112,7 +112,7 @@ void CGridField::paintEvent(QPaintEvent* qpEve){
 			}
 		}
 	}
-	
+
 	int nLines = m_lineValue.count();
 
 	for(int i=0;i<nLines;i++)
@@ -125,10 +125,10 @@ void CGridField::updateState(){
 
 void CGridField::addLine(CGridLine* line){
 	m_lineValue.append(line);
-	
+
 	line->setMaxTime(m_MaxTimeMSec);
 
 	connect( line, SIGNAL( stateChanged() ), this, SLOT( updateState() ));
-	
+
 	update();
 }

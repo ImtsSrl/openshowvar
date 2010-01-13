@@ -16,6 +16,7 @@ INPUT(
 ./release\robotvar.o
 ./release\robotvaredit.o
 ./release\variabledb.o
+./release\cvarsgrid.o
 ./release\moc_broadcast.o
 ./release\moc_CDebug.o
 ./release\moc_CGridField.o
@@ -31,5 +32,6 @@ INPUT(
 ./release\moc_robotvar.o
 ./release\moc_robotvaredit.o
 ./release\moc_variabledb.o
+./release\moc_cvarsgrid.o
 ./release\qrc_openshowvar.o
 );

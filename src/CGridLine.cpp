@@ -31,10 +31,16 @@
 
 CGridLine::CGridLine(){
 	m_values = new QList<CGridValue*>;
-	
+
 	m_color.setRgb( rand()%255, rand()%255, rand()%255 );
 	m_maxValue = -999999;
 	m_minValue = 999999;
+}
+
+void	CGridLine::getMinTimeValue( QTime* t ){
+	if( m_values->size() < 1 ) return;
+
+	t->fromString( m_values->at(0)->m_time.toString( "hh:mm:ss.zzz" ) , "hh:mm:ss.zzz" );
 }
 
 void	CGridLine::getMaxMinValues(double* max,double* min){
@@ -48,43 +54,49 @@ void	CGridLine::getMaxMinValues(double* max,double* min){
 void CGridLine::drawInWidget(QWidget* qw,QPainter* paint,QRect* drawR){
 	int	items = m_values->size();
 	double 	px,py;
+	double	tx,ty;
 	double	totalTime = 0;
 	double 	jump = 0.0;
 	double 	tempy = 0.0;
-	
+
 	paint->setPen( m_color );
-	
+
 	if( items < 2 || drawR == 0)
 		return;
-	
+
 	totalTime = ((*m_values)[m_values->size()-1])->m_time.msecsTo(((*m_values)[0])->m_time);
-	
-	
-	
+
 	px = 0.0;
-	py = drawR->height() - (((m_values->at(0)->m_value) / m_maxValue) * (double)drawR->height());
-	
+	py = (1 - (( m_values->at(0)->m_value - m_minValue ) / ( m_maxValue - m_minValue ))) * drawR->height();
+
+	CGridValue* val = 0;
+
 	for(int i=1;i<items;i++){
-		tempy = (drawR->height() - ((m_values->at(i)->m_value) / m_maxValue) *  (double)drawR->height());
-		
-		jump = ((m_values->at(i)->m_time.msecsTo(m_values->at(i-1)->m_time)) / totalTime) * drawR->width();
-		
+		tx = ((*m_values)[i])->m_time.msecsTo(((*m_values)[0])->m_time) / totalTime;
+		tx *= drawR->width();
+
+		ty = (1 - (( m_values->at(i)->m_value - m_minValue ) / ( m_maxValue - m_minValue ))) * drawR->height();
+
 		paint->drawLine(
 			px + drawR->x(),
 			py + drawR->y(),
 
-			px+jump + drawR->x(),
-			tempy + drawR->y());
-		
-			
-		py = tempy;
-		px += jump;
+			tx + drawR->x(),
+			ty + drawR->y());
+
+		px = tx;
+		py = ty;
 	}
+
+}
+
+void CGridLine::setTooltip(const QString& str ){
+	m_tooltip = new QLabel( str );
 }
 
 void CGridLine::setColor(QColor col){
 	m_color = col;
-	
+
 	emit stateChanged();
 }
 
@@ -95,9 +107,10 @@ void CGridLine::setMaxTime(int ms){
 void CGridLine::addValue(double val){
 	if( val > m_maxValue )
 		m_maxValue = val;
+
 	if( val < m_minValue )
 		m_minValue = val;
-	
+
 	CGridValue *vval = new CGridValue(val);
 
 	if( m_values->count() > 0 ){
@@ -108,7 +121,7 @@ void CGridLine::addValue(double val){
 	}
 
 	m_values->append( vval );
-	
+
 	emit stateChanged();
 }
 
@@ -116,7 +129,7 @@ void CGridLine::clearAll(){
 	m_values->clear();
 	m_maxValue = -999999;
 	m_minValue = 999999;
-	
+
 	emit stateChanged();
 }
 

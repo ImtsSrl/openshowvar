@@ -32,19 +32,19 @@
 CTreeVar::CTreeVar(QWidget *parent)
 	: QTreeWidget(parent)
 {
-	
+
 }
 
 CTreeVar::~CTreeVar()
 {
-	
+
 }
 
 void CTreeVar::dropEvent(QDropEvent *event)
 {
 	event->acceptProposedAction();
-        if(event->source()!=this)
-            emit dropVar(&event->mimeData()->text());
+		if(event->source()!=this)
+			emit dropVar(&event->mimeData()->text());
 }
 
 void CTreeVar::dragEnterEvent(QDragEnterEvent *event)
@@ -81,43 +81,48 @@ void CTreeVar::mouseMoveEvent(QMouseEvent *event)
 
 void CTreeVar::startDrag()
 {
-    QByteArray varvalue;
-    QTreeWidgetItem *item;
-    if(this->currentItem()!=NULL){
-        if(this->currentItem()->parent()!=NULL)
-            item=this->currentItem()->parent();
-        else
-            item=this->currentItem();
-    }
+	QByteArray varvalue;
+	QTreeWidgetItem *item;
+	if(this->currentItem()!=NULL){
+		if(this->currentItem()->parent()!=NULL)
+			item=this->currentItem()->parent();
+		else
+			item=this->currentItem();
+	}
 
-    //Se la variabile e' una struttura elimino il tipo di dato e passo solo il valore
-    KukaVar *kukavar = new KukaVar(&item->text(VARNAME).toAscii(),&item->text(VARVALUE).toAscii());
+	//Se la variabile e' una struttura elimino il tipo di dato e passo solo il valore
+	KukaVar *kukavar = new KukaVar(&item->text(VARNAME).toAscii(),&item->text(VARVALUE).toAscii());
 
-    switch(kukavar->getVarType()){
-    case STRUCTURE:
-        {
-            varvalue=kukavar->getStructureValue();
-            break;
-        }
-    default:
-        {
-            varvalue=kukavar->getValue();
-            break;
-        }
-    }
+	switch(kukavar->getVarType()){
+	case STRUCTURE:
+		{
+			varvalue=kukavar->getStructureValue();
+			break;
+		}
+	default:
+		{
+			varvalue=kukavar->getValue();
+			break;
+		}
+	}
 
-    QMimeData *mimeData = new QMimeData;
-    mimeData->setText(varvalue);
-    QDrag *drag = new QDrag(this);
-    drag->setMimeData(mimeData);
+	QMimeData *mimeData = new QMimeData;
+	mimeData->setText(varvalue);
 
-    //QPixmap pixmap("AWESOM-O.png");
-    QPixmap pixmap(":images/AWESOM-O.png");
-    //QPixmap alphaChannel(pixmap.width(), pixmap.height());
-    //alphaChannel.fill(QColor(128,128,128));
-    //pixmap.setAlphaChannel(alphaChannel);
-    drag->setPixmap(pixmap);
+	// dati per il grafico
+	mimeData->setData( "openshowvar/graphdata" , kukavar->getVarName() );
+	mimeData->setData( "openshowvar/graphdataip" , item->text(ROBOTIP).toAscii() );
 
-    Qt::DropAction dropAction = drag->exec();
+	QDrag *drag = new QDrag(this);
+	drag->setMimeData(mimeData);
+
+	//QPixmap pixmap("AWESOM-O.png");
+	QPixmap pixmap(":images/AWESOM-O.png");
+	//QPixmap alphaChannel(pixmap.width(), pixmap.height());
+	//alphaChannel.fill(QColor(128,128,128));
+	//pixmap.setAlphaChannel(alphaChannel);
+	drag->setPixmap(pixmap);
+
+	Qt::DropAction dropAction = drag->exec();
 }
 
