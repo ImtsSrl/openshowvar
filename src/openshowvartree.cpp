@@ -52,7 +52,7 @@ OpenShowVarTree::OpenShowVarTree(QWidget *parent)
 	*/
 	treeWidget->setAcceptDrops(true);
 	treeWidget->setDragEnabled(true);
-	//treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+        //treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 
 	addButton = new QPushButton(tr("Add"));
 	delButton = new QPushButton(tr("Delete"));
@@ -296,11 +296,14 @@ void OpenShowVarTree::insertNew(const QString &variabile, const QString &iprobot
 	item->setText(VARNAME, variabile.toUpper());
 	item->setText(ROBOTIP, iprobot);
 
+        //Evita il problema del blocco durante il drag della riga
+        item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+
 	item->setToolTip(VARNAME,tr("Robot IP %1").arg(iprobot));
 
 	item->setTextAlignment(TIME,(Qt::AlignRight | Qt::AlignVCenter));
 
-		database->addVar(variabile.toUpper().toAscii(),QHostAddress(iprobot));
+        database->addVar(variabile.toUpper().toAscii(),QHostAddress(iprobot));
 
 	addButton->setEnabled(true);
 }
@@ -348,9 +351,7 @@ void OpenShowVarTree::lettura()
 			}
 
 			item->setForeground(VARVALUE,brush);
-
-
-						this->splitvaluetoview(item, item->text(VARNAME), item->text(VARVALUE));
+                        this->splitvaluetoview(item, item->text(VARNAME), item->text(VARVALUE));
 		}//if
 	}//for
 

@@ -69,48 +69,49 @@
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Release</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList">
     <value type="QString">ALLUSERSPROFILE=C:\Documents and Settings\All Users</value>
-    <value type="QString">APPDATA=C:\Documents and Settings\cca\Dati applicazioni</value>
+    <value type="QString">APPDATA=C:\Documents and Settings\mfa\Dati applicazioni</value>
+    <value type="QString">CLIENTNAME=Console</value>
     <value type="QString">COMMONPROGRAMFILES=C:\Programmi\File comuni</value>
-    <value type="QString">COMPUTERNAME=PC24</value>
+    <value type="QString">COMPUTERNAME=PC01</value>
     <value type="QString">COMSPEC=C:\WINDOWS\system32\cmd.exe</value>
     <value type="QString">FP_NO_HOST_CHECK=NO</value>
-    <value type="QString">HOME=C:\Documents and Settings\cca</value>
-    <value type="QString">HOMEDRIVE=Z:</value>
-    <value type="QString">HOMEPATH=\</value>
-    <value type="QString">HOMESHARE=\\imtswebserv\cca</value>
-    <value type="QString">LOGONSERVER=\\IMTSWEBSERV</value>
+    <value type="QString">HOMEDRIVE=C:</value>
+    <value type="QString">HOMEPATH=\Documents and Settings\mfa</value>
+    <value type="QString">INCLUDE=C:\Programmi\Microsoft Visual Studio\VC98\atl\include;C:\Programmi\Microsoft Visual Studio\VC98\mfc\include;C:\Programmi\Microsoft Visual Studio\VC98\include</value>
+    <value type="QString">LIB=C:\Programmi\Microsoft Visual Studio\VC98\mfc\lib;C:\Programmi\Microsoft Visual Studio\VC98\lib</value>
+    <value type="QString">LOGONSERVER=\\PC01</value>
+    <value type="QString">MSDEVDIR=C:\Programmi\Microsoft Visual Studio\Common\MSDev98</value>
     <value type="QString">NUMBER_OF_PROCESSORS=2</value>
     <value type="QString">OS=Windows_NT</value>
-    <value type="QString">PATH=C:\Qt\2009.03\mingw\bin;C:\Qt\2009.03\qt\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Programmi\ATI Technologies\ATI Control Panel;C:\Programmi\TortoiseGit\bin;C:\Programmi\ATI Technologies\ATI.ACE\Core-Static;C:\miktex\miktex\bin;;</value>
+    <value type="QString">PATH=C:\Qt\2009.05\mingw\bin;C:\Qt\2009.05\qt\bin;C:\Programmi\MiKTeX 2.8\miktex\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Programmi\TortoiseGit\bin;C:\Programmi\Symantec\Norton Ghost 2003\;C:\Programmi\FastSum;C:\Programmi\cvsnt;C:\Programmi\doxygen\bin;C:\Programmi\Microsoft Visual Studio\Common\Tools\WinNT;C:\Programmi\Microsoft Visual Studio\Common\MSDev98\Bin;C:\Programmi\Microsoft Visual Studio\Common\Tools;C:\Programmi\Microsoft Visual Studio\VC98\bin;C:\Documents and Settings\mfa\Dati applicazioni\MiKTeX\2.8\miktex\bin\;;</value>
     <value type="QString">PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH</value>
     <value type="QString">PROCESSOR_ARCHITECTURE=x86</value>
-    <value type="QString">PROCESSOR_IDENTIFIER=x86 Family 15 Model 75 Stepping 2, AuthenticAMD</value>
-    <value type="QString">PROCESSOR_LEVEL=15</value>
-    <value type="QString">PROCESSOR_REVISION=4b02</value>
+    <value type="QString">PROCESSOR_IDENTIFIER=x86 Family 6 Model 14 Stepping 12, GenuineIntel</value>
+    <value type="QString">PROCESSOR_LEVEL=6</value>
+    <value type="QString">PROCESSOR_REVISION=0e0c</value>
     <value type="QString">PROGRAMFILES=C:\Programmi</value>
-    <value type="QString">QTDIR=C:/Qt/2009.03/qt</value>
+    <value type="QString">QTDIR=C:/Qt/2009.05/qt</value>
     <value type="QString">SESSIONNAME=Console</value>
     <value type="QString">SYSTEMDRIVE=C:</value>
     <value type="QString">SYSTEMROOT=C:\WINDOWS</value>
-    <value type="QString">TEMP=C:\DOCUME~1\cca\IMPOST~1\Temp</value>
-    <value type="QString">TMP=C:\DOCUME~1\cca\IMPOST~1\Temp</value>
-    <value type="QString">USERDOMAIN=IMTS</value>
-    <value type="QString">USERNAME=cca</value>
-    <value type="QString">USERPROFILE=C:\Documents and Settings\cca</value>
+    <value type="QString">TEMP=C:\DOCUME~1\mfa\IMPOST~1\Temp</value>
+    <value type="QString">TMP=C:\DOCUME~1\mfa\IMPOST~1\Temp</value>
+    <value type="QString">USERDOMAIN=PC01</value>
+    <value type="QString">USERNAME=mfa</value>
+    <value type="QString">USERPROFILE=C:\Documents and Settings\mfa</value>
     <value type="QString">VBOX_INSTALL_PATH=C:\Programmi\Sun\VirtualBox\</value>
-    <value type="QString">VS90COMNTOOLS=C:\Programmi\Microsoft Visual Studio 9.0\Common7\Tools\</value>
     <value type="QString">WINDIR=C:\WINDOWS</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList">
-    <value type="QString">C:/Documents and Settings/cca/Documenti/GIT/openshowvar/openshowvar.pro</value>
+    <value type="QString">C:/Documents and Settings/mfa/Documenti/GIT/openshowvar/openshowvar.pro</value>
     <value type="QString">-spec</value>
     <value type="QString">win32-g++</value>
     <value type="QString">-r</value>
     <value type="QString">CONFIG+=release</value>
    </valuelist>
-   <value key="abstractProcess.command" type="QString">c:/qt/2009.03/qt/bin/qmake.exe</value>
+   <value key="abstractProcess.command" type="QString">c:/qt/2009.05/qt/bin/qmake.exe</value>
    <value key="abstractProcess.enabled" type="bool">true</value>
-   <value key="abstractProcess.workingDirectory" type="QString">C:/Documents and Settings/cca/Documenti/GIT/openshowvar</value>
+   <value key="abstractProcess.workingDirectory" type="QString">C:/Documents and Settings/mfa/Documenti/GIT/openshowvar</value>
    <value key="buildConfiguration" type=""></value>
   </valuemap>
  </data>
@@ -120,45 +121,46 @@
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Release</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList">
     <value type="QString">ALLUSERSPROFILE=C:\Documents and Settings\All Users</value>
-    <value type="QString">APPDATA=C:\Documents and Settings\cca\Dati applicazioni</value>
+    <value type="QString">APPDATA=C:\Documents and Settings\mfa\Dati applicazioni</value>
+    <value type="QString">CLIENTNAME=Console</value>
     <value type="QString">COMMONPROGRAMFILES=C:\Programmi\File comuni</value>
-    <value type="QString">COMPUTERNAME=PC24</value>
+    <value type="QString">COMPUTERNAME=PC01</value>
     <value type="QString">COMSPEC=C:\WINDOWS\system32\cmd.exe</value>
     <value type="QString">FP_NO_HOST_CHECK=NO</value>
-    <value type="QString">HOME=C:\Documents and Settings\cca</value>
-    <value type="QString">HOMEDRIVE=Z:</value>
-    <value type="QString">HOMEPATH=\</value>
-    <value type="QString">HOMESHARE=\\imtswebserv\cca</value>
-    <value type="QString">LOGONSERVER=\\IMTSWEBSERV</value>
+    <value type="QString">HOMEDRIVE=C:</value>
+    <value type="QString">HOMEPATH=\Documents and Settings\mfa</value>
+    <value type="QString">INCLUDE=C:\Programmi\Microsoft Visual Studio\VC98\atl\include;C:\Programmi\Microsoft Visual Studio\VC98\mfc\include;C:\Programmi\Microsoft Visual Studio\VC98\include</value>
+    <value type="QString">LIB=C:\Programmi\Microsoft Visual Studio\VC98\mfc\lib;C:\Programmi\Microsoft Visual Studio\VC98\lib</value>
+    <value type="QString">LOGONSERVER=\\PC01</value>
+    <value type="QString">MSDEVDIR=C:\Programmi\Microsoft Visual Studio\Common\MSDev98</value>
     <value type="QString">NUMBER_OF_PROCESSORS=2</value>
     <value type="QString">OS=Windows_NT</value>
-    <value type="QString">PATH=C:\Qt\2009.03\mingw\bin;C:\Qt\2009.03\qt\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Programmi\ATI Technologies\ATI Control Panel;C:\Programmi\TortoiseGit\bin;C:\Programmi\ATI Technologies\ATI.ACE\Core-Static;C:\miktex\miktex\bin;;</value>
+    <value type="QString">PATH=C:\Qt\2009.05\mingw\bin;C:\Qt\2009.05\qt\bin;C:\Programmi\MiKTeX 2.8\miktex\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Programmi\TortoiseGit\bin;C:\Programmi\Symantec\Norton Ghost 2003\;C:\Programmi\FastSum;C:\Programmi\cvsnt;C:\Programmi\doxygen\bin;C:\Programmi\Microsoft Visual Studio\Common\Tools\WinNT;C:\Programmi\Microsoft Visual Studio\Common\MSDev98\Bin;C:\Programmi\Microsoft Visual Studio\Common\Tools;C:\Programmi\Microsoft Visual Studio\VC98\bin;C:\Documents and Settings\mfa\Dati applicazioni\MiKTeX\2.8\miktex\bin\;;</value>
     <value type="QString">PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH</value>
     <value type="QString">PROCESSOR_ARCHITECTURE=x86</value>
-    <value type="QString">PROCESSOR_IDENTIFIER=x86 Family 15 Model 75 Stepping 2, AuthenticAMD</value>
-    <value type="QString">PROCESSOR_LEVEL=15</value>
-    <value type="QString">PROCESSOR_REVISION=4b02</value>
+    <value type="QString">PROCESSOR_IDENTIFIER=x86 Family 6 Model 14 Stepping 12, GenuineIntel</value>
+    <value type="QString">PROCESSOR_LEVEL=6</value>
+    <value type="QString">PROCESSOR_REVISION=0e0c</value>
     <value type="QString">PROGRAMFILES=C:\Programmi</value>
-    <value type="QString">QTDIR=C:/Qt/2009.03/qt</value>
+    <value type="QString">QTDIR=C:/Qt/2009.05/qt</value>
     <value type="QString">SESSIONNAME=Console</value>
     <value type="QString">SYSTEMDRIVE=C:</value>
     <value type="QString">SYSTEMROOT=C:\WINDOWS</value>
-    <value type="QString">TEMP=C:\DOCUME~1\cca\IMPOST~1\Temp</value>
-    <value type="QString">TMP=C:\DOCUME~1\cca\IMPOST~1\Temp</value>
-    <value type="QString">USERDOMAIN=IMTS</value>
-    <value type="QString">USERNAME=cca</value>
-    <value type="QString">USERPROFILE=C:\Documents and Settings\cca</value>
+    <value type="QString">TEMP=C:\DOCUME~1\mfa\IMPOST~1\Temp</value>
+    <value type="QString">TMP=C:\DOCUME~1\mfa\IMPOST~1\Temp</value>
+    <value type="QString">USERDOMAIN=PC01</value>
+    <value type="QString">USERNAME=mfa</value>
+    <value type="QString">USERPROFILE=C:\Documents and Settings\mfa</value>
     <value type="QString">VBOX_INSTALL_PATH=C:\Programmi\Sun\VirtualBox\</value>
-    <value type="QString">VS90COMNTOOLS=C:\Programmi\Microsoft Visual Studio 9.0\Common7\Tools\</value>
     <value type="QString">WINDIR=C:\WINDOWS</value>
    </valuelist>
    <value key="abstractProcess.IgnoreReturnValue" type="bool">false</value>
    <valuelist key="abstractProcess.arguments" type="QVariantList">
     <value type="QString">-w</value>
    </valuelist>
-   <value key="abstractProcess.command" type="QString">C:/Qt/2009.03/mingw/bin/mingw32-make.exe</value>
+   <value key="abstractProcess.command" type="QString">C:/Qt/2009.05/mingw/bin/mingw32-make.exe</value>
    <value key="abstractProcess.enabled" type="bool">true</value>
-   <value key="abstractProcess.workingDirectory" type="QString">C:/Documents and Settings/cca/Documenti/GIT/openshowvar</value>
+   <value key="abstractProcess.workingDirectory" type="QString">C:/Documents and Settings/mfa/Documenti/GIT/openshowvar</value>
   </valuemap>
  </data>
  <data>
@@ -167,36 +169,37 @@
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Release</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList">
     <value type="QString">ALLUSERSPROFILE=C:\Documents and Settings\All Users</value>
-    <value type="QString">APPDATA=C:\Documents and Settings\cca\Dati applicazioni</value>
+    <value type="QString">APPDATA=C:\Documents and Settings\mfa\Dati applicazioni</value>
+    <value type="QString">CLIENTNAME=Console</value>
     <value type="QString">COMMONPROGRAMFILES=C:\Programmi\File comuni</value>
-    <value type="QString">COMPUTERNAME=PC24</value>
+    <value type="QString">COMPUTERNAME=PC01</value>
     <value type="QString">COMSPEC=C:\WINDOWS\system32\cmd.exe</value>
     <value type="QString">FP_NO_HOST_CHECK=NO</value>
-    <value type="QString">HOME=C:\Documents and Settings\cca</value>
-    <value type="QString">HOMEDRIVE=Z:</value>
-    <value type="QString">HOMEPATH=\</value>
-    <value type="QString">HOMESHARE=\\imtswebserv\cca</value>
-    <value type="QString">LOGONSERVER=\\IMTSWEBSERV</value>
+    <value type="QString">HOMEDRIVE=C:</value>
+    <value type="QString">HOMEPATH=\Documents and Settings\mfa</value>
+    <value type="QString">INCLUDE=C:\Programmi\Microsoft Visual Studio\VC98\atl\include;C:\Programmi\Microsoft Visual Studio\VC98\mfc\include;C:\Programmi\Microsoft Visual Studio\VC98\include</value>
+    <value type="QString">LIB=C:\Programmi\Microsoft Visual Studio\VC98\mfc\lib;C:\Programmi\Microsoft Visual Studio\VC98\lib</value>
+    <value type="QString">LOGONSERVER=\\PC01</value>
+    <value type="QString">MSDEVDIR=C:\Programmi\Microsoft Visual Studio\Common\MSDev98</value>
     <value type="QString">NUMBER_OF_PROCESSORS=2</value>
     <value type="QString">OS=Windows_NT</value>
-    <value type="QString">PATH=;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Programmi\ATI Technologies\ATI Control Panel;C:\Programmi\TortoiseGit\bin;C:\Programmi\ATI Technologies\ATI.ACE\Core-Static;C:\miktex\miktex\bin;;</value>
+    <value type="QString">PATH=C:\Qt\2009.05\mingw\bin;C:\Qt\2009.05\qt\bin;C:\Programmi\MiKTeX 2.8\miktex\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Programmi\TortoiseGit\bin;C:\Programmi\Symantec\Norton Ghost 2003\;C:\Programmi\FastSum;C:\Programmi\cvsnt;C:\Programmi\doxygen\bin;C:\Programmi\Microsoft Visual Studio\Common\Tools\WinNT;C:\Programmi\Microsoft Visual Studio\Common\MSDev98\Bin;C:\Programmi\Microsoft Visual Studio\Common\Tools;C:\Programmi\Microsoft Visual Studio\VC98\bin;C:\Documents and Settings\mfa\Dati applicazioni\MiKTeX\2.8\miktex\bin\;;</value>
     <value type="QString">PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH</value>
     <value type="QString">PROCESSOR_ARCHITECTURE=x86</value>
-    <value type="QString">PROCESSOR_IDENTIFIER=x86 Family 15 Model 75 Stepping 2, AuthenticAMD</value>
-    <value type="QString">PROCESSOR_LEVEL=15</value>
-    <value type="QString">PROCESSOR_REVISION=4b02</value>
+    <value type="QString">PROCESSOR_IDENTIFIER=x86 Family 6 Model 14 Stepping 12, GenuineIntel</value>
+    <value type="QString">PROCESSOR_LEVEL=6</value>
+    <value type="QString">PROCESSOR_REVISION=0e0c</value>
     <value type="QString">PROGRAMFILES=C:\Programmi</value>
-    <value type="QString">QTDIR=</value>
+    <value type="QString">QTDIR=C:/Qt/2009.05/qt</value>
     <value type="QString">SESSIONNAME=Console</value>
     <value type="QString">SYSTEMDRIVE=C:</value>
     <value type="QString">SYSTEMROOT=C:\WINDOWS</value>
-    <value type="QString">TEMP=C:\DOCUME~1\cca\IMPOST~1\Temp</value>
-    <value type="QString">TMP=C:\DOCUME~1\cca\IMPOST~1\Temp</value>
-    <value type="QString">USERDOMAIN=IMTS</value>
-    <value type="QString">USERNAME=cca</value>
-    <value type="QString">USERPROFILE=C:\Documents and Settings\cca</value>
+    <value type="QString">TEMP=C:\DOCUME~1\mfa\IMPOST~1\Temp</value>
+    <value type="QString">TMP=C:\DOCUME~1\mfa\IMPOST~1\Temp</value>
+    <value type="QString">USERDOMAIN=PC01</value>
+    <value type="QString">USERNAME=mfa</value>
+    <value type="QString">USERPROFILE=C:\Documents and Settings\mfa</value>
     <value type="QString">VBOX_INSTALL_PATH=C:\Programmi\Sun\VirtualBox\</value>
-    <value type="QString">VS90COMNTOOLS=C:\Programmi\Microsoft Visual Studio 9.0\Common7\Tools\</value>
     <value type="QString">WINDIR=C:\WINDOWS</value>
    </valuelist>
    <value key="abstractProcess.IgnoreReturnValue" type="bool">true</value>
@@ -204,9 +207,9 @@
     <value type="QString">clean</value>
     <value type="QString">-w</value>
    </valuelist>
-   <value key="abstractProcess.command" type="QString">/usr/bin/make</value>
+   <value key="abstractProcess.command" type="QString">C:/Qt/2009.05/mingw/bin/mingw32-make.exe</value>
    <value key="abstractProcess.enabled" type="bool">true</value>
-   <value key="abstractProcess.workingDirectory" type="QString">C:/Documents and Settings/cca/Documenti/GIT/openshowvar</value>
+   <value key="abstractProcess.workingDirectory" type="QString">C:/Documents and Settings/mfa/Documenti/GIT/openshowvar</value>
    <value key="cleanConfig" type="bool">true</value>
    <valuelist key="makeargs" type="QVariantList">
     <value type="QString">clean</value>
