@@ -81,17 +81,17 @@ void CTreeVar::mouseMoveEvent(QMouseEvent *event)
 
 void CTreeVar::startDrag()
 {
-	QByteArray varvalue;
-	QTreeWidgetItem *item;
-	if(this->currentItem()!=NULL){
-		if(this->currentItem()->parent()!=NULL)
-			item=this->currentItem()->parent();
-		else
-			item=this->currentItem();
-	}
+    QByteArray varvalue;
+    QTreeWidgetItem *item;
+    if(this->currentItem()!=NULL){
+        if(this->currentItem()->parent()!=NULL)
+            item=this->currentItem()->parent();
+        else
+            item=this->currentItem();
+    }
 
-	//Se la variabile e' una struttura elimino il tipo di dato e passo solo il valore
-	KukaVar *kukavar = new KukaVar(&item->text(VARNAME).toAscii(),&item->text(VARVALUE).toAscii());
+    //Se la variabile e' una struttura elimino il tipo di dato e passo solo il valore
+    KukaVar *kukavar = new KukaVar(&item->text(VARNAME).toAscii(),&item->text(VARVALUE).toAscii());
 
     switch(kukavar->getVarType()){
     case KukaVar::STRUCTURE:
