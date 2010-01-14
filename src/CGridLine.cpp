@@ -60,8 +60,6 @@ void CGridLine::drawInWidget(QWidget* qw,QPainter* paint,QRect* drawR,double max
 	double 	px,py;
 	double	tx,ty;
 	double	totalTime = 0;
-	double 	jump = 0.0;
-	double 	tempy = 0.0;
 
 	paint->setPen( m_color );
 
@@ -98,8 +96,6 @@ void CGridLine::drawInWidget(QWidget* qw,QPainter* paint,QRect* drawR,double max
 	px = 0.0;
 	py = (1 - (( m_values->at(0)->m_value - minRange ) / ( maxRange - minRange ))) * drawR->height();
 
-	CGridValue* val = 0;
-
 	for(int i=1;i<items;i++){
 		tx = ((*m_values)[i])->m_time.msecsTo(*minTime) / totalTime;
 		tx *= drawR->width();
@@ -107,11 +103,11 @@ void CGridLine::drawInWidget(QWidget* qw,QPainter* paint,QRect* drawR,double max
 		ty = (1 - (( m_values->at(i)->m_value - minRange ) / ( maxRange - minRange ))) * drawR->height();
 
 		paint->drawLine(
-			px + drawR->x(),
-			py + drawR->y(),
+			(int)px + drawR->x(),
+			(int)py + drawR->y(),
 
-			tx + drawR->x(),
-			ty + drawR->y());
+			(int)tx + drawR->x(),
+			(int)ty + drawR->y());
 
 		px = tx;
 		py = ty;

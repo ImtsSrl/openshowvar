@@ -12,6 +12,8 @@ CVarsGrid::CVarsGrid( VariableDB* db ){
 	m_field.setMarkPrecision( 10 );
 	m_field.setMaxTime( 60000 );
 
+	//m_field.setFocusProxy( this );
+
 	m_legendsLayout = new QVBoxLayout();
 
 	lay->addLayout( m_legendsLayout );
@@ -26,13 +28,19 @@ CVarsGrid::CVarsGrid( VariableDB* db ){
 }
 
 void CVarsGrid::mouseReleaseEvent( QMouseEvent* eve ){
-	QMenu menu;
 
-	menu.addAction( "Clear" );
-	menu.addAction( "Increase details" );
-	menu.addAction( "Decrease details" );
+	if( eve->button() != Qt::RightButton )
+		return;
 
-	menu.popup( eve->globalPos() );
+	QMenu *menu = new QMenu();
+
+	connect( menu , SIGNAL(triggered(QAction*)), this , SLOT(menuTrig(QAction*)));
+
+	menu->addAction( QIcon( ":/images/graph_delete.png" ) , "Clear" );
+	menu->addAction( QIcon( ":/images/graph_plus.png" ) , "Increase details" );
+	menu->addAction( QIcon( ":/images/graph_minus.png" ) , "Decrease details" );
+
+	menu->popup( eve->globalPos() );
 }
 
 void CVarsGrid::menuTrig( QAction* act ){
@@ -45,10 +53,12 @@ void CVarsGrid::menuTrig( QAction* act ){
 
 	if( act->text() == "Increase details" ){
 		m_field.setMarkPrecision( m_field.markPrecision() +  2 );
+		repaint();
 	}
 
 	if( act->text() == "Decrease details" ){
 		m_field.setMarkPrecision( m_field.markPrecision() -  2 );
+		repaint();
 	}
 }
 

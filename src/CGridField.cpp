@@ -159,12 +159,6 @@ void CGridField::removeLine(CGridLine * ln ){
 	m_lineValue.removeOne(ln);
 }
 
-void CGridField::mouseReleaseEvent( QMouseEvent* eve ){
-	if( dynamic_cast<CVarsGrid*>(parentWidget()) != 0 ){
-		dynamic_cast<CVarsGrid*>(parentWidget())->mouseReleaseEvent( eve );
-	}
-}
-
 void CGridField::addLine(CGridLine* line){
 	m_lineValue.append(line);
 

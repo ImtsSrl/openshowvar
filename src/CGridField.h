@@ -53,10 +53,6 @@ class CGridField : public QWidget {
 		void setMarkPrecision(int );
 		int markPrecision();
 
-
-		void mouseReleaseEvent( QMouseEvent* eve );
-
-
 	protected:
 
 		void paintEvent(QPaintEvent* qpEve);

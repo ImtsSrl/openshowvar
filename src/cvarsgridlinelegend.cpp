@@ -17,12 +17,16 @@ void CVarsGridLineLegend::paintEvent( QPaintEvent* eve ){
 }
 
 void CVarsGridLineLegend::mouseReleaseEvent( QMouseEvent* eve ){
+
+	if( eve->button() != Qt::RightButton )
+		return;
+
 	QMenu* menu = new QMenu();
 
 	connect( menu , SIGNAL(triggered(QAction*)) , this , SLOT(menuTrig(QAction*)));
 
-	menu->addAction( QIcon( "graph_delete.png" ) , "Delete" );
-	menu->addAction( QIcon( "graph_color.png" ) , "Change color" );
+	menu->addAction( QIcon( ":/images/graph_delete.png" ) , "Delete" );
+	menu->addAction( QIcon( ":/images/graph_color.png" ) , "Change color" );
 
 	menu->popup( eve->globalPos() );
 }
