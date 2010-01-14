@@ -48,6 +48,8 @@ class CGridLine  : public QObject {
 
 		QLabel*		m_tooltip;
 
+		float		m_drawWidth;
+
 	public:
 
 		CGridLine();
@@ -65,6 +67,9 @@ class CGridLine  : public QObject {
 
 		void 	setColor(QColor col);
 		QColor	color() const;
+
+		float	width();
+		void	setWidth( float );
 
 		void	setTooltip(const QString& );
 

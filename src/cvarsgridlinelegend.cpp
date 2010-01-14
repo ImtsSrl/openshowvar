@@ -25,8 +25,11 @@ void CVarsGridLineLegend::mouseReleaseEvent( QMouseEvent* eve ){
 
 	connect( menu , SIGNAL(triggered(QAction*)) , this , SLOT(menuTrig(QAction*)));
 
+	// Ogni voce deve corrispondere alla funzione menuTrig
 	menu->addAction( QIcon( ":/images/graph_delete.png" ) , "Delete" );
 	menu->addAction( QIcon( ":/images/graph_color.png" ) , "Change color" );
+	menu->addAction( QIcon( ":/images/graph_plus.png" ) , "Increase width" );
+	menu->addAction( QIcon( ":/images/graph_minus.png" ) , "Decrease width" );
 
 	menu->popup( eve->globalPos() );
 }
@@ -36,12 +39,20 @@ void CVarsGridLineLegend::menuTrig( QAction* act){
 		((CVarsGrid*)parentWidget())->removeVar( m_name );
 	}
 
+	if( act->text() == "Increase width" ){
+		m_line->setWidth( m_line->width() + 1 );
+	}
+	if( act->text() == "Decrease width" ){
+		m_line->setWidth( m_line->width() - 1 );
+
+	}
+
 	if( act->text() == "Change color" ){
 		QColor col( QColorDialog::getColor( m_line->color() ) );
 		m_line->setColor( col );
-
-		repaint();
 	}
+
+	repaint();
 }
 
 QSize CVarsGridLineLegend::sizeHint() const {

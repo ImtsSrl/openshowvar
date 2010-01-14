@@ -107,10 +107,10 @@ void CGridField::paintEvent(QPaintEvent* qpEve){
 
 		paint.drawRect(r);
 		paint.drawText(	12,	10,
-					QString::number(max));
+					QString::number(max,'f',2));
 
 		paint.drawText(	12,	height() - 13,
-					QString::number(min));
+					QString::number(min,'f',2));
 
 		int co = m_MarkPrec - 2;
 		double jump = 0;
@@ -136,7 +136,7 @@ void CGridField::paintEvent(QPaintEvent* qpEve){
 
 					paint.setPen(pen_black);
 					paint.drawText(	12,	(int)posy,
-							QString::number(val));
+							QString::number(val,'f',2));
 
 					paint.setPen(pen_line);
 					paint.drawLine(r.left(),(int)posy,r.right(),(int)posy);

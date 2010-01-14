@@ -35,6 +35,8 @@ CGridLine::CGridLine(){
 	m_color.setRgb( rand()%255, rand()%255, rand()%255 );
 	m_maxValue = -999999;
 	m_minValue = 999999;
+
+	m_drawWidth = 1;
 }
 
 QColor CGridLine::color() const {
@@ -55,41 +57,26 @@ void	CGridLine::getMaxMinValues(double* max,double* min){
 	*min = m_minValue;
 }
 
+float CGridLine::width(){
+	return m_drawWidth;
+}
+
+void CGridLine::setWidth( float f ){
+	if( f > 0 ) m_drawWidth = f;
+}
+
 void CGridLine::drawInWidget(QWidget* qw,QPainter* paint,QRect* drawR,double maxRange , double minRange , QTime* minTime ){
 	int	items = m_values->size();
 	double 	px,py;
 	double	tx,ty;
 	double	totalTime = 0;
 
-	paint->setPen( m_color );
+	QPen pen( m_color );
+	pen.setWidthF( m_drawWidth );
+	paint->setPen( pen );
 
 	if( items < 2 || drawR == 0)
 		return;
-#if 0
-	totalTime = ((*m_values)[m_values->size()-1])->m_time.msecsTo(((*m_values)[0])->m_time);
-
-	px = 0.0;
-	py = (1 - (( m_values->at(0)->m_value - m_minValue ) / ( m_maxValue - m_minValue ))) * drawR->height();
-
-	CGridValue* val = 0;
-
-	for(int i=1;i<items;i++){
-		tx = ((*m_values)[i])->m_time.msecsTo(((*m_values)[0])->m_time) / totalTime;
-		tx *= drawR->width();
-
-		ty = (1 - (( m_values->at(i)->m_value - m_minValue ) / ( m_maxValue - m_minValue ))) * drawR->height();
-
-		paint->drawLine(
-			px + drawR->x(),
-			py + drawR->y(),
-
-			tx + drawR->x(),
-			ty + drawR->y());
-
-		px = tx;
-		py = ty;
-	}
-#endif
 
 	totalTime = ((*m_values)[m_values->size()-1])->m_time.msecsTo(*minTime);
 
