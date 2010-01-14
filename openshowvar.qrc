@@ -4,5 +4,7 @@
         <file>images/bender.png</file>
         <file>images/openshowvar.png</file>
         <file>images/Cartman-AWESOM-O.ico</file>
+        <file>images/graph_delete.png</file>
+        <file>images/graph_color.png</file>
     </qresource>
 </RCC>

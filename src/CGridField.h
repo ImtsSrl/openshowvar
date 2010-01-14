@@ -46,10 +46,15 @@ class CGridField : public QWidget {
 		CGridField();
 
 		void addLine(CGridLine* );
+		void removeLine( CGridLine* );
 
 		void setMarkOpacity(float );
 
 		void setMarkPrecision(int );
+		int markPrecision();
+
+
+		void mouseReleaseEvent( QMouseEvent* eve );
 
 
 	protected:

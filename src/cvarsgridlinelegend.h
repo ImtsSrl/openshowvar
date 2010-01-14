@@ -18,6 +18,12 @@ public:
 
 	void paintEvent( QPaintEvent* );
 	QSize sizeHint() const;
+
+	void mouseReleaseEvent( QMouseEvent* eve );
+
+public slots:
+
+	void menuTrig( QAction* );
 };
 
 #endif // CVARSGRIDLINELEGEND_H

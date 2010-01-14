@@ -29,6 +29,7 @@
 
 #include "CGridField.h"
 #include <QPainter>
+#include "cvarsgrid.h"
 
 void CGridField::setMaxTime(int msec){
 	m_MaxTimeMSec = msec;
@@ -53,6 +54,10 @@ CGridField::CGridField(){
 
 }
 
+int CGridField::markPrecision(){
+	return m_MarkPrec;
+}
+
 void CGridField::setMarkPrecision(int mp){
 	if( mp > 0 )
 		m_MarkPrec = mp;
@@ -69,7 +74,7 @@ void CGridField::paintEvent(QPaintEvent* qpEve){
 
 	paint.setRenderHints(QPainter::Antialiasing);
 
-	QRect	r(50,10,width()-55,height()-20);
+	QRect	r(10,10,width()-55,height()-20);
 	QTime	minTime; minTime = QTime::currentTime();
 
 	CGridLine* ll;
@@ -101,10 +106,10 @@ void CGridField::paintEvent(QPaintEvent* qpEve){
 		//m_lineValue[0]->getMaxMinValues(&max,&min);
 
 		paint.drawRect(r);
-		paint.drawText(	5,	20,
+		paint.drawText(	12,	10,
 					QString::number(max));
 
-		paint.drawText(	5,	height(),
+		paint.drawText(	12,	height() - 13,
 					QString::number(min));
 
 		int co = m_MarkPrec - 2;
@@ -130,7 +135,7 @@ void CGridField::paintEvent(QPaintEvent* qpEve){
 					posy -= r.height() / (float)(co+1);
 
 					paint.setPen(pen_black);
-					paint.drawText(	5,	(int)posy,
+					paint.drawText(	12,	(int)posy,
 							QString::number(val));
 
 					paint.setPen(pen_line);
@@ -148,6 +153,16 @@ void CGridField::paintEvent(QPaintEvent* qpEve){
 
 void CGridField::updateState(){
 	update();
+}
+
+void CGridField::removeLine(CGridLine * ln ){
+	m_lineValue.removeOne(ln);
+}
+
+void CGridField::mouseReleaseEvent( QMouseEvent* eve ){
+	if( dynamic_cast<CVarsGrid*>(parentWidget()) != 0 ){
+		dynamic_cast<CVarsGrid*>(parentWidget())->mouseReleaseEvent( eve );
+	}
 }
 
 void CGridField::addLine(CGridLine* line){
