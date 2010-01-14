@@ -6,6 +6,13 @@
 
 #include "cvarsgridlinelegend.h"
 
+struct CVarsGrid_Line {
+	CGridLine*		line;
+	QString			m_var;
+	QString			m_ip;
+	CVarsGridLineLegend* m_legend;
+};
+
 class CVarsGrid : public QWidget {
 
 	Q_OBJECT
@@ -14,10 +21,12 @@ private:
 
 	CGridField						m_field;
 
-	QList<CGridLine*>				m_lines;
+	/*QList<CGridLine*>				m_lines;
 	QStringList						m_linesVar;
 	QStringList						m_linesIP;
-	QList<CVarsGridLineLegend*>		m_legends;
+	QList<CVarsGridLineLegend*>		m_legends;*/
+
+	QList<CVarsGrid_Line*>			m_lines;
 
 	VariableDB*			m_dbVar;
 

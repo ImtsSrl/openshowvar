@@ -45,9 +45,9 @@ void CVarsGrid::mouseReleaseEvent( QMouseEvent* eve ){
 
 void CVarsGrid::menuTrig( QAction* act ){
 	if( act->text() == "Clear" ){
-		CGridLine* ln;
+		CVarsGrid_Line* ln;
 		foreach( ln , m_lines ){
-			ln->clearAll();
+			ln->line->clearAll();
 		}
 	}
 
@@ -78,24 +78,20 @@ void CVarsGrid::dragEnterEvent(QDragEnterEvent *event) {
 
 void CVarsGrid::removeVar( const QString& name ){
 
-	for( int i = 0; i< m_lines.size(); i++ ){
-		if( m_linesVar.at( i) == name ){
+	CVarsGrid_Line* ln = 0;
+	foreach( ln , m_lines ){
+		if( ln->m_var == name ){
 
-			m_field.removeLine( m_lines.at(i));
+			m_field.removeLine( ln->line );
+			m_lines.removeOne( ln );
+			delete ln->line;
 
-			delete (CGridLine*)m_lines.at(i);
-			m_lines.removeAt(i);
-
-			//delete m_linesVar.at(i);
-			m_linesVar.removeAt(i);
-
-			//delete m_linesIP.at(i);
-			m_linesIP.removeAt(i);
-
-			delete m_legends.at(i);
-			m_legends.removeAt(i);
+			m_legendsLayout->removeWidget( ln->m_legend );
+			delete ln->m_legend;
+			break;
 		}
 	}
+
 }
 
 void CVarsGrid::addVar(const QString& str , const QString& ip){
@@ -107,44 +103,43 @@ void CVarsGrid::addVar(const QString& str , const QString& ip){
 		setGeometry( QRect( pos().x() , pos().y() , 400, 180 ));
 	}
 
-	CGridLine* ml = new CGridLine();
+	CVarsGrid_Line* ln = new CVarsGrid_Line;
 
-	m_field.addLine( ml );
-	m_lines.append( ml );
+	ln->line = new CGridLine();
+	ln->m_var = str;
+	ln->m_ip = ip;
+	ln->m_legend = new CVarsGridLineLegend( ln->line , ln->m_var );
 
-	m_linesVar.append( str );
-	m_linesIP.append( ip );
+	m_lines.append( ln );
+	m_field.addLine( ln->line );
 
-	CVarsGridLineLegend* leg = new CVarsGridLineLegend( ml , str );
-	m_legends.append( leg );
-
+	// toglio l'ultimo item che dovrebbe essere uno Stretch
 	m_legendsLayout->removeItem( m_legendsLayout->itemAt( m_legendsLayout->count() - 1 ) );
-	m_legendsLayout->addWidget( leg );
+	m_legendsLayout->addWidget( ln->m_legend );
 	m_legendsLayout->addStretch();
 }
 
 void CVarsGrid::update(){
 
-	int i=0;
+	CVarsGrid_Line* ln;
 	int temp;
 	QByteArray value;
 
-	for(i=0; i < m_lines.size() ; i++ ){
+	foreach( ln , m_lines ){
 
-		m_dbVar->readVar( m_linesVar.at(i).toAscii() ,  QHostAddress( m_linesIP.at( i ) ) , &value , &temp );
+		m_dbVar->readVar( ln->m_var.toAscii() ,  QHostAddress( ln->m_ip ) , &value , &temp );
 
-		m_lines.at(i)->addValue( QString(value).toDouble() );
+		ln->line->addValue( QString(value).toDouble() );
 	}
 
 	repaint();
 }
 
 CVarsGrid::~CVarsGrid(){
-	int i=0;
 
-	for(i=0; i < m_lines.size() ; i++ ){
-
-		delete m_lines.at(i);
-		delete m_legends.at(i);
+	CVarsGrid_Line* ln;
+	foreach( ln , m_lines ){
+		delete ln->line;
+		delete ln->m_legend;
 	}
 }
