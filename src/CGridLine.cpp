@@ -28,13 +28,14 @@
  */
 
 #include "CGridLine.h"
+#include "float.h"
 
 CGridLine::CGridLine(){
 	m_values = new QList<CGridValue*>;
 
 	m_color.setRgb( rand()%255, rand()%255, rand()%255 );
-	m_maxValue = -999999;
-	m_minValue = 999999;
+	m_maxValue = DBL_MIN;
+	m_minValue = DBL_MAX;
 
 	m_drawWidth = 1;
 }
@@ -73,6 +74,7 @@ void CGridLine::drawInWidget(QWidget* qw,QPainter* paint,QRect* drawR,double max
 
 	QPen pen( m_color );
 	pen.setWidthF( m_drawWidth );
+	pen.setBrush( QBrush( m_color ));
 	paint->setPen( pen );
 
 	if( items < 2 || drawR == 0)
@@ -89,6 +91,7 @@ void CGridLine::drawInWidget(QWidget* qw,QPainter* paint,QRect* drawR,double max
 
 		ty = (1 - (( m_values->at(i)->m_value - minRange ) / ( maxRange - minRange ))) * drawR->height();
 
+		paint->drawEllipse(QPoint((int)tx + drawR->x(),(int)ty + drawR->y()) , 2,2);
 		paint->drawLine(
 			(int)px + drawR->x(),
 			(int)py + drawR->y(),
@@ -139,8 +142,8 @@ void CGridLine::addValue(double val){
 
 void CGridLine::clearAll(){
 	m_values->clear();
-	m_maxValue = -999999;
-	m_minValue = 999999;
+	m_maxValue = DBL_MIN;
+	m_minValue = DBL_MAX;
 
 	emit stateChanged();
 }

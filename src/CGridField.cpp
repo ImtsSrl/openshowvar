@@ -30,6 +30,7 @@
 #include "CGridField.h"
 #include <QPainter>
 #include "cvarsgrid.h"
+#include "float.h"
 
 void CGridField::setMaxTime(int msec){
 	m_MaxTimeMSec = msec;
@@ -70,7 +71,7 @@ void CGridField::setMarkOpacity(float v){
 
 void CGridField::paintEvent(QPaintEvent* qpEve){
 	QPainter paint(this);
-	double	max = -999999,min = 999999;
+	double	max = DBL_MIN,min = DBL_MAX;
 
 	paint.setRenderHints(QPainter::Antialiasing);
 
