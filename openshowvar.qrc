@@ -14,6 +14,7 @@
         <file alias="addGraph">images/graph_add.png</file>
         <file alias="editvar">images/editvar.png</file>
         <file alias="delete">images/delete.png</file>
-        <file alias="saveVar">images/save.png</file>
+        <file alias="saveVar">images/filesave.png</file>
+        <file alias="openVar">images/fileopen.png</file>
     </qresource>
 </RCC>

@@ -125,5 +125,4 @@ void ListVarXml::estraiVariabile(const QDomElement &element){
 		node = node.nextSibling();
 		emit insertNewVar(variable, robot);
 	}
-	
 }

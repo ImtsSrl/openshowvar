@@ -36,6 +36,7 @@ private slots:
     void on_insertVar(const QString *varName);
     void on_writeVariable(const QByteArray &varname, const QByteArray &value, const QHostAddress &varip);
     void on_saveVar();
+    void on_openVar();
     void insertNew(const QString &variabile, const QString &robotip);
     void insertClose(const bool &visible);
     void on_editVarClose(const bool &visible);
@@ -84,6 +85,7 @@ private:
     QAction *addGraphAct;
     QAction *editVarAct;
     QAction *saveVarAct;
+    QAction *openVarAct;
 
     ListVarXml listVar;
 

@@ -53,9 +53,6 @@ OpenShowVarDock::OpenShowVarDock()
 
     setWindowIcon(QIcon(":openshowvar"));
     resize(700,500);
-
-    connect(&listVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
-    listVar.readList("variable.xml");
 }
 
 void OpenShowVarDock::newVar()
@@ -137,6 +134,10 @@ void OpenShowVarDock::createActions()
     saveVarAct->setStatusTip(tr("Save var list"));
     connect(saveVarAct, SIGNAL(triggered()), this, SLOT(on_saveVar()));
 
+    openVarAct = new QAction(QIcon(":openVar"), tr("&Open var list"), this);
+    openVarAct->setStatusTip(tr("Save var list"));
+    connect(openVarAct, SIGNAL(triggered()), this, SLOT(on_openVar()));
+
 //    quitAct = new QAction(tr("&Quit"), this);
 //    quitAct->setShortcuts(QKeySequence::Quit);
 //    quitAct->setStatusTip(tr("Quit the application"));
@@ -175,6 +176,7 @@ void OpenShowVarDock::createToolBars()
 
     editToolBar = addToolBar(tr("Edit"));
     editToolBar->addAction(editVarAct);
+    editToolBar->addAction(openVarAct);
     editToolBar->addAction(saveVarAct);
 }
 
@@ -505,5 +507,14 @@ void OpenShowVarDock::on_editVarClose(const bool &visible)
 
 void OpenShowVarDock::on_saveVar()
 {
-    listVar.writeList(treeWidget,"variable.xml");
+    QString fileName = QFileDialog::getSaveFileName(this,tr("Save file as"),"./","Var list (*.xml)");
+    if (!fileName.isEmpty())
+        listVar.writeList(treeWidget,fileName);
+}
+
+void OpenShowVarDock::on_openVar()
+{
+    QString files = QFileDialog::getOpenFileName(this,tr("Select files to open"),"./","Var list (*.xml)");
+    connect(&listVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
+    listVar.readList(files);
 }
