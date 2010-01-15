@@ -49,6 +49,7 @@ class CGridField : public QWidget {
 		void removeLine( CGridLine* );
 
 		void setMarkOpacity(float );
+		float markOpacity();
 
 		void setMarkPrecision(int );
 		int markPrecision();

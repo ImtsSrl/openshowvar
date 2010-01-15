@@ -27,6 +27,11 @@ private:
 
 	QMutex				m_mutexUpdate;
 
+	QToolBar			m_mainToolbar;
+	QAction*			m_maintoolMarkDot;
+	QAction*			m_maintoolBall;
+	QAction*			m_maintoolClear;
+
 public:
 
 	CVarsGrid( VariableDB* );

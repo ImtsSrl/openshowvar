@@ -64,8 +64,12 @@ void CGridField::setMarkPrecision(int mp){
 		m_MarkPrec = mp;
 }
 
+float CGridField::markOpacity( ){
+		return m_MarkOpacity;
+}
+
 void CGridField::setMarkOpacity(float v){
-	if( v > 0 && v <= 1)
+	if( v >= 0 && v <= 1)
 		m_MarkOpacity = v;
 }
 
@@ -106,7 +110,9 @@ void CGridField::paintEvent(QPaintEvent* qpEve){
 	if( m_lineValue.size() > 0 ){
 		//m_lineValue[0]->getMaxMinValues(&max,&min);
 
+		paint.fillRect(r,Qt::white);
 		paint.drawRect(r);
+
 		paint.drawText(	12,	10,
 					QString::number(max,'f',2));
 

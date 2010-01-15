@@ -5,7 +5,16 @@ CVarsGrid::CVarsGrid( VariableDB* db ){
 
 	m_dragHere.setText( "Drag Variable Here!");
 
+	QVBoxLayout* vlay = new QVBoxLayout();
+
+	m_maintoolMarkDot = m_mainToolbar.addAction( "Dot" );
+	//m_maintoolBall = m_mainToolbar.addAction( "Ball" );
+	m_maintoolClear = m_mainToolbar.addAction( "Clr" );
+	vlay->addWidget( &m_mainToolbar );
+	connect( &m_mainToolbar,SIGNAL(actionTriggered(QAction*)),this,SLOT(menuTrig(QAction*)));
+
 	QHBoxLayout* lay = new QHBoxLayout();
+
 	lay->addWidget( &m_field );
 	lay->addWidget( &m_dragHere );
 
@@ -18,9 +27,11 @@ CVarsGrid::CVarsGrid( VariableDB* db ){
 
 	lay->addLayout( m_legendsLayout );
 
-	setLayout( lay );
+	vlay->addLayout( lay );
+	setLayout( vlay );
 
 	m_field.hide();
+
 
 	show();
 
@@ -44,7 +55,15 @@ void CVarsGrid::mouseReleaseEvent( QMouseEvent* eve ){
 }
 
 void CVarsGrid::menuTrig( QAction* act ){
-	if( act->text() == "Clear" ){
+
+	if( act == m_maintoolMarkDot ){
+		if( m_field.markOpacity() != 0 )
+			m_field.setMarkOpacity( 0 );
+		else
+			m_field.setMarkOpacity( 0.3 );
+	}
+
+	if( act->text() == "Clear" || act == m_maintoolClear ){
 		CGridLine* ln;
 		foreach( ln , m_lines ){
 			ln->clearAll();
