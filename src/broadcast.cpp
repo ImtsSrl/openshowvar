@@ -43,11 +43,11 @@ Broadcast::Broadcast(QWidget *parent)
 
 Broadcast::~Broadcast()
 {
-	for(int i=0;i<MAXBROADCASTNETWORK;i++)
-		if(privateBind[i]!=NULL){
-		privateBind[i]->disconnectFromHost();
-		delete privateBind[i];
-		}
+    for(int i=0;i<MAXBROADCASTNETWORK;i++)
+        if(privateBind[i]!=NULL){
+        privateBind[i]->disconnectFromHost();
+        delete privateBind[i];
+    }
 }
 
 /*!	\brief Invio messaggio di broadcas
@@ -58,47 +58,49 @@ Broadcast::~Broadcast()
 
 void Broadcast::send()
 {
-	QByteArray datagram = "WHEREAREYOU?";
-/*	
+    QByteArray datagram = "WHEREAREYOU?";
+    /*
 #ifdef DEBUGWIN
 	debugWindow = new CDebug;
 	debugWindow->show();
 #endif
 */
-	QList<QNetworkInterface> interface = QNetworkInterface::allInterfaces();
-/*
+    QList<QNetworkInterface> interface = QNetworkInterface::allInterfaces();
+    /*
 #ifdef DEBUGWIN
 	debugWindow->addDebug(QString("Schede di rete: %1").arg(interface.count()));
 #endif
 */	
 
-	for(int i=0;i<interface.count();i++){
-                if((interface[i].flags() & QNetworkInterface::CanBroadcast) && (interface[i].flags() & QNetworkInterface::IsRunning)){
-                //qDebug() << "Interface ip: " << interface[i].allAddresses();
-                //qDebug() << "Interface name: " << interface[i].name();
-                //qDebug() << "Interface name: " << interface[i].flags();
+    qDebug() << "Inviato send...";
+
+    for(int i=0;i<interface.count();i++){
+        if((interface[i].flags() & QNetworkInterface::CanBroadcast) && (interface[i].flags() & QNetworkInterface::IsRunning)){
+            //qDebug() << "Interface ip: " << interface[i].allAddresses();
+            //qDebug() << "Interface name: " << interface[i].name();
+            //qDebug() << "Interface name: " << interface[i].flags();
 
 
-                if((interface[i].flags() & QNetworkInterface::CanBroadcast)){
-			QList<QNetworkAddressEntry> address = interface[i].addressEntries();
-                        //qDebug() << "Flag " << interface[i].flags() << " nome " << interface[i].name();
-			//qDebug() << address.count();
-                        if(address.count()>0 && address[0].ip()!=QHostAddress::LocalHost){
-                                //this->bind(address[0].ip(),UDPBROADCASTPORTCROSS);
-				
-				QSignalMapper* mapper[MAXBROADCASTNETWORK];
-				privateBind[i] = new QUdpSocket(this);
-				mapper[i] = new QSignalMapper(this);
-				connect(privateBind[i], SIGNAL(readyRead()),mapper[i], SLOT(map()));
-				mapper[i]->setMapping(privateBind[i], i);
-				connect(mapper[i], SIGNAL(mapped(int)), this, SLOT(processPending(int)));
-				privateBind[i]->bind(address[0].ip(),UDPBROADCASTPORTCROSS);
-				privateBind[i]->writeDatagram(datagram.data(), datagram.size(),address[0].broadcast(), BROADCASTPORT);
+            if((interface[i].flags() & QNetworkInterface::CanBroadcast)){
+                QList<QNetworkAddressEntry> address = interface[i].addressEntries();
+                //qDebug() << "Flag " << interface[i].flags() << " nome " << interface[i].name();
+                //qDebug() << address.count();
+                if(address.count()>0 && address[0].ip()!=QHostAddress::LocalHost){
+                    //this->bind(address[0].ip(),UDPBROADCASTPORTCROSS);
 
-			}
+                    QSignalMapper* mapper[MAXBROADCASTNETWORK];
+                    privateBind[i] = new QUdpSocket(this);
+                    mapper[i] = new QSignalMapper(this);
+                    connect(privateBind[i], SIGNAL(readyRead()),mapper[i], SLOT(map()));
+                    mapper[i]->setMapping(privateBind[i], i);
+                    connect(mapper[i], SIGNAL(mapped(int)), this, SLOT(processPending(int)));
+                    privateBind[i]->bind(address[0].ip(),UDPBROADCASTPORTCROSS);
+                    privateBind[i]->writeDatagram(datagram.data(), datagram.size(),address[0].broadcast(), BROADCASTPORT);
+
                 }
-        }
             }
+        }
+    }
 }
 
 /*!	\brief Ricezione messaggio di broadcast
@@ -122,16 +124,17 @@ void Broadcast::processPending(int index)
 	debugWindow->addDebug(QString("Ricevuta risposta su indice %1").arg(index));
 #endif
 */
-	
-	QByteArray datagram,servername="HEREIM";
-	QHostAddress sender;
-	while (privateBind[index]->hasPendingDatagrams()) {
-		datagram.resize(privateBind[index]->pendingDatagramSize());
-		privateBind[index]->readDatagram(datagram.data(), datagram.size(),&sender);
-		datagram.replace('"',"");
-		datagram.append('|').append(sender.toString());
-		QList<QByteArray> datiRobot = datagram.split('|');
-		if(datiRobot.count()==4)
-			emit addRobot(datiRobot);
-	}
+    qDebug() << "Ricevuto nuovo robot";
+    
+    QByteArray datagram;
+    QHostAddress sender;
+    while (privateBind[index]->hasPendingDatagrams()) {
+        datagram.resize(privateBind[index]->pendingDatagramSize());
+        privateBind[index]->readDatagram(datagram.data(), datagram.size(),&sender);
+        datagram.replace('"',"");
+        datagram.append('|').append(sender.toString());
+        QList<QByteArray> datiRobot = datagram.split('|');
+        if(datiRobot.count()==4)
+            emit addRobot(datiRobot);
+    }
 }

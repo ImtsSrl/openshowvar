@@ -75,7 +75,7 @@ InsertVar::InsertVar(){
 
     commandLayout->addStretch();
     commandLayout->addWidget(insertButton);
-    commandLayout->addWidget(abortButton);
+    //commandLayout->addWidget(abortButton);
 
     QVBoxLayout* mainLayout = new QVBoxLayout;
 
@@ -94,17 +94,20 @@ InsertVar::InsertVar(){
     connect(insertButton,SIGNAL(clicked()), this, SLOT(on_insertButton_clicked()));
     connect(lineEdit,SIGNAL(textChanged(const QString &)), this, SLOT(on_lineEdit_textChanged()));
     connect(lineEdit,SIGNAL(returnPressed()), this, SLOT(on_lineEdit_returnPressed()));
-    connect(abortButton, SIGNAL(clicked()), this, SLOT(on_abortButton_clicked()));
+    //connect(abortButton, SIGNAL(clicked()), this, SLOT(on_abortButton_clicked()));
 
     connect(broadcast, SIGNAL(newMsg(QString &)), this, SLOT(newMsg(QString &)));
 
     setWindowIcon(QIcon("openshowvar.png"));
 
     broadcast->send();
+
+    qtimeBroadcast.start(5000);
+    connect(&qtimeBroadcast, SIGNAL(timeout()), this, SLOT(on_Broadcast()));
 }
 
 InsertVar::~InsertVar(){
-	
+    delete broadcast;
 }
 
 void InsertVar::DropVar(QString varName){
@@ -146,19 +149,24 @@ void InsertVar::on_abortButton_clicked(){
  */
 
 void InsertVar::Robot(QList<QByteArray> &datirobot){
-	comboRobotList->addItem(datirobot[2] + "@" + datirobot[3]);
-	//comboRobotList->setEditable(true);
-	//comboRobotList->lineEdit()->setAlignment(Qt::AlignHCenter);
-	//comboRobotList->setItemData(0,Qt::AlignHCenter, Qt::TextAlignmentRole);
-	
-	on_lineEdit_textChanged();
+    comboRobotList->addItem(datirobot[2] + "@" + datirobot[3]);
+    //comboRobotList->setEditable(true);
+    //comboRobotList->lineEdit()->setAlignment(Qt::AlignHCenter);
+    //comboRobotList->setItemData(0,Qt::AlignHCenter, Qt::TextAlignmentRole);
+
+    on_lineEdit_textChanged();
 }
 
 void InsertVar::closeEvent (QCloseEvent* event)
 {
-	on_abortButton_clicked();
+    on_abortButton_clicked();
 }
 
 void InsertVar::newMsg(QString &msg){
-	this->setWindowTitle(msg);
+    this->setWindowTitle(msg);
+}
+
+void InsertVar::on_Broadcast()
+{
+    broadcast->send();
 }

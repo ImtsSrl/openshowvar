@@ -37,7 +37,7 @@ OpenShowVarDock::OpenShowVarDock()
     setCentralWidget(treeWidget);
 
     createActions();
-    //createMenus();
+    createMenus();
     createToolBars();
     createStatusBar();
     createDockWindows();
@@ -112,11 +112,12 @@ void OpenShowVarDock::insertCustomer(const QString &customer)
 
 void OpenShowVarDock::about()
 {
-   QMessageBox::about(this, tr("About Dock Widgets"),
-            tr("The <b>Dock Widgets</b> example demonstrates how to "
-               "use Qt's dock widgets. You can enter your own text, "
-               "click a customer to add a customer name and "
-               "address, and click standard paragraphs to add them."));
+   QMessageBox::about(this, tr("About OpenShowVar"),
+            tr("<b>OpenShowVar</b> è un editor di variabili "
+               "per robot KUKA realizzato da: "
+               "massimiliano.fago@gmail.com "
+               "dddomodossola@gmail.com "
+               "cyberpro@gmail.com"));
 }
 
 void OpenShowVarDock::createActions()
@@ -146,10 +147,10 @@ void OpenShowVarDock::createActions()
 //    quitAct->setStatusTip(tr("Quit the application"));
 //    connect(quitAct, SIGNAL(triggered()), this, SLOT(close()));
 //
-//    aboutAct = new QAction(tr("&About"), this);
-//    aboutAct->setStatusTip(tr("Show the application's About box"));
-//    connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
-//
+    aboutAct = new QAction(tr("&About"), this);
+    aboutAct->setStatusTip(tr("Show the application's About box"));
+    connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+
 //    aboutQtAct = new QAction(tr("About &Qt"), this);
 //    aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
 //    connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
@@ -157,24 +158,24 @@ void OpenShowVarDock::createActions()
 
 void OpenShowVarDock::createMenus()
 {
-    fileMenu = menuBar()->addMenu(tr("&File"));
+    fileMenu = menuBar()->addMenu(tr("&Robot"));
     fileMenu->addAction(newLetterAct);
     fileMenu->addAction(deleteVarAct);
     fileMenu->addAction(addGraphAct);
 
-    fileMenu->addSeparator();
-    fileMenu->addAction(quitAct);
-
-    editMenu = menuBar()->addMenu(tr("&Edit"));
-    editMenu->addAction(undoAct);
-
-    viewMenu = menuBar()->addMenu(tr("&View"));
-
+//    fileMenu->addSeparator();
+//    fileMenu->addAction(quitAct);
+//
+//    editMenu = menuBar()->addMenu(tr("&Edit"));
+//    editMenu->addAction(undoAct);
+//
+//    viewMenu = menuBar()->addMenu(tr("&View"));
+//
     menuBar()->addSeparator();
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAct);
-    helpMenu->addAction(aboutQtAct);
+//    helpMenu->addAction(aboutQtAct);
 }
 
 void OpenShowVarDock::createToolBars()
@@ -237,37 +238,39 @@ void OpenShowVarDock::insertVar(const QString *varName)
     QDockWidget *dock = new QDockWidget(tr("New robot variable"), this);
     dock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-    InsertVar* insertVar = new InsertVar();
+    //InsertVar* insertVar = new InsertVar();
+    _insertVar = new InsertVar();
 
-    dock->setWidget(insertVar);
+    dock->setWidget(_insertVar);
     addDockWidget(Qt::BottomDockWidgetArea, dock);
 
-    connect(insertVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
-    connect(insertVar,SIGNAL(insertClose()),this,SLOT(insertClose()));
+    connect(_insertVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
+    //connect(insertVar,SIGNAL(insertClose()),this,SLOT(insertClose()));
+    connect(dock,SIGNAL(visibilityChanged(const bool &)),this,SLOT(insertClose(const bool &)));
 
-    insertVar->DropVar(*varName);
+    _insertVar->DropVar(*varName);
 
-    insertVar->setModal(true);
-    insertVar->show();
-    insertVar->activateWindow();
+    _insertVar->setModal(true);
+    _insertVar->show();
+    _insertVar->activateWindow();
 }
 
 void OpenShowVarDock::insertNew(const QString &variabile, const QString &iprobot)
 {
-        QTreeWidgetItem *item;
+    QTreeWidgetItem *item;
 
-        item = new QTreeWidgetItem(treeWidget);
-        item->setText(CTreeVar::VARNAME, variabile.toUpper());
-        item->setText(CTreeVar::ROBOTIP, iprobot);
+    item = new QTreeWidgetItem(treeWidget);
+    item->setText(CTreeVar::VARNAME, variabile.toUpper());
+    item->setText(CTreeVar::ROBOTIP, iprobot);
 
-        //Evita il problema del blocco durante il drag della riga
-        item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+    //Evita il problema del blocco durante il drag della riga
+    item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 
-        item->setToolTip(CTreeVar::VARNAME,tr("Robot IP %1").arg(iprobot));
+    item->setToolTip(CTreeVar::VARNAME,tr("Robot IP %1").arg(iprobot));
 
-        item->setTextAlignment(CTreeVar::TIME,(Qt::AlignRight | Qt::AlignVCenter));
+    item->setTextAlignment(CTreeVar::TIME,(Qt::AlignRight | Qt::AlignVCenter));
 
-        database->addVar(variabile.toUpper().toAscii(),QHostAddress(iprobot));
+    database->addVar(variabile.toUpper().toAscii(),QHostAddress(iprobot));
 }
 
 void OpenShowVarDock::deleteVar()
@@ -286,56 +289,59 @@ void OpenShowVarDock::deleteVar()
     item=NULL;
 }
 
-void OpenShowVarDock::insertClose()
+void OpenShowVarDock::insertClose(const bool &visible)
 {
-
+    if(!visible){
+        qDebug() << "Chiusa finestra inserimento";
+        delete _insertVar;
+    }
 }
 
 void OpenShowVarDock::lettura()
 {
-        QString qsVariabile, tempo;
-        QByteArray qbVariabile, value;
-        int readtime;
+    QString qsVariabile, tempo;
+    QByteArray qbVariabile, value;
+    int readtime;
 
-        for(int row=0;row<treeWidget->topLevelItemCount();row++)
-        {
-                //qDebug() << treeWidget->topLevelItem(row)->text(0);
+    for(int row=0;row<treeWidget->topLevelItemCount();row++)
+    {
+        //qDebug() << treeWidget->topLevelItem(row)->text(0);
 
-                qbVariabile.clear();
+        qbVariabile.clear();
 
-                qsVariabile=treeWidget->topLevelItem(row)->text(CTreeVar::VARNAME);
-                qbVariabile.append(qsVariabile);
+        qsVariabile=treeWidget->topLevelItem(row)->text(CTreeVar::VARNAME);
+        qbVariabile.append(qsVariabile);
 
-                if(database->readVar(qsVariabile.toAscii(),(QHostAddress)treeWidget->topLevelItem(row)->text(CTreeVar::ROBOTIP), &value, &readtime)){
+        if(database->readVar(qsVariabile.toAscii(),(QHostAddress)treeWidget->topLevelItem(row)->text(CTreeVar::ROBOTIP), &value, &readtime)){
 
-                                                //qDebug() << "Trovato " << value << " Tempo di lettura: " << readtime << " [ms]";
+            //qDebug() << "Trovato " << value << " Tempo di lettura: " << readtime << " [ms]";
 
-                        tempo.setNum(readtime);
-                        tempo.append(" " + tr("[ms]"));
+            tempo.setNum(readtime);
+            tempo.append(" " + tr("[ms]"));
 
-                        QTreeWidgetItem *item = treeWidget->topLevelItem(row);
+            QTreeWidgetItem *item = treeWidget->topLevelItem(row);
 
-                        item->setText(CTreeVar::VARVALUE,value);
+            item->setText(CTreeVar::VARVALUE,value);
 
-                        QBrush brush;
+            QBrush brush;
 
-                        if(readtime>=0){
-                                item->setText(CTreeVar::TIME,tempo);
-                                brush.setColor(Qt::black);
-                        }
-                        else{
-                                item->setText(CTreeVar::TIME,tr("TIMEOUT"));
-                                brush.setColor(Qt::red);
-                        }
+            if(readtime>=0){
+                item->setText(CTreeVar::TIME,tempo);
+                brush.setColor(Qt::black);
+            }
+            else{
+                item->setText(CTreeVar::TIME,tr("TIMEOUT"));
+                brush.setColor(Qt::red);
+            }
 
-                        item->setForeground(CTreeVar::VARVALUE,brush);
-                        this->splitvaluetoview(item, item->text(CTreeVar::VARNAME), item->text(CTreeVar::VARVALUE));
-                }//if
-        }//for
+            item->setForeground(CTreeVar::VARVALUE,brush);
+            this->splitvaluetoview(item, item->text(CTreeVar::VARNAME), item->text(CTreeVar::VARVALUE));
+        }//if
+    }//for
 
-                //QTreeWidgetItem *item;
-                //this->splitvaluetoview(item, QString("PIPPO"), QString("{PRO_IP: NAME[] \"/R1/RAGGIUNGIBIL.SRC\", SNR 116, NAME_C[] \"/R1/RAGGIUNGIBIL.SRC\", SNR_C 116, I_EXECUTED FALSE, P_ARRIVED 0, SI01 {CALL_STACK: NAME[] \"/R1/RAGGIUNGIBIL.SRC\", SNR 48, INT_FLAG FALSE}}"));
-                //cLog.writeList(treeWidget);
+    //QTreeWidgetItem *item;
+    //this->splitvaluetoview(item, QString("PIPPO"), QString("{PRO_IP: NAME[] \"/R1/RAGGIUNGIBIL.SRC\", SNR 116, NAME_C[] \"/R1/RAGGIUNGIBIL.SRC\", SNR_C 116, I_EXECUTED FALSE, P_ARRIVED 0, SI01 {CALL_STACK: NAME[] \"/R1/RAGGIUNGIBIL.SRC\", SNR 48, INT_FLAG FALSE}}"));
+    //cLog.writeList(treeWidget);
 }
 
 void OpenShowVarDock::splitvaluetoview(QTreeWidgetItem *item, QString varname, QString varvalue)
