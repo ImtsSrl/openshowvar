@@ -6,6 +6,7 @@
 #include "CTreeVar.h"
 #include "insertvar.h"
 #include "variabledb.h"
+#include "cvarsgrid.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -24,8 +25,8 @@ public:
 private slots:
     void newVar();
     void deleteVar();
+    void addGraph();
 
-    void print();
     void undo();
     void about();
     void insertCustomer(const QString &customer);
@@ -34,6 +35,7 @@ private slots:
     void insertNew(const QString &variabile, const QString &robotip);
     void insertClose();
     void lettura();
+    void updateGraph();
 
 private:
     void createActions();
@@ -50,6 +52,7 @@ private:
     VariableDB* database;
 
     QTimer qtimeLettura;
+    QTimer timeUpdateGraph;
     QTreeWidget *treeWidget;
 
     QTextEdit *textEdit;
@@ -64,13 +67,18 @@ private:
     QToolBar *editToolBar;
     QAction *newLetterAct;
 
-    QAction *printAct;
     QAction *undoAct;
     QAction *aboutAct;
     QAction *aboutQtAct;
     QAction *quitAct;
 
     QAction *deleteVarAct;
+    QAction *addGraphAct;
+
+    //grafico
+    QList<CVarsGrid*>	m_gridList;
+    QByteArray graphVarName;
+    QHostAddress graphVarIP;
 };
 
 #endif

@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 	showvar->setAttribute(Qt::WA_DeleteOnClose);
 	showvar->move(100,100);
 	showvar->show();
-        showvar->setWindowTitle("OpenShowVar Beta 0.6.3");
+        showvar->setWindowTitle("OpenShowVar Beta 0.7.0");
 	
 	return app.exec();
 }

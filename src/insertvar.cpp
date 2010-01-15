@@ -93,6 +93,7 @@ InsertVar::InsertVar(){
     connect(broadcast, SIGNAL(addRobot(QList<QByteArray> &)), this, SLOT(Robot(QList<QByteArray> &)));
     connect(insertButton,SIGNAL(clicked()), this, SLOT(on_insertButton_clicked()));
     connect(lineEdit,SIGNAL(textChanged(const QString &)), this, SLOT(on_lineEdit_textChanged()));
+    connect(lineEdit,SIGNAL(returnPressed()), this, SLOT(on_lineEdit_returnPressed()));
     connect(abortButton, SIGNAL(clicked()), this, SLOT(on_abortButton_clicked()));
 
     connect(broadcast, SIGNAL(newMsg(QString &)), this, SLOT(newMsg(QString &)));
@@ -113,6 +114,11 @@ void InsertVar::DropVar(QString varName){
 void InsertVar::on_lineEdit_textChanged()
 {
     insertButton->setEnabled(lineEdit->hasAcceptableInput() && !comboRobotList->currentText().isEmpty());
+}
+
+void InsertVar::on_lineEdit_returnPressed()
+{
+    on_insertButton_clicked();
 }
 
 void InsertVar::on_insertButton_clicked(){

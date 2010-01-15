@@ -11,5 +11,6 @@
         <file>images/new.png</file>
         <file>images/add.png</file>
         <file alias="delete">images/editdelete.png</file>
+        <file alias="addGraph">images/graph_add.png</file>
     </qresource>
 </RCC>
