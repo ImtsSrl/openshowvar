@@ -7,6 +7,7 @@
 #include "insertvar.h"
 #include "variabledb.h"
 #include "cvarsgrid.h"
+#include "robotvaredit.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -26,14 +27,16 @@ private slots:
     void newVar();
     void deleteVar();
     void addGraph();
+    void on_editVar();
 
-    void undo();
     void about();
     void insertCustomer(const QString &customer);
 
     void on_insertVar(const QString *varName);
+    void on_writeVariable(const QByteArray &varname, const QByteArray &value, const QHostAddress &varip);
     void insertNew(const QString &variabile, const QString &robotip);
     void insertClose(const bool &visible);
+    void on_editVarClose(const bool &visible);
     void lettura();
     void updateGraph();
 
@@ -45,6 +48,7 @@ private:
     void createDockWindows();
 
     void splitvaluetoview(QTreeWidgetItem *item, QString varname, QString varvalue);
+    void editVar(QTreeWidgetItem * item);
     void addCombo(QTreeWidgetItem *child);
     void toBinary(int value, QString *binary);
     void toHex(int value, QString *binary);
@@ -60,21 +64,24 @@ private:
     QListWidget *customerList;
     QListWidget *paragraphsList;
 
-    QMenu *fileMenu;
+    QMenu *robotMenu;
+
     QMenu *editMenu;
     QMenu *viewMenu;
     QMenu *helpMenu;
-    QToolBar *fileToolBar;
+
+    QToolBar *robotToolBar;
+
     QToolBar *editToolBar;
     QAction *newLetterAct;
 
-    QAction *undoAct;
     QAction *aboutAct;
     QAction *aboutQtAct;
     QAction *quitAct;
 
     QAction *deleteVarAct;
     QAction *addGraphAct;
+    QAction *editVarAct;
 
     //grafico
     QList<CVarsGrid*>	m_gridList;

@@ -76,14 +76,6 @@ void OpenShowVarDock::addGraph()
 //    statusBar()->showMessage(tr("Ready"), 2000);
 }
 
-//! [5]
-void OpenShowVarDock::undo()
-{
-    QTextDocument *document = textEdit->document();
-    document->undo();
-}
-//! [5]
-
 //! [6]
 void OpenShowVarDock::insertCustomer(const QString &customer)
 {
@@ -137,11 +129,11 @@ void OpenShowVarDock::createActions()
     addGraphAct->setStatusTip(tr("Show var graph"));
     connect(addGraphAct, SIGNAL(triggered()), this, SLOT(addGraph()));
 
-//    undoAct = new QAction(QIcon(":/images/undo.png"), tr("&Undo"), this);
-//    undoAct->setShortcuts(QKeySequence::Undo);
-//    undoAct->setStatusTip(tr("Undo the last editing action"));
-//    connect(undoAct, SIGNAL(triggered()), this, SLOT(undo()));
-//
+    editVarAct = new QAction(QIcon(":editvar"), tr("&Edit Var..."), this);
+    //editVarAct->setShortcuts(QKeySequence::Undo);
+    editVarAct->setStatusTip(tr("Edit variable value"));
+    connect(editVarAct, SIGNAL(triggered()), this, SLOT(on_editVar()));
+
 //    quitAct = new QAction(tr("&Quit"), this);
 //    quitAct->setShortcuts(QKeySequence::Quit);
 //    quitAct->setStatusTip(tr("Quit the application"));
@@ -158,15 +150,13 @@ void OpenShowVarDock::createActions()
 
 void OpenShowVarDock::createMenus()
 {
-    fileMenu = menuBar()->addMenu(tr("&Robot"));
-    fileMenu->addAction(newLetterAct);
-    fileMenu->addAction(deleteVarAct);
-    fileMenu->addAction(addGraphAct);
+    robotMenu = menuBar()->addMenu(tr("&Robot"));
+    robotMenu->addAction(newLetterAct);
+    robotMenu->addAction(deleteVarAct);
+    robotMenu->addSeparator();
+    robotMenu->addAction(addGraphAct);
 
-//    fileMenu->addSeparator();
-//    fileMenu->addAction(quitAct);
-//
-//    editMenu = menuBar()->addMenu(tr("&Edit"));
+    editMenu = menuBar()->addMenu(tr("&Edit"));
 //    editMenu->addAction(undoAct);
 //
 //    viewMenu = menuBar()->addMenu(tr("&View"));
@@ -180,13 +170,13 @@ void OpenShowVarDock::createMenus()
 
 void OpenShowVarDock::createToolBars()
 {
-    fileToolBar = addToolBar(tr("File"));
-    fileToolBar->addAction(newLetterAct);
-    fileToolBar->addAction(deleteVarAct);
-    fileToolBar->addAction(addGraphAct);
+    robotToolBar = addToolBar(tr("Robot"));
+    robotToolBar->addAction(newLetterAct);
+    robotToolBar->addAction(deleteVarAct);
+    robotToolBar->addAction(addGraphAct);
 
-    //editToolBar = addToolBar(tr("Edit"));
-    //editToolBar->addAction(undoAct);
+    editToolBar = addToolBar(tr("Edit"));
+    editToolBar->addAction(editVarAct);
 }
 
 void OpenShowVarDock::createStatusBar()
@@ -284,15 +274,14 @@ void OpenShowVarDock::deleteVar()
 
         database->deleteVar(item->text(CTreeVar::VARNAME).toAscii(),(QHostAddress)item->text(CTreeVar::ROBOTIP));
         statusBar()->showMessage(tr("Deleted '%1'").arg(item->text(CTreeVar::VARNAME)), 2000);
+        delete item;
+        item=NULL;
     }
-    delete item;
-    item=NULL;
 }
 
 void OpenShowVarDock::insertClose(const bool &visible)
 {
     if(!visible){
-        qDebug() << "Chiusa finestra inserimento";
         delete insertVar;
     }
 }
@@ -469,6 +458,22 @@ void OpenShowVarDock::splitvaluetoview(QTreeWidgetItem *item, QString varname, Q
     kukavarloc=NULL;
 }
 
+void OpenShowVarDock::editVar(QTreeWidgetItem * item)
+{
+    QByteArray varname=item->text(CTreeVar::VARNAME).toAscii();
+    QByteArray varvalue=item->text(CTreeVar::VARVALUE).toAscii();
+    QHostAddress varip=(QHostAddress)item->text(CTreeVar::ROBOTIP);
+
+    RobotVarEdit *roboteditvar=new RobotVarEdit(&varvalue, &varname, varip, this);
+    connect(roboteditvar,SIGNAL(writevalue(const QByteArray &, const QByteArray &, const QHostAddress &)),this,SLOT(on_writeVariable(const QByteArray &, const QByteArray &, const QHostAddress &)));
+
+    QDockWidget *dock = new QDockWidget(tr("New robot variable"), this);
+    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    dock->setWidget(roboteditvar);
+    connect(dock,SIGNAL(visibilityChanged(const bool &)),this,SLOT(on_editVarClose(const bool &)));
+    addDockWidget(Qt::RightDockWidgetArea, dock);
+}
+
 void OpenShowVarDock::addCombo(QTreeWidgetItem *child){
     QComboBox *combo = new QComboBox(this);
     combo->addItem(tr("Int code"));
@@ -507,8 +512,35 @@ void OpenShowVarDock::toHex(int value, QString *hex){
 
 void OpenShowVarDock::updateGraph()
 {
-        CVarsGrid* g;
-        foreach( g , m_gridList ){
-                g->update();
-        }
+    CVarsGrid* g;
+    foreach( g , m_gridList ){
+        g->update();
+    }
+}
+
+void OpenShowVarDock::on_editVar()
+{
+    QTreeWidgetItem *item;
+    if(treeWidget->currentItem()!=NULL){
+        if(treeWidget->currentItem()->parent()!=NULL)
+            item=treeWidget->currentItem()->parent();
+        else
+            item=treeWidget->currentItem();
+
+        editVar(item);
+        statusBar()->showMessage(tr("Edit '%1'").arg(item->text(CTreeVar::VARNAME)), 2000);
+    }
+    item=NULL;
+}
+
+void OpenShowVarDock::on_writeVariable(const QByteArray &varname, const QByteArray &value, const QHostAddress &varip){
+    int writetime;
+    database->writeVar(varname, varip, value, &writetime);
+}
+
+void OpenShowVarDock::on_editVarClose(const bool &visible)
+{
+    if(!visible){
+        qDebug() << "Edit chiuso";
+    }
 }

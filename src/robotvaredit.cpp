@@ -29,308 +29,251 @@
 
 #include "robotvaredit.h"
 
-///\todo Inserire un nuovo costruttore che riceve una KUKAVAR
-//TODO Inserire un nuovo costruttore che riceve una KUKAVAR
-
 RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varname, const QHostAddress varip, QWidget *parent)
 	: QDialog(parent)
 {
-	this->varip = varip;
-	
-	setWindowTitle(tr("Variable value edit"));
-	
-	robotvar = new KukaVar(varname, variabile);
-	
-	QVBoxLayout *topLayout = new QVBoxLayout;
-	QGridLayout *leftLayout = new QGridLayout;
-	QHBoxLayout *bottomLayout = new QHBoxLayout;
-        //QSignalMapper* mapper[40];
+    this->varip = varip;
 
-/*
-        QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
-        titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        //QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getStructureName()));
-        QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
-        structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        topLayout->addWidget(titleLabel);
-        topLayout->addWidget(structureLabel);
-        topLayout->addStretch();
+    setWindowTitle(tr("Variable value edit"));
 
-        
-        //QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
-        //titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        
-        for(int index=0;index<robotvar->getElementsNumber();index++)
+    robotvar = new KukaVar(varname, variabile);
+
+    QVBoxLayout *topLayout = new QVBoxLayout;
+    QGridLayout *leftLayout = new QGridLayout;
+    QHBoxLayout *bottomLayout = new QHBoxLayout;
+    //QSignalMapper* mapper[40];
+
+    switch(robotvar->getVarType()){
+    case KukaVar::STRUCTURE:
         {
-            
+            //top labels
+            QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
+            titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
-            //qDebug() << "Tipo dato: " << robotvar->getVarType();
+            QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getStructureName()));
+            structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            topLayout->addWidget(titleLabel);
+            topLayout->addWidget(structureLabel);
+            topLayout->addStretch();
 
-            switch(robotvar->getVarType()){
-            case STRUCTURE:
-                {
+            for (int i=0;i<robotvar->getElementsNumber();i++)
+            {
+                int tipodato;
+                robotvar->getStructureValue(i,tipodato);
+
+                widget[i] = new QLabel(robotvar->getStructureMember(i));
+                switch(tipodato){
+                case KukaVar::INT:
+                    addInt(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato).toInt());
+                    addMap(i+robotvar->getElementsNumber(),i,tipodato);
+
+                    break;
+                case KukaVar::REAL:
+                    addInt(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato).toDouble());
+                    addMap(i+robotvar->getElementsNumber(),i,tipodato);
+
+                    break;
+                case KukaVar::BOOL:
+                    addBool(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato));
+                    addMap(i+robotvar->getElementsNumber(),i,tipodato);
+
+                    break;
+                case KukaVar::CHAR:
+                    {
+                        addChar(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato));
+                        addMap(i+robotvar->getElementsNumber(),i,tipodato);
+                        break;
+                    }
+                default:
+                    widget[i+robotvar->getElementsNumber()] = new QLineEdit(robotvar->getStructureValue(i,tipodato));
                     break;
                 }
-            case INT:
-                {
-                    addInt(1,robotvar->getVarName(),robotvar->getValue().toInt());
-                    break;
-                }
-            case REAL:
-                {
-                    addReal(1,robotvar->getVarName(),robotvar->getValue().toDouble());
-                    break;
-                }
-            case BOOL:
-                {
-                    addBool(1,robotvar->getVarName(),robotvar->getValue());
-                    break;
-                }
-            case CHAR:
-                {
-                    addChar(1,robotvar->getVarName(),robotvar->getValue());
-                    break;
-                }
+
+                leftLayout->addWidget(widget[i],i,0);
+                leftLayout->addWidget(widget[i+robotvar->getElementsNumber()],i,1);
             }
+            break;
+        }
+    case KukaVar::INT:
+        {
+            //INT
+            //top labels
+            QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
+            titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
+            structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            topLayout->addWidget(titleLabel);
+            topLayout->addWidget(structureLabel);
+            topLayout->addStretch();
+
+            addInt(1,robotvar->getVarName(),robotvar->getValue().toInt());
 
             leftLayout->addWidget(widget[0],0,0);
             leftLayout->addWidget(widget[1],0,1);
-            addMap(index+1,0,robotvar->getVarType());
 
+            addMap(1,0,robotvar->getVarType());
+
+            break;
         }
-*/
+    case KukaVar::REAL:
+        {
+            //REAL
+            //top labels
+            QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
+            titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
+            structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            topLayout->addWidget(titleLabel);
+            topLayout->addWidget(structureLabel);
+            topLayout->addStretch();
 
-        switch(robotvar->getVarType()){
-                case KukaVar::STRUCTURE:
-                {
-                        //top labels
-                        QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
-                        titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            addReal(1,robotvar->getVarName(),robotvar->getValue().toDouble());
 
-                        QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getStructureName()));
-                        structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-                        topLayout->addWidget(titleLabel);
-                        topLayout->addWidget(structureLabel);
-                        topLayout->addStretch();
+            leftLayout->addWidget(widget[0],0,0);
+            leftLayout->addWidget(widget[1],0,1);
 
-                        for (int i=0;i<robotvar->getElementsNumber();i++)
-                        {
-                                int tipodato;
-                                robotvar->getStructureValue(i,tipodato);
+            addMap(1,0,robotvar->getVarType());
 
-                                widget[i] = new QLabel(robotvar->getStructureMember(i));
-                                switch(tipodato){
-                                        case KukaVar::INT:
-                                                addInt(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato).toInt());
-                                                addMap(i+robotvar->getElementsNumber(),i,tipodato);
-
-                                                break;
-                                        case KukaVar::REAL:
-                                                addInt(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato).toDouble());
-                                                addMap(i+robotvar->getElementsNumber(),i,tipodato);
-
-                                                break;
-                                        case KukaVar::BOOL:
-                                                addBool(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato));
-                                                addMap(i+robotvar->getElementsNumber(),i,tipodato);
-
-                                                break;
-                                        case KukaVar::CHAR:
-                                        {
-                                                addChar(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato));
-                                                addMap(i+robotvar->getElementsNumber(),i,tipodato);
-                                                break;
-                                        }
-                                        default:
-                                                widget[i+robotvar->getElementsNumber()] = new QLineEdit(robotvar->getStructureValue(i,tipodato));
-                                                break;
-                                }
-
-                                leftLayout->addWidget(widget[i],i,0);
-                                leftLayout->addWidget(widget[i+robotvar->getElementsNumber()],i,1);
-                        }
-                        break;
-                }
-                case KukaVar::INT:
-                {
-                        //INT
-                        //top labels
-                        QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
-                        titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-                        QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
-                        structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-                        topLayout->addWidget(titleLabel);
-                        topLayout->addWidget(structureLabel);
-                        topLayout->addStretch();
-
-                        addInt(1,robotvar->getVarName(),robotvar->getValue().toInt());
-
-                        leftLayout->addWidget(widget[0],0,0);
-                        leftLayout->addWidget(widget[1],0,1);
-
-                        addMap(1,0,robotvar->getVarType());
-
-                        break;
-                }
-                case KukaVar::REAL:
-                {
-                        //REAL
-                        //top labels
-                        QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
-                        titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-                        QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
-                        structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-                        topLayout->addWidget(titleLabel);
-                        topLayout->addWidget(structureLabel);
-                        topLayout->addStretch();
-
-                        addReal(1,robotvar->getVarName(),robotvar->getValue().toDouble());
-
-                        leftLayout->addWidget(widget[0],0,0);
-                        leftLayout->addWidget(widget[1],0,1);
-
-                        addMap(1,0,robotvar->getVarType());
-
-                        break;
-                }
-                case KukaVar::BOOL:
-                {
-                        //BOOL
-                        //top labels
-                        QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
-                        titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-                        QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
-                        structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-                        topLayout->addWidget(titleLabel);
-                        topLayout->addWidget(structureLabel);
-                        topLayout->addStretch();
-
-                        addBool(1,robotvar->getVarName(),robotvar->getValue());
-
-                        leftLayout->addWidget(widget[0],0,0);
-                        leftLayout->addWidget(widget[1],0,1);
-
-                        addMap(1,0,robotvar->getVarType());
-
-                        break;
-                }
-                case KukaVar::CHAR:
-                {
-                        //CHAR
-                        //top labels
-                        QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
-                        titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-                        QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
-                        structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-                        topLayout->addWidget(titleLabel);
-                        topLayout->addWidget(structureLabel);
-                        topLayout->addStretch();
-
-                        addChar(1,robotvar->getVarName(),robotvar->getValue());
-
-                        leftLayout->addWidget(widget[0],0,0);
-                        leftLayout->addWidget(widget[1],0,1);
-
-                        addMap(1,0,robotvar->getVarType());
-
-                        break;
-                }
+            break;
         }
+    case KukaVar::BOOL:
+        {
+            //BOOL
+            //top labels
+            QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
+            titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
+            structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            topLayout->addWidget(titleLabel);
+            topLayout->addWidget(structureLabel);
+            topLayout->addStretch();
+
+            addBool(1,robotvar->getVarName(),robotvar->getValue());
+
+            leftLayout->addWidget(widget[0],0,0);
+            leftLayout->addWidget(widget[1],0,1);
+
+            addMap(1,0,robotvar->getVarType());
+
+            break;
+        }
+    case KukaVar::CHAR:
+        {
+            //CHAR
+            //top labels
+            QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
+            titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
+            structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            topLayout->addWidget(titleLabel);
+            topLayout->addWidget(structureLabel);
+            topLayout->addStretch();
+
+            addChar(1,robotvar->getVarName(),robotvar->getValue());
+
+            leftLayout->addWidget(widget[0],0,0);
+            leftLayout->addWidget(widget[1],0,1);
+
+            addMap(1,0,robotvar->getVarType());
+
+            break;
+        }
+    }
 
 
-	//bottom commands
-	QPushButton *okButton = new QPushButton(tr("OK"));
-	QPushButton *abortButton = new QPushButton(tr("Abort"));
-	bottomLayout->addWidget(okButton);
-	bottomLayout->addWidget(abortButton);
-	
-	QVBoxLayout *mainLayout = new QVBoxLayout;
-	mainLayout->addLayout(topLayout);
-	mainLayout->addLayout(leftLayout);
-	mainLayout->addLayout(bottomLayout);
-	setLayout(mainLayout);
-	
-	//connection slots and signals
-	connect(okButton, SIGNAL(clicked()), this, SLOT(on_okButton()));
-	connect(abortButton, SIGNAL(clicked()), this, SLOT(on_abortButton()));
+    //bottom commands
+    QPushButton *okButton = new QPushButton(tr("OK"));
+    //QPushButton *abortButton = new QPushButton(tr("Abort"));
+    bottomLayout->addWidget(okButton);
+    //bottomLayout->addWidget(abortButton);
+
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addLayout(topLayout);
+    mainLayout->addLayout(leftLayout);
+    mainLayout->addLayout(bottomLayout);
+    setLayout(mainLayout);
+
+    //connection slots and signals
+    connect(okButton, SIGNAL(clicked()), this, SLOT(on_okButton()));
+    //connect(abortButton, SIGNAL(clicked()), this, SLOT(on_abortButton()));
 }
 
 RobotVarEdit::~RobotVarEdit()
 {
-	qDebug() << "Chiamato distruttore";
+    qDebug() << "Chiamato distruttore";
 }
 
 void RobotVarEdit::on_okButton()
 {
-	switch(robotvar->getVarType()){
-                case KukaVar::STRUCTURE:
-		{
-			//set new value for robotvar
-			for (int i=0;i<robotvar->getElementsNumber();i++){
-				//qDebug() << widget[i+robotvar->getElementsNumber()];
-				if (QSpinBox* spinBox = dynamic_cast<QSpinBox*>(widget[i+robotvar->getElementsNumber()]))
-				{
-					robotvar->setFieldValue(((QSpinBox*)widget[i+robotvar->getElementsNumber()])->text().toAscii(),i);
-				}
-				else if (QDoubleSpinBox* doublespinBox = dynamic_cast<QDoubleSpinBox*>(widget[i+robotvar->getElementsNumber()]))
-				{
-					robotvar->setFieldValue(((QDoubleSpinBox*)widget[i+robotvar->getElementsNumber()])->text().replace(",",".").toAscii(),i);
-				}
-				else if (QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(widget[i+robotvar->getElementsNumber()]))
-				{
-					robotvar->setFieldValue(((QLineEdit*)widget[i+robotvar->getElementsNumber()])->text().toAscii(),i);
-				}
-				else if (QComboBox* comboBox = dynamic_cast<QComboBox*>(widget[i+robotvar->getElementsNumber()]))
-				{
-					robotvar->setFieldValue(((QComboBox*)widget[i+robotvar->getElementsNumber()])->currentText().toAscii(),i);
-				}
-			}
-			//send new value to robot
-			emit writevalue(robotvar->getVarName(),QByteArray(robotvar->createStructure()), varip);
-			break;
-		}
-                case KukaVar::INT:
-		{
-			//INT
-			robotvar->setValue(((QSpinBox*)widget[1])->text().toAscii());
-			emit writevalue(robotvar->getVarName(),robotvar->getNewValue(), varip);
-			break;
-		}
-                case KukaVar::REAL:
-		{
-			//REAL
-			robotvar->setValue(((QDoubleSpinBox*)widget[1])->text().replace(",",".").toAscii());
-			emit writevalue(robotvar->getVarName(),robotvar->getNewValue(), varip);
-			break;
-		}
-                case KukaVar::BOOL:
-		{
-			//BOOL
-			robotvar->setValue(((QComboBox*)widget[1])->currentText().toAscii());
-			emit writevalue(robotvar->getVarName(),robotvar->getNewValue(), varip);
-			break;
-		}
-                case KukaVar::CHAR:
-		{
-			//CHAR
-			robotvar->setValue(((QLineEdit*)widget[1])->text().toAscii());
-			emit writevalue(robotvar->getVarName(),robotvar->getNewValue(), varip);
-			break;
-		}
-		default:
-		{
-			qDebug() << "ANOMALIA!!";
-			break;
-		}
-	}
-	on_Accept();
-	//FIXME this command close everytime the window. I want rally this?
-	//accept();
+    switch(robotvar->getVarType()){
+    case KukaVar::STRUCTURE:
+        {
+            //set new value for robotvar
+            for (int i=0;i<robotvar->getElementsNumber();i++){
+                //qDebug() << widget[i+robotvar->getElementsNumber()];
+                if (QSpinBox* spinBox = dynamic_cast<QSpinBox*>(widget[i+robotvar->getElementsNumber()]))
+                {
+                    robotvar->setFieldValue(((QSpinBox*)widget[i+robotvar->getElementsNumber()])->text().toAscii(),i);
+                }
+                else if (QDoubleSpinBox* doublespinBox = dynamic_cast<QDoubleSpinBox*>(widget[i+robotvar->getElementsNumber()]))
+                {
+                    robotvar->setFieldValue(((QDoubleSpinBox*)widget[i+robotvar->getElementsNumber()])->text().replace(",",".").toAscii(),i);
+                }
+                else if (QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(widget[i+robotvar->getElementsNumber()]))
+                {
+                    robotvar->setFieldValue(((QLineEdit*)widget[i+robotvar->getElementsNumber()])->text().toAscii(),i);
+                }
+                else if (QComboBox* comboBox = dynamic_cast<QComboBox*>(widget[i+robotvar->getElementsNumber()]))
+                {
+                    robotvar->setFieldValue(((QComboBox*)widget[i+robotvar->getElementsNumber()])->currentText().toAscii(),i);
+                }
+            }
+            //send new value to robot
+            emit writevalue(robotvar->getVarName(),QByteArray(robotvar->createStructure()), varip);
+            break;
+        }
+    case KukaVar::INT:
+        {
+            //INT
+            robotvar->setValue(((QSpinBox*)widget[1])->text().toAscii());
+            emit writevalue(robotvar->getVarName(),robotvar->getNewValue(), varip);
+            break;
+        }
+    case KukaVar::REAL:
+        {
+            //REAL
+            robotvar->setValue(((QDoubleSpinBox*)widget[1])->text().replace(",",".").toAscii());
+            emit writevalue(robotvar->getVarName(),robotvar->getNewValue(), varip);
+            break;
+        }
+    case KukaVar::BOOL:
+        {
+            //BOOL
+            robotvar->setValue(((QComboBox*)widget[1])->currentText().toAscii());
+            emit writevalue(robotvar->getVarName(),robotvar->getNewValue(), varip);
+            break;
+        }
+    case KukaVar::CHAR:
+        {
+            //CHAR
+            robotvar->setValue(((QLineEdit*)widget[1])->text().toAscii());
+            emit writevalue(robotvar->getVarName(),robotvar->getNewValue(), varip);
+            break;
+        }
+    default:
+        {
+            qDebug() << "ANOMALIA!!";
+            break;
+        }
+    }
+    on_Accept();
+    //FIXME this command close everytime the window. I want rally this?
+    //accept();
 }
 
 void RobotVarEdit::on_abortButton()
 {
-	reject();
+    reject();
 }
 
 void RobotVarEdit::on_namedLineEdit_textChanged(const QString &text)
