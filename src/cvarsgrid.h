@@ -6,6 +6,8 @@
 
 #include "cvarsgridlinelegend.h"
 
+#include <QtXml>
+
 class CVarsGrid : public QWidget {
 
 	Q_OBJECT
@@ -46,6 +48,9 @@ public:
 
 	void dragEnterEvent(QDragEnterEvent *event);
 	void dropEvent(QDropEvent *event);
+
+	void loadFromXml( QDomElement* );
+	QDomElement& saveToXml() const;
 
 public slots:
 

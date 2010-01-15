@@ -54,6 +54,14 @@ void CVarsGrid::mouseReleaseEvent( QMouseEvent* eve ){
 	menu->popup( eve->globalPos() );
 }
 
+void CVarsGrid::loadFromXml( QDomElement* dom ){
+
+}
+
+QDomElement& CVarsGrid::saveToXml() const {
+
+}
+
 void CVarsGrid::menuTrig( QAction* act ){
 
 	if( act == m_maintoolMarkDot ){
