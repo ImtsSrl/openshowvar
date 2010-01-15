@@ -112,6 +112,7 @@ OpenShowVarTree::OpenShowVarTree(QWidget *parent)
 	lay->addWidget(m_grid,0,1, 2,2);
 	m_Window->setLayout(lay);*/
 
+	m_gridList.append( CVarsGrid::loadAllFromXml( "graph.xml" , database ));
 	listVar.readList();
 }
 
@@ -126,6 +127,7 @@ void OpenShowVarTree::closeEvent ( QCloseEvent * event )
 	qtimeLettura.stop();
 	listVar.writeList(treeWidget);
 
+	CVarsGrid::saveAllToXml( m_gridList , "graph.xml" );
 	CVarsGrid* g;
 	foreach( g , m_gridList )
 		delete g;

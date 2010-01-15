@@ -54,6 +54,62 @@ void CVarsGrid::mouseReleaseEvent( QMouseEvent* eve ){
 	menu->popup( eve->globalPos() );
 }
 
+const QList<CVarsGrid*>& CVarsGrid::loadAllFromXml( const QString& filename , VariableDB* vardb ) {
+    QDomDocument main;
+    QList<CVarsGrid*> ret;
+
+    QFile file(filename);
+    file.open(QIODevice::ReadOnly);
+
+    main.setContent(&file);
+    file.close();
+
+    QDomNode node = main.documentElement().firstChild();
+    QDomNode child;
+
+    CVarsGrid* grid;
+
+    while( !node.isNull() ){
+
+	grid = new CVarsGrid( vardb );
+	ret.append( grid );
+
+	if( !(child = node.namedItem("GEOMETRY") ).isNull() ){
+	    QStringList poss ( child.firstChild().toElement().text().split(',') );
+	    if( poss.size() != 4 ) continue;
+	    grid->setGeometry( QRect( poss[0].toInt() , poss[1].toInt() , poss[2].toInt() , poss[3].toInt() ));
+	}
+
+	node = node.nextSibling();
+    }
+
+    return ret;
+}
+
+void CVarsGrid::saveAllToXml(const QList<CVarsGrid*>& list , const QString& filename ){
+    QDomDocument main;
+    CVarsGrid* grid;
+
+    foreach( grid , list ){
+	QDomElement vg = main.createElement( "VARSGRID" );
+	main.appendChild( vg );
+
+	QDomElement pos = main.createElement( "GEOMETRY" );
+	vg.appendChild( pos );
+
+	QString spos;
+	spos.sprintf( "%d,%d,%d,%d" , grid->geometry().x() , grid->geometry().y() , grid->geometry().width() , grid->geometry().height() );
+	pos.appendChild( main.createTextNode( spos ) );
+    }
+
+    QFile file( filename );
+    QTextStream out(&file);
+    file.open(QIODevice::WriteOnly);
+    const int Indent=4;
+    main.save(out, Indent);
+    file.close();
+}
+
 void CVarsGrid::loadFromXml( QDomElement* dom ){
 
 }
