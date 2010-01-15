@@ -42,7 +42,6 @@ void CGLScene::initializeGL(){
     glShadeModel(GL_SMOOTH);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    //glEnable(GL_MULTISAMPLE);
     static GLfloat lightPosition[4] = { -2000.0, -2000.0, 3000.0, 1.0 }; //{ -0.5, 5.0, 7.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 
@@ -216,20 +215,31 @@ void CGLScene::mouseMoveEvent(QMouseEvent *event){
     int dx = event->x() - m_lastPos.x();
     int dy = event->y() - m_lastPos.y();
 
-    float mul = 0.1; //moltiplicatore
 
     CGLRenderable* obj = m_modelManager->getSelectedObject();
-    if( m_interactionMode == INTERACT_ROTATE_SCENE )
+    if( m_interactionMode == INTERACT_ROTATE_SCENE || m_interactionMode == INTERACT_TRASLATE_SCENE )
         obj = this;
     if( obj == NULL )
         return;
 
-    if (event->buttons() & Qt::LeftButton) {
-        obj->setRotationRX( obj->rotationRX() + mul * dy );
-        obj->setRotationRY( obj->rotationRY() + mul * dx );
-    } else if (event->buttons() & Qt::RightButton) {
-        obj->setRotationRX( obj->rotationRX() + mul * dy );
-        obj->setRotationRZ( obj->rotationRZ() + mul * dx );
+    if( m_interactionMode == INTERACT_ROTATE_SCENE ){
+        float mul = 0.1; //moltiplicatore
+        if (event->buttons() & Qt::LeftButton) {
+            obj->setRotationRX( obj->rotationRX() + mul * dy );
+            obj->setRotationRY( obj->rotationRY() + mul * dx );
+        } else if (event->buttons() & Qt::RightButton) {
+            obj->setRotationRX( obj->rotationRX() + mul * dy );
+            obj->setRotationRZ( obj->rotationRZ() + mul * dx );
+        }
+    }else{
+        float mul = 3.0; //moltiplicatore
+        if (event->buttons() & Qt::LeftButton) {
+            obj->setPositionX( obj->positionX() + mul * dx );
+            obj->setPositionZ( obj->positionZ() + mul * dy );
+        } else if (event->buttons() & Qt::RightButton) {
+            obj->setPositionX( obj->positionX() + mul * dx );
+            obj->setPositionY( obj->positionY() + mul * dy * -1 );
+        }
     }
 
     m_lastPos = event->pos();

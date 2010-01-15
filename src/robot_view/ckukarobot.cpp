@@ -7,10 +7,10 @@ CKUKARobot::CKUKARobot(QWidget *parent):QWidget(parent){
     QVBoxLayout* ml = new QVBoxLayout( mainContainer );
     this->setLayout( ml );
 
-    QWidget* controlsContainer = new QWidget( mainContainer );
-    QHBoxLayout* cl = new QHBoxLayout( controlsContainer );
-    /*controlsContainer->setLayout( cl );
-    cl->addWidget( &m_ax1pos );
+    m_controlsContainer = new QWidget( mainContainer );
+    QHBoxLayout* cl = new QHBoxLayout( m_controlsContainer );
+    m_controlsContainer->setLayout( cl );
+    /*cl->addWidget( &m_ax1pos );
     cl->addWidget( &m_ax2pos );
     cl->addWidget( &m_ax3pos );
     cl->addWidget( &m_ax4pos );
@@ -21,15 +21,13 @@ CKUKARobot::CKUKARobot(QWidget *parent):QWidget(parent){
     connect( &m_ax4pos, SIGNAL(textChanged(QString)), this, SLOT(inputRobotChanged(QString)) );
     connect( &m_ax5pos, SIGNAL(textChanged(QString)), this, SLOT(inputRobotChanged(QString)) );*/
 
+    //m_controlsContainer->layout()->setSizeConstraint(QLayout::SetFixedSize);
 
-    controlsContainer->setFixedWidth( 60 );
-    controlsContainer->layout()->setSizeConstraint(QLayout::SetFixedSize);
-
-    mainContainer->layout()->addWidget( controlsContainer );
+    mainContainer->layout()->addWidget( m_controlsContainer );
     mainContainer->layout()->addWidget( m_scene );
 
     //this->setCentralWidget( mainContainer );
-    this->setMinimumSize( 560, 400 );
+    //this->setMinimumSize( 560, 400 );
     m_scene->setMinimumSize( 500, 400 );
 
     initSceneInteractionControls();
@@ -45,14 +43,18 @@ void CKUKARobot::initSceneInteractionControls(){
     QActionGroup* actionGroup = new QActionGroup( this );
     actionGroup->setExclusive( true );
 
-    m_traslateScene = new QAction( QIcon("./icons/traslate.png"),"Traslate scene", this );
-    this->addAction( m_traslateScene );
+    //QMenuBar* mnuBar = new QMenuBar( m_controlsContainer );
+    QToolBar* mnuBar = new QToolBar( m_controlsContainer );
+    m_controlsContainer->layout()->addWidget( mnuBar );
+
+    m_traslateScene = new QAction( QIcon("./icons/traslate.png"),"Traslate scene", mnuBar );
+    mnuBar->addAction( m_traslateScene );
     m_traslateScene->setCheckable(true);
     m_traslateScene->setActionGroup( actionGroup );
     connect( m_traslateScene, SIGNAL(toggled(bool)), this, SLOT(setTraslateSceneMode(bool)) );
 
-    m_rotateScene = new QAction( QIcon("./icons/rotate.png"),"Rotate scene", this );
-    this->addAction( m_rotateScene );
+    m_rotateScene = new QAction( QIcon("./icons/rotate.png"),"Rotate scene", mnuBar );
+    mnuBar->addAction( m_rotateScene );
     m_rotateScene->setCheckable(true);
     m_rotateScene->setActionGroup( actionGroup );
     connect( m_rotateScene, SIGNAL(toggled(bool)), this, SLOT(setRotateSceneMode(bool)) );

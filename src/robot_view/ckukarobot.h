@@ -21,6 +21,7 @@ private:
     CGLScene*   m_scene;
 
 private://scene interaction
+    QWidget*    m_controlsContainer;
     QToolBar    m_toolBar;
     QAction*    m_traslateObject;
     QAction*    m_rotateObject;
