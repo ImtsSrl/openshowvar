@@ -138,6 +138,10 @@ void OpenShowVarDock::createActions()
     openVarAct->setStatusTip(tr("Save var list"));
     connect(openVarAct, SIGNAL(triggered()), this, SLOT(on_openVar()));
 
+    clearListAct = new QAction(QIcon(":clearList"), tr("&Delete all variables"), this);
+    clearListAct->setStatusTip(tr("Delete all"));
+    connect(clearListAct, SIGNAL(triggered()), this, SLOT(on_clearList()));
+
 //    quitAct = new QAction(tr("&Quit"), this);
 //    quitAct->setShortcuts(QKeySequence::Quit);
 //    quitAct->setStatusTip(tr("Quit the application"));
@@ -176,6 +180,7 @@ void OpenShowVarDock::createToolBars()
 
     editToolBar = addToolBar(tr("Edit"));
     editToolBar->addAction(editVarAct);
+    editToolBar->addAction(clearListAct);
     editToolBar->addAction(openVarAct);
     editToolBar->addAction(saveVarAct);
 }
@@ -517,4 +522,13 @@ void OpenShowVarDock::on_openVar()
     QString files = QFileDialog::getOpenFileName(this,tr("Select files to open"),"./","Var list (*.xml)");
     connect(&listVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
     listVar.readList(files);
+}
+
+void OpenShowVarDock::on_clearList()
+{
+    for(int row=0;row<treeWidget->topLevelItemCount();row++)
+    {
+        database->deleteVar(treeWidget->topLevelItem(row)->text(CTreeVar::VARNAME).toAscii(),(QHostAddress)treeWidget->topLevelItem(row)->text(CTreeVar::ROBOTIP));
+    }
+    treeWidget->clear();
 }
