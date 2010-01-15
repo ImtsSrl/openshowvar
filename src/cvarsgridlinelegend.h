@@ -15,6 +15,7 @@ private:
 
 public:
 	CVarsGridLineLegend( CGridLine* , const QString& );
+	~CVarsGridLineLegend();
 
 	void paintEvent( QPaintEvent* );
 	QSize sizeHint() const;

@@ -52,7 +52,7 @@ OpenShowVarTree::OpenShowVarTree(QWidget *parent)
 	*/
 	treeWidget->setAcceptDrops(true);
 	treeWidget->setDragEnabled(true);
-        //treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+		//treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 
 	addButton = new QPushButton(tr("Add"));
 	delButton = new QPushButton(tr("Delete"));
@@ -98,7 +98,7 @@ OpenShowVarTree::OpenShowVarTree(QWidget *parent)
 
 	connect(&qtimeLettura, SIGNAL(timeout()), this, SLOT(lettura()));
 	connect(&timeUpdateGraph, SIGNAL(timeout()), this, SLOT(updateGraph()));
-	timeUpdateGraph.start(1000);
+	timeUpdateGraph.start(500);
 
 	setWindowIcon(QIcon("openshowvar.png"));
 
@@ -278,14 +278,14 @@ void OpenShowVarTree::insertNew(const QString &variabile, const QString &iprobot
         item->setText(CTreeVar::VARNAME, variabile.toUpper());
         item->setText(CTreeVar::ROBOTIP, iprobot);
 
-        //Evita il problema del blocco durante il drag della riga
-        item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		//Evita il problema del blocco durante il drag della riga
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 
         item->setToolTip(CTreeVar::VARNAME,tr("Robot IP %1").arg(iprobot));
 
         item->setTextAlignment(CTreeVar::TIME,(Qt::AlignRight | Qt::AlignVCenter));
 
-        database->addVar(variabile.toUpper().toAscii(),QHostAddress(iprobot));
+		database->addVar(variabile.toUpper().toAscii(),QHostAddress(iprobot));
 
 	addButton->setEnabled(true);
 }
@@ -332,8 +332,8 @@ void OpenShowVarTree::lettura()
 				brush.setColor(Qt::red);
 			}
 
-                        item->setForeground(CTreeVar::VARVALUE,brush);
-                        this->splitvaluetoview(item, item->text(CTreeVar::VARNAME), item->text(CTreeVar::VARVALUE));
+            item->setForeground(CTreeVar::VARVALUE,brush);
+            this->splitvaluetoview(item, item->text(CTreeVar::VARNAME), item->text(CTreeVar::VARVALUE));
 		}//if
 	}//for
 

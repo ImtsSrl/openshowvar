@@ -8,6 +8,10 @@ CVarsGridLineLegend::CVarsGridLineLegend( CGridLine* l , const QString& name ){
 	setSizePolicy( QSizePolicy::Maximum , QSizePolicy::Maximum );
 }
 
+CVarsGridLineLegend::~CVarsGridLineLegend(){
+
+}
+
 void CVarsGridLineLegend::paintEvent( QPaintEvent* eve ){
 	QPainter paint( this );
 
