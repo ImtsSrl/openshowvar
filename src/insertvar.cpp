@@ -129,9 +129,6 @@ void InsertVar::on_insertButton_clicked(){
     QList<QString> selectedRobot;
     selectedRobot = comboRobotList->currentText().split("@");
     emit insertNewVar(text, selectedRobot[1]);
-//    delete broadcast;
-//    accept();
-//    delete this;
     lineEdit->clear();
 }
 
@@ -149,7 +146,10 @@ void InsertVar::on_abortButton_clicked(){
  */
 
 void InsertVar::Robot(QList<QByteArray> &datirobot){
-    comboRobotList->addItem(datirobot[2] + "@" + datirobot[3]);
+    QString robot=datirobot[2] + "@" + datirobot[3];
+    if(comboRobotList->findText(robot))
+        comboRobotList->addItem(robot);
+
     //comboRobotList->setEditable(true);
     //comboRobotList->lineEdit()->setAlignment(Qt::AlignHCenter);
     //comboRobotList->setItemData(0,Qt::AlignHCenter, Qt::TextAlignmentRole);

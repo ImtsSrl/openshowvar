@@ -38,7 +38,8 @@
 Broadcast::Broadcast(QWidget *parent)
 	: QUdpSocket()
 {	
-	memset(privateBind,0,MAXBROADCASTNETWORK * sizeof(QUdpSocket*));
+    memset(privateBind,0,MAXBROADCASTNETWORK * sizeof(QUdpSocket*));
+    interfaceCount=initBroadcastNetwork();
 }
 
 Broadcast::~Broadcast()
@@ -59,48 +60,9 @@ Broadcast::~Broadcast()
 void Broadcast::send()
 {
     QByteArray datagram = "WHEREAREYOU?";
-    /*
-#ifdef DEBUGWIN
-	debugWindow = new CDebug;
-	debugWindow->show();
-#endif
-*/
-    QList<QNetworkInterface> interface = QNetworkInterface::allInterfaces();
-    /*
-#ifdef DEBUGWIN
-	debugWindow->addDebug(QString("Schede di rete: %1").arg(interface.count()));
-#endif
-*/	
 
-    qDebug() << "Inviato send...";
-
-    for(int i=0;i<interface.count();i++){
-        if((interface[i].flags() & QNetworkInterface::CanBroadcast) && (interface[i].flags() & QNetworkInterface::IsRunning)){
-            //qDebug() << "Interface ip: " << interface[i].allAddresses();
-            //qDebug() << "Interface name: " << interface[i].name();
-            //qDebug() << "Interface name: " << interface[i].flags();
-
-
-            if((interface[i].flags() & QNetworkInterface::CanBroadcast)){
-                QList<QNetworkAddressEntry> address = interface[i].addressEntries();
-                //qDebug() << "Flag " << interface[i].flags() << " nome " << interface[i].name();
-                //qDebug() << address.count();
-                if(address.count()>0 && address[0].ip()!=QHostAddress::LocalHost){
-                    //this->bind(address[0].ip(),UDPBROADCASTPORTCROSS);
-
-                    QSignalMapper* mapper[MAXBROADCASTNETWORK];
-                    privateBind[i] = new QUdpSocket(this);
-                    mapper[i] = new QSignalMapper(this);
-                    connect(privateBind[i], SIGNAL(readyRead()),mapper[i], SLOT(map()));
-                    mapper[i]->setMapping(privateBind[i], i);
-                    connect(mapper[i], SIGNAL(mapped(int)), this, SLOT(processPending(int)));
-                    privateBind[i]->bind(address[0].ip(),UDPBROADCASTPORTCROSS);
-                    privateBind[i]->writeDatagram(datagram.data(), datagram.size(),address[0].broadcast(), BROADCASTPORT);
-
-                }
-            }
-        }
-    }
+    for(int i=0;i<interfaceCount;i++)
+        privateBind[i]->writeDatagram(datagram.data(), datagram.size(),broadcastAddress[i].broadcast(), BROADCASTPORT);
 }
 
 /*!	\brief Ricezione messaggio di broadcast
@@ -137,4 +99,40 @@ void Broadcast::processPending(int index)
         if(datiRobot.count()==4)
             emit addRobot(datiRobot);
     }
+}
+
+int Broadcast::initBroadcastNetwork()
+{
+    QList<QNetworkInterface> interface = QNetworkInterface::allInterfaces();
+
+    int interfaceCount=0;
+    for(int i=0;i<interface.count();i++){
+        if((interface[i].flags() & QNetworkInterface::CanBroadcast) && (interface[i].flags() & QNetworkInterface::IsRunning)){
+            //qDebug() << "Interface ip: " << interface[i].allAddresses();
+            //qDebug() << "Interface name: " << interface[i].name();
+            //qDebug() << "Interface name: " << interface[i].flags();
+
+
+            if((interface[i].flags() & QNetworkInterface::CanBroadcast)){
+                //QList<QNetworkAddressEntry> address = interface[i].addressEntries();
+                address = interface[i].addressEntries();
+                //qDebug() << "Flag " << interface[i].flags() << " nome " << interface[i].name();
+                //qDebug() << address.count();
+                if(address.count()>0 && address[0].ip()!=QHostAddress::LocalHost){
+                    //this->bind(address[0].ip(),UDPBROADCASTPORTCROSS);
+
+                    QSignalMapper* mapper[MAXBROADCASTNETWORK];
+                    privateBind[interfaceCount] = new QUdpSocket(this);
+                    mapper[interfaceCount] = new QSignalMapper(this);
+                    connect(privateBind[interfaceCount], SIGNAL(readyRead()),mapper[interfaceCount], SLOT(map()));
+                    mapper[interfaceCount]->setMapping(privateBind[interfaceCount], interfaceCount);
+                    connect(mapper[interfaceCount], SIGNAL(mapped(int)), this, SLOT(processPending(int)));
+                    broadcastAddress[interfaceCount]=address[0];
+                    privateBind[interfaceCount]->bind(address[0].ip(),UDPBROADCASTPORTCROSS);
+                    interfaceCount++;
+                }
+            }
+        }
+    }
+    return interfaceCount;
 }

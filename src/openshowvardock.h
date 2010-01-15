@@ -31,7 +31,7 @@ private slots:
     void about();
     void insertCustomer(const QString &customer);
 
-    void insertVar(const QString *varName);
+    void on_insertVar(const QString *varName);
     void insertNew(const QString &variabile, const QString &robotip);
     void insertClose(const bool &visible);
     void lettura();
@@ -50,7 +50,7 @@ private:
     void toHex(int value, QString *binary);
 
     VariableDB* database;
-    InsertVar* _insertVar;
+    InsertVar* insertVar;
 
     QTimer qtimeLettura;
     QTimer timeUpdateGraph;

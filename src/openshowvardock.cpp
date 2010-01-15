@@ -59,7 +59,7 @@ OpenShowVarDock::OpenShowVarDock()
 void OpenShowVarDock::newVar()
 {
     QString varName="";
-    insertVar(&varName);
+    on_insertVar(&varName);
 }
 
 void OpenShowVarDock::addGraph()
@@ -233,26 +233,26 @@ void OpenShowVarDock::createDockWindows()
 }
 
 
-void OpenShowVarDock::insertVar(const QString *varName)
+void OpenShowVarDock::on_insertVar(const QString *varName)
 {
     QDockWidget *dock = new QDockWidget(tr("New robot variable"), this);
     dock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
     //InsertVar* insertVar = new InsertVar();
-    _insertVar = new InsertVar();
+    insertVar = new InsertVar();
 
-    dock->setWidget(_insertVar);
+    dock->setWidget(insertVar);
     addDockWidget(Qt::BottomDockWidgetArea, dock);
 
-    connect(_insertVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
+    connect(insertVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
     //connect(insertVar,SIGNAL(insertClose()),this,SLOT(insertClose()));
     connect(dock,SIGNAL(visibilityChanged(const bool &)),this,SLOT(insertClose(const bool &)));
 
-    _insertVar->DropVar(*varName);
+    insertVar->DropVar(*varName);
 
-    _insertVar->setModal(true);
-    _insertVar->show();
-    _insertVar->activateWindow();
+    insertVar->setModal(true);
+    insertVar->show();
+    insertVar->activateWindow();
 }
 
 void OpenShowVarDock::insertNew(const QString &variabile, const QString &iprobot)
@@ -293,7 +293,7 @@ void OpenShowVarDock::insertClose(const bool &visible)
 {
     if(!visible){
         qDebug() << "Chiusa finestra inserimento";
-        delete _insertVar;
+        delete insertVar;
     }
 }
 
