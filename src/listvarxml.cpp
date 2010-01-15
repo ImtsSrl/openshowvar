@@ -60,58 +60,56 @@ ListVarXml::~ListVarXml(){
  *	\param tree Lista delle variabili
  */
 
-void ListVarXml::writeList(QTreeWidget *tree){
-	QDomDocument doc;
-	
-	//if(tree->topLevelItemCount()){
-	
-		QDomElement variablelist = doc.createElement("VARLIST");
-		doc.appendChild(variablelist);
-		
-		for(int row=0;row<tree->topLevelItemCount();row++)
-		{
-			QDomElement variable = doc.createElement("VARIABLE");
-			QDomElement varname = doc.createElement("NAME");
-			QDomElement robotip = doc.createElement("ROBOT");
-			QDomText var = doc.createTextNode(tree->topLevelItem(row)->text(0));
-			QDomText ip = doc.createTextNode(tree->topLevelItem(row)->text(4));
-			variablelist.appendChild(variable);
-			variable.appendChild(varname);
-			variable.appendChild(robotip);
-			varname.appendChild(var);
-			robotip.appendChild(ip);
-		}
-		
-		QFile file(FILENAME);
-		QTextStream out(&file);
-		file.open(QIODevice::WriteOnly);
-		const int Indent=4;
-		doc.save(out, Indent);
-		file.close();
-	//}
+void ListVarXml::writeList(QTreeWidget *tree, const QString filename){
+    QDomDocument doc;
+
+    QDomElement variablelist = doc.createElement("VARLIST");
+    doc.appendChild(variablelist);
+
+    for(int row=0;row<tree->topLevelItemCount();row++)
+    {
+        QDomElement variable = doc.createElement("VARIABLE");
+        QDomElement varname = doc.createElement("NAME");
+        QDomElement robotip = doc.createElement("ROBOT");
+        QDomText var = doc.createTextNode(tree->topLevelItem(row)->text(0));
+        QDomText ip = doc.createTextNode(tree->topLevelItem(row)->text(4));
+        variablelist.appendChild(variable);
+        variable.appendChild(varname);
+        variable.appendChild(robotip);
+        varname.appendChild(var);
+        robotip.appendChild(ip);
+    }
+
+    QFile file(filename);
+    QTextStream out(&file);
+    file.open(QIODevice::WriteOnly);
+    const int Indent=4;
+    doc.save(out, Indent);
+    file.close();
 }
 
-void ListVarXml::readList(){
-	QDomDocument doc;
-	
-	QFile file(FILENAME);
-	file.open(QIODevice::ReadOnly);
-	
-	doc.setContent(&file);
-	QDomElement root = doc.documentElement();
-	
-	QDomNode node = root.firstChild();
-	
-	while (!node.isNull()) {
-		QDomElement e = node.toElement(); // try to convert the node to an element.
-		if(!e.isNull()) {
-			if(e.toElement().tagName()=="VARIABLE")
-				estraiVariabile(e.toElement());
-		}
-		node = node.nextSibling();
-	}
-	
-	file.close();
+void ListVarXml::readList(const QString filename)
+{
+    QDomDocument doc;
+
+    QFile file(filename);
+    file.open(QIODevice::ReadOnly);
+
+    doc.setContent(&file);
+    QDomElement root = doc.documentElement();
+
+    QDomNode node = root.firstChild();
+
+    while (!node.isNull()) {
+        QDomElement e = node.toElement(); // try to convert the node to an element.
+        if(!e.isNull()) {
+            if(e.toElement().tagName()=="VARIABLE")
+                estraiVariabile(e.toElement());
+        }
+        node = node.nextSibling();
+    }
+
+    file.close();
 }
 
 void ListVarXml::estraiVariabile(const QDomElement &element){

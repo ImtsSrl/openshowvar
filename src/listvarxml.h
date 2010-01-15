@@ -27,8 +27,6 @@
 #include <QDebug>
 #include <QTreeWidget>
 
-const QString FILENAME = "variable.xml";
-
 class ListVarXml : public QObject
 {
 	Q_OBJECT
@@ -37,8 +35,8 @@ class ListVarXml : public QObject
 		ListVarXml();
 		~ListVarXml();
 		
-		void writeList(QTreeWidget *tree);
-		void readList();
+                void writeList(QTreeWidget *tree, const QString variable);
+                void readList(const QString filename);
 		
 	private:
 		void estraiVariabile(const QDomElement &element);

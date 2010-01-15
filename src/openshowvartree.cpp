@@ -112,7 +112,7 @@ OpenShowVarTree::OpenShowVarTree(QWidget *parent)
 	lay->addWidget(m_grid,0,1, 2,2);
 	m_Window->setLayout(lay);*/
 
-	listVar.readList();
+        listVar.readList();
 }
 
 OpenShowVarTree::~OpenShowVarTree()

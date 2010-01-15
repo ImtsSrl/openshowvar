@@ -22,7 +22,6 @@ HEADERS += src/broadcast.h \
     src/insertvar.h \
     src/kukavar.h \
     src/listvarxml.h \
-    src/openshowvartree.h \
     src/robotserver.h \
     src/robotvar.h \
     src/robotvaredit.h \
@@ -43,7 +42,6 @@ SOURCES += src/broadcast.cpp \
     src/kukavar.cpp \
     src/listvarxml.cpp \
     src/main.cpp \
-    src/openshowvartree.cpp \
     src/robotserver.cpp \
     src/robotvar.cpp \
     src/robotvaredit.cpp \

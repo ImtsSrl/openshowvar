@@ -40,9 +40,7 @@ OpenShowVarDock::OpenShowVarDock()
     createMenus();
     createToolBars();
     createStatusBar();
-    createDockWindows();
 
-    //newLetter();
     setUnifiedTitleAndToolBarOnMac(true);
 
     database = new VariableDB();
@@ -53,7 +51,11 @@ OpenShowVarDock::OpenShowVarDock()
     connect(&timeUpdateGraph, SIGNAL(timeout()), this, SLOT(updateGraph()));
     timeUpdateGraph.start(500);
 
+    setWindowIcon(QIcon(":openshowvar"));
     resize(700,500);
+
+    connect(&listVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
+    listVar.readList("variable.xml");
 }
 
 void OpenShowVarDock::newVar()
@@ -109,7 +111,7 @@ void OpenShowVarDock::about()
                "per robot KUKA realizzato da: "
                "massimiliano.fago@gmail.com "
                "dddomodossola@gmail.com "
-               "cyberpro@gmail.com"));
+               "cyberpro4@gmail.com"));
 }
 
 void OpenShowVarDock::createActions()
@@ -120,19 +122,20 @@ void OpenShowVarDock::createActions()
     connect(newLetterAct, SIGNAL(triggered()), this, SLOT(newVar()));
 
     deleteVarAct = new QAction(QIcon(":delete"), tr("&Delete a robot var"), this);
-    //deleteVarAct->setShortcuts(QKeySequence::Delete);
     deleteVarAct->setStatusTip(tr("Delete a robot var from var list"));
     connect(deleteVarAct, SIGNAL(triggered()), this, SLOT(deleteVar()));
 
     addGraphAct = new QAction(QIcon(":addGraph"), tr("&Show graph"), this);
-    //addGraphAct->setShortcuts(QKeySequence::addGraph);
     addGraphAct->setStatusTip(tr("Show var graph"));
     connect(addGraphAct, SIGNAL(triggered()), this, SLOT(addGraph()));
 
     editVarAct = new QAction(QIcon(":editvar"), tr("&Edit Var..."), this);
-    //editVarAct->setShortcuts(QKeySequence::Undo);
     editVarAct->setStatusTip(tr("Edit variable value"));
     connect(editVarAct, SIGNAL(triggered()), this, SLOT(on_editVar()));
+
+    saveVarAct = new QAction(QIcon(":saveVar"), tr("&Save var list"), this);
+    saveVarAct->setStatusTip(tr("Save var list"));
+    connect(saveVarAct, SIGNAL(triggered()), this, SLOT(on_saveVar()));
 
 //    quitAct = new QAction(tr("&Quit"), this);
 //    quitAct->setShortcuts(QKeySequence::Quit);
@@ -142,10 +145,6 @@ void OpenShowVarDock::createActions()
     aboutAct = new QAction(tr("&About"), this);
     aboutAct->setStatusTip(tr("Show the application's About box"));
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
-
-//    aboutQtAct = new QAction(tr("About &Qt"), this);
-//    aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
-//    connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 }
 
 void OpenShowVarDock::createMenus()
@@ -165,7 +164,6 @@ void OpenShowVarDock::createMenus()
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAct);
-//    helpMenu->addAction(aboutQtAct);
 }
 
 void OpenShowVarDock::createToolBars()
@@ -177,6 +175,7 @@ void OpenShowVarDock::createToolBars()
 
     editToolBar = addToolBar(tr("Edit"));
     editToolBar->addAction(editVarAct);
+    editToolBar->addAction(saveVarAct);
 }
 
 void OpenShowVarDock::createStatusBar()
@@ -184,58 +183,17 @@ void OpenShowVarDock::createStatusBar()
     statusBar()->showMessage(tr("Ready"));
 }
 
-void OpenShowVarDock::createDockWindows()
-{
-//    QDockWidget *dock = new QDockWidget(tr("Variabili robot"), this);
-//    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-//
-//    dock->setWidget(treeWidget);
-//    addDockWidget(Qt::RightDockWidgetArea, dock);
-
-//    dock = new QDockWidget(tr("Paragraphs"), this);
-//    paragraphsList = new QListWidget(dock);
-//    paragraphsList->addItems(QStringList()
-//            << "Thank you for your payment which we have received today."
-//            << "Your order has been dispatched and should be with you "
-//               "within 28 days."
-//            << "We have dispatched those items that were in stock. The "
-//               "rest of your order will be dispatched once all the "
-//               "remaining items have arrived at our warehouse. No "
-//               "additional shipping charges will be made."
-//            << "You made a small overpayment (less than $5) which we "
-//               "will keep on account for you, or return at your request."
-//            << "You made a small underpayment (less than $1), but we have "
-//               "sent your order anyway. We'll add this underpayment to "
-//               "your next bill."
-//            << "Unfortunately you did not send enough money. Please remit "
-//               "an additional $. Your order will be dispatched as soon as "
-//               "the complete amount has been received."
-//            << "You made an overpayment (more than $5). Do you wish to "
-//               "buy more items, or should we return the excess to you?");
-//    dock->setWidget(paragraphsList);
-//    addDockWidget(Qt::RightDockWidgetArea, dock);
-    //viewMenu->addAction(dock->toggleViewAction());
-
-    //connect(customerList, SIGNAL(currentTextChanged(const QString &)),
-    //        this, SLOT(insertCustomer(const QString &)));
-    //connect(paragraphsList, SIGNAL(currentTextChanged(const QString &)),
-    //        this, SLOT(addParagraph(const QString &)));
-}
-
-
 void OpenShowVarDock::on_insertVar(const QString *varName)
 {
     QDockWidget *dock = new QDockWidget(tr("New robot variable"), this);
     dock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-    //InsertVar* insertVar = new InsertVar();
     insertVar = new InsertVar();
 
     dock->setWidget(insertVar);
     addDockWidget(Qt::BottomDockWidgetArea, dock);
 
     connect(insertVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
-    //connect(insertVar,SIGNAL(insertClose()),this,SLOT(insertClose()));
     connect(dock,SIGNAL(visibilityChanged(const bool &)),this,SLOT(insertClose(const bool &)));
 
     insertVar->DropVar(*varName);
@@ -543,4 +501,9 @@ void OpenShowVarDock::on_editVarClose(const bool &visible)
     if(!visible){
         qDebug() << "Edit chiuso";
     }
+}
+
+void OpenShowVarDock::on_saveVar()
+{
+    listVar.writeList(treeWidget,"variable.xml");
 }

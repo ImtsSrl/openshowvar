@@ -8,6 +8,7 @@
 #include "variabledb.h"
 #include "cvarsgrid.h"
 #include "robotvaredit.h"
+#include "listvarxml.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -34,6 +35,7 @@ private slots:
 
     void on_insertVar(const QString *varName);
     void on_writeVariable(const QByteArray &varname, const QByteArray &value, const QHostAddress &varip);
+    void on_saveVar();
     void insertNew(const QString &variabile, const QString &robotip);
     void insertClose(const bool &visible);
     void on_editVarClose(const bool &visible);
@@ -45,7 +47,6 @@ private:
     void createMenus();
     void createToolBars();
     void createStatusBar();
-    void createDockWindows();
 
     void splitvaluetoview(QTreeWidgetItem *item, QString varname, QString varvalue);
     void editVar(QTreeWidgetItem * item);
@@ -82,6 +83,9 @@ private:
     QAction *deleteVarAct;
     QAction *addGraphAct;
     QAction *editVarAct;
+    QAction *saveVarAct;
+
+    ListVarXml listVar;
 
     //grafico
     QList<CVarsGrid*>	m_gridList;

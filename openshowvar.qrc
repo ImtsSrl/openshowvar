@@ -2,7 +2,7 @@
     <qresource prefix="/">
         <file>images/AWESOM-O.png</file>
         <file>images/bender.png</file>
-        <file>images/openshowvar.png</file>
+        <file alias="openshowvar">images/openshowvar.png</file>
         <file>images/Cartman-AWESOM-O.ico</file>
         <file>images/graph_delete.png</file>
         <file>images/graph_color.png</file>
@@ -10,8 +10,10 @@
         <file>images/graph_minus.png</file>
         <file>images/new.png</file>
         <file>images/add.png</file>
-        <file alias="delete">images/editdelete.png</file>
+        <file>images/editdelete.png</file>
         <file alias="addGraph">images/graph_add.png</file>
         <file alias="editvar">images/editvar.png</file>
+        <file alias="delete">images/delete.png</file>
+        <file alias="saveVar">images/save.png</file>
     </qresource>
 </RCC>
