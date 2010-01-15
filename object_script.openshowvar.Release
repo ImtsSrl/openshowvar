@@ -18,6 +18,7 @@ INPUT(
 ./release\variabledb.o
 ./release\cvarsgrid.o
 ./release\cvarsgridlinelegend.o
+./release\openshowvardock.o
 ./release\moc_broadcast.o
 ./release\moc_CDebug.o
 ./release\moc_CGridField.o
@@ -35,5 +36,6 @@ INPUT(
 ./release\moc_variabledb.o
 ./release\moc_cvarsgrid.o
 ./release\moc_cvarsgridlinelegend.o
+./release\moc_openshowvardock.o
 ./release\qrc_openshowvar.o
 );

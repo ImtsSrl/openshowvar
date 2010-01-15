@@ -32,7 +32,17 @@
 CTreeVar::CTreeVar(QWidget *parent)
 	: QTreeWidget(parent)
 {
+    setColumnCount(5);
+    setHeaderLabels(QStringList() << tr("Variable name") << tr("Variable value") << tr("") << tr("Read time") << tr("IP Robot"));
+    setColumnWidth(VARNAME,110);
+    setColumnWidth(VARVALUE,350);
+    setColumnHidden(4,true);
 
+    /*
+    abilitazione Drop
+    */
+    setAcceptDrops(true);
+    setDragEnabled(true);
 }
 
 CTreeVar::~CTreeVar()

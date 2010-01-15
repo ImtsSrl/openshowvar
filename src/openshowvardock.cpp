@@ -33,8 +33,8 @@
 
 OpenShowVarDock::OpenShowVarDock()
 {
-    textEdit = new QTextEdit;
-    setCentralWidget(textEdit);
+    treeWidget = new CTreeVar();
+    setCentralWidget(treeWidget);
 
     createActions();
     //createMenus();
@@ -42,54 +42,19 @@ OpenShowVarDock::OpenShowVarDock()
     createStatusBar();
     createDockWindows();
 
-    newLetter();
+    //newLetter();
     setUnifiedTitleAndToolBarOnMac(true);
+
+    database = new VariableDB();
+
+    qtimeLettura.start(REFRESHTIME);
+    connect(&qtimeLettura, SIGNAL(timeout()), this, SLOT(lettura()));
 }
 
-void OpenShowVarDock::newLetter()
+void OpenShowVarDock::newVar()
 {
-    textEdit->clear();
-
-    QTextCursor cursor(textEdit->textCursor());
-    cursor.movePosition(QTextCursor::Start);
-    QTextFrame *topFrame = cursor.currentFrame();
-    QTextFrameFormat topFrameFormat = topFrame->frameFormat();
-    topFrameFormat.setPadding(16);
-    topFrame->setFrameFormat(topFrameFormat);
-
-    QTextCharFormat textFormat;
-    QTextCharFormat boldFormat;
-    boldFormat.setFontWeight(QFont::Bold);
-    QTextCharFormat italicFormat;
-    italicFormat.setFontItalic(true);
-
-    QTextTableFormat tableFormat;
-    tableFormat.setBorder(1);
-    tableFormat.setCellPadding(16);
-    tableFormat.setAlignment(Qt::AlignRight);
-    cursor.insertTable(1, 1, tableFormat);
-    cursor.insertText("The Firm", boldFormat);
-    cursor.insertBlock();
-    cursor.insertText("321 City Street", textFormat);
-    cursor.insertBlock();
-    cursor.insertText("Industry Park");
-    cursor.insertBlock();
-    cursor.insertText("Some Country");
-    cursor.setPosition(topFrame->lastPosition());
-    cursor.insertText(QDate::currentDate().toString("d MMMM yyyy"), textFormat);
-    cursor.insertBlock();
-    cursor.insertBlock();
-    cursor.insertText("Dear ", textFormat);
-    cursor.insertText("NAME", italicFormat);
-    cursor.insertText(",", textFormat);
-    for (int i = 0; i < 3; ++i)
-        cursor.insertBlock();
-    cursor.insertText(tr("Yours sincerely,"), textFormat);
-    for (int i = 0; i < 3; ++i)
-        cursor.insertBlock();
-    cursor.insertText("The Boss", textFormat);
-    cursor.insertBlock();
-    cursor.insertText("ADDRESS", italicFormat);
+    QString varName="";
+    insertVar(&varName);
 }
 
 //! [3]
@@ -110,31 +75,21 @@ void OpenShowVarDock::print()
 }
 //! [3]
 
-//! [4]
-void OpenShowVarDock::save()
+void OpenShowVarDock::deleteVar()
 {
-    QString fileName = QFileDialog::getSaveFileName(this,
-                        tr("Choose a file name"), ".",
-                        tr("HTML (*.html *.htm)"));
-    if (fileName.isEmpty())
-        return;
-    QFile file(fileName);
-    if (!file.open(QFile::WriteOnly | QFile::Text)) {
-        QMessageBox::warning(this, tr("Dock Widgets"),
-                             tr("Cannot write file %1:\n%2.")
-                             .arg(fileName)
-                             .arg(file.errorString()));
-        return;
+    QTreeWidgetItem *item;
+    if(treeWidget->currentItem()!=NULL){
+        if(treeWidget->currentItem()->parent()!=NULL)
+            item=treeWidget->currentItem()->parent();
+        else
+            item=treeWidget->currentItem();
+
+        database->deleteVar(item->text(CTreeVar::VARNAME).toAscii(),(QHostAddress)item->text(CTreeVar::ROBOTIP));
     }
-
-    QTextStream out(&file);
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-    out << textEdit->toHtml();
-    QApplication::restoreOverrideCursor();
-
-    statusBar()->showMessage(tr("Saved '%1'").arg(fileName), 2000);
+    statusBar()->showMessage(tr("Deleted '%1'").arg(item->text(CTreeVar::VARNAME)), 2000);
+    delete item;
+    item=NULL;
 }
-//! [4]
 
 //! [5]
 void OpenShowVarDock::undo()
@@ -170,25 +125,6 @@ void OpenShowVarDock::insertCustomer(const QString &customer)
 }
 //! [6]
 
-//! [7]
-void OpenShowVarDock::addParagraph(const QString &paragraph)
-{
-    if (paragraph.isEmpty())
-        return;
-    QTextDocument *document = textEdit->document();
-    QTextCursor cursor = document->find(tr("Yours sincerely,"));
-    if (cursor.isNull())
-        return;
-    cursor.beginEditBlock();
-    cursor.movePosition(QTextCursor::PreviousBlock, QTextCursor::MoveAnchor, 2);
-    cursor.insertBlock();
-    cursor.insertText(paragraph);
-    cursor.insertBlock();
-    cursor.endEditBlock();
-
-}
-//! [7]
-
 void OpenShowVarDock::about()
 {
    QMessageBox::about(this, tr("About Dock Widgets"),
@@ -200,17 +136,16 @@ void OpenShowVarDock::about()
 
 void OpenShowVarDock::createActions()
 {
-    newLetterAct = new QAction(QIcon(":/images/new.png"), tr("&New Letter"),
-                               this);
+    newLetterAct = new QAction(QIcon(":/images/add.png"), tr("&Add Robot Var"),this);
     newLetterAct->setShortcuts(QKeySequence::New);
-    newLetterAct->setStatusTip(tr("Create a new form letter"));
-    connect(newLetterAct, SIGNAL(triggered()), this, SLOT(newLetter()));
+    newLetterAct->setStatusTip(tr("Insert a new robot var"));
+    connect(newLetterAct, SIGNAL(triggered()), this, SLOT(newVar()));
 
-//    saveAct = new QAction(QIcon(":/images/save.png"), tr("&Save..."), this);
-//    saveAct->setShortcuts(QKeySequence::Save);
-//    saveAct->setStatusTip(tr("Save the current form letter"));
-//    connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
-//
+    deleteVarAct = new QAction(QIcon(":delete"), tr("&Save..."), this);
+    deleteVarAct->setShortcuts(QKeySequence::Delete);
+    deleteVarAct->setStatusTip(tr("Save the current form letter"));
+    connect(deleteVarAct, SIGNAL(triggered()), this, SLOT(deleteVar()));
+
 //    printAct = new QAction(QIcon(":/images/print.png"), tr("&Print..."), this);
 //    printAct->setShortcuts(QKeySequence::Print);
 //    printAct->setStatusTip(tr("Print the current form letter"));
@@ -239,7 +174,8 @@ void OpenShowVarDock::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newLetterAct);
-    fileMenu->addAction(saveAct);
+    fileMenu->addAction(deleteVarAct);
+
     fileMenu->addAction(printAct);
     fileMenu->addSeparator();
     fileMenu->addAction(quitAct);
@@ -260,7 +196,8 @@ void OpenShowVarDock::createToolBars()
 {
     fileToolBar = addToolBar(tr("File"));
     fileToolBar->addAction(newLetterAct);
-    //fileToolBar->addAction(saveAct);
+    fileToolBar->addAction(deleteVarAct);
+
     //fileToolBar->addAction(printAct);
 
     //editToolBar = addToolBar(tr("Edit"));
@@ -277,19 +214,11 @@ void OpenShowVarDock::createStatusBar()
 //! [9]
 void OpenShowVarDock::createDockWindows()
 {
-    QDockWidget *dock = new QDockWidget(tr("Customers"), this);
-    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    customerList = new QListWidget(dock);
-    customerList->addItems(QStringList()
-            << "John Doe, Harmony Enterprises, 12 Lakeside, Ambleton"
-            << "Jane Doe, Memorabilia, 23 Watersedge, Beaton"
-            << "Tammy Shea, Tiblanka, 38 Sea Views, Carlton"
-            << "Tim Sheen, Caraba Gifts, 48 Ocean Way, Deal"
-            << "Sol Harvey, Chicos Coffee, 53 New Springs, Eccleston"
-            << "Sally Hobart, Tiroli Tea, 67 Long River, Fedula");
-    dock->setWidget(customerList);
-    addDockWidget(Qt::RightDockWidgetArea, dock);
-    //viewMenu->addAction(dock->toggleViewAction());
+//    QDockWidget *dock = new QDockWidget(tr("Variabili robot"), this);
+//    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+//
+//    dock->setWidget(treeWidget);
+//    addDockWidget(Qt::RightDockWidgetArea, dock);
 
 //    dock = new QDockWidget(tr("Paragraphs"), this);
 //    paragraphsList = new QListWidget(dock);
@@ -315,9 +244,260 @@ void OpenShowVarDock::createDockWindows()
 //    addDockWidget(Qt::RightDockWidgetArea, dock);
     //viewMenu->addAction(dock->toggleViewAction());
 
-    connect(customerList, SIGNAL(currentTextChanged(const QString &)),
-            this, SLOT(insertCustomer(const QString &)));
+    //connect(customerList, SIGNAL(currentTextChanged(const QString &)),
+    //        this, SLOT(insertCustomer(const QString &)));
     //connect(paragraphsList, SIGNAL(currentTextChanged(const QString &)),
     //        this, SLOT(addParagraph(const QString &)));
 }
 //! [9]
+
+void OpenShowVarDock::insertVar(const QString *varName)
+{
+    QDockWidget *dock = new QDockWidget(tr("New robot variable"), this);
+    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+    InsertVar* insertVar = new InsertVar();
+
+    dock->setWidget(insertVar);
+    addDockWidget(Qt::RightDockWidgetArea, dock);
+
+    connect(insertVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
+    connect(insertVar,SIGNAL(insertClose()),this,SLOT(insertClose()));
+
+    insertVar->DropVar(*varName);
+
+    insertVar->setModal(true);
+    insertVar->show();
+    insertVar->activateWindow();
+}
+
+void OpenShowVarDock::insertNew(const QString &variabile, const QString &iprobot)
+{
+        QTreeWidgetItem *item;
+
+        item = new QTreeWidgetItem(treeWidget);
+        item->setText(CTreeVar::VARNAME, variabile.toUpper());
+        item->setText(CTreeVar::ROBOTIP, iprobot);
+
+        //Evita il problema del blocco durante il drag della riga
+        item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+
+        item->setToolTip(CTreeVar::VARNAME,tr("Robot IP %1").arg(iprobot));
+
+        item->setTextAlignment(CTreeVar::TIME,(Qt::AlignRight | Qt::AlignVCenter));
+
+        database->addVar(variabile.toUpper().toAscii(),QHostAddress(iprobot));
+}
+
+void OpenShowVarDock::insertClose()
+{
+
+}
+
+void OpenShowVarDock::lettura()
+{
+        QString qsVariabile, tempo;
+        QByteArray qbVariabile, value;
+        int readtime;
+
+        for(int row=0;row<treeWidget->topLevelItemCount();row++)
+        {
+                //qDebug() << treeWidget->topLevelItem(row)->text(0);
+
+                qbVariabile.clear();
+
+                qsVariabile=treeWidget->topLevelItem(row)->text(CTreeVar::VARNAME);
+                qbVariabile.append(qsVariabile);
+
+                if(database->readVar(qsVariabile.toAscii(),(QHostAddress)treeWidget->topLevelItem(row)->text(CTreeVar::ROBOTIP), &value, &readtime)){
+
+                                                //qDebug() << "Trovato " << value << " Tempo di lettura: " << readtime << " [ms]";
+
+                        tempo.setNum(readtime);
+                        tempo.append(" " + tr("[ms]"));
+
+                        QTreeWidgetItem *item = treeWidget->topLevelItem(row);
+
+                        item->setText(CTreeVar::VARVALUE,value);
+
+                        QBrush brush;
+
+                        if(readtime>=0){
+                                item->setText(CTreeVar::TIME,tempo);
+                                brush.setColor(Qt::black);
+                        }
+                        else{
+                                item->setText(CTreeVar::TIME,tr("TIMEOUT"));
+                                brush.setColor(Qt::red);
+                        }
+
+                        item->setForeground(CTreeVar::VARVALUE,brush);
+                        this->splitvaluetoview(item, item->text(CTreeVar::VARNAME), item->text(CTreeVar::VARVALUE));
+                }//if
+        }//for
+
+                //QTreeWidgetItem *item;
+                //this->splitvaluetoview(item, QString("PIPPO"), QString("{PRO_IP: NAME[] \"/R1/RAGGIUNGIBIL.SRC\", SNR 116, NAME_C[] \"/R1/RAGGIUNGIBIL.SRC\", SNR_C 116, I_EXECUTED FALSE, P_ARRIVED 0, SI01 {CALL_STACK: NAME[] \"/R1/RAGGIUNGIBIL.SRC\", SNR 48, INT_FLAG FALSE}}"));
+                //cLog.writeList(treeWidget);
+}
+
+void OpenShowVarDock::splitvaluetoview(QTreeWidgetItem *item, QString varname, QString varvalue)
+{
+    varvalue=varvalue.trimmed();
+
+    KukaVar *kukavarloc  = new KukaVar(&varname.toAscii(),&varvalue.toAscii());
+
+    int datatype;
+
+    //qDebug() << "Numero elementi: " << kukavarloc->getElementsNumber();
+    //qDebug() << "Tipo variabile: " << kukavarloc->getVarType();
+
+    switch(kukavarloc->getVarType()){
+    case KukaVar::STRUCTURE:
+        {
+            QSet<QString> darobot;
+            QHash<QString, int> dalista;
+            for(int i=0;i<kukavarloc->getElementsNumber();i++)
+                darobot.insert(kukavarloc->getStructureMember(i));
+
+            for(int i=0;i<item->childCount();i++)
+                dalista.insert(item->child(i)->text(CTreeVar::VARNAME),i);
+
+            QHashIterator<QString, int> i(dalista);
+            while (i.hasNext()){
+                i.next();
+                if(!darobot.contains(i.key())){
+                    //remove this child
+                    QTreeWidgetItem *child = item->child(i.value());
+                    item->removeChild(child);
+                    delete child;
+                    child=NULL;
+                }
+            }
+
+            for(int i=0;i<kukavarloc->getElementsNumber();i++){
+                //qDebug() << "getElementNumber() " << kukavarloc->getStructureMember(i) << " " << kukavarloc->getElementsNumber();
+                if(dalista.contains(kukavarloc->getStructureMember(i))){
+                    //update vale
+
+                    //qDebug() << "Valore i=" << i;
+
+                    QTreeWidgetItem *child = item->child(i);
+                    QByteArray elementvalue=kukavarloc->getStructureValue(i,datatype);
+                    //tipo di dato struttura intero
+                    switch(datatype)
+                    {
+                    case KukaVar::INT:
+                        {
+                            if(((QComboBox*)treeWidget->itemWidget(child,CTreeVar::OPTIONS))->currentText().toAscii()==tr("Binary code")){
+                                QString binary;
+                                toBinary(elementvalue.toInt(),&binary);
+                                child->setText(CTreeVar::VARVALUE,binary);
+                            }
+                            else if(((QComboBox*)treeWidget->itemWidget(child,CTreeVar::OPTIONS))->currentText().toAscii()==tr("Hex code")){
+                                QString hex;
+                                toHex(elementvalue.toInt(),&hex);
+                                child->setText(CTreeVar::VARVALUE,hex);
+                            }
+                            else
+                                child->setText(CTreeVar::VARVALUE,elementvalue);
+                            break;
+                        }
+                    case KukaVar::STRUCTURE:
+                        {
+                            //qDebug() << "OK, " << kukavarloc->getStructureMember(i) << " è una nuova struttura. Che faccio?";
+                            this->splitvaluetoview(child,kukavarloc->getStructureMember(i),kukavarloc->getStructureValue(i,datatype));
+                            break;
+                        }
+                        //altro tipo di dato
+                    default:
+                        {
+                            child->setText(CTreeVar::VARVALUE,elementvalue);
+                            //qDebug() << "Nome variabile: " << item->child(i)->text(1) << " tipo dato: " << datatype;
+                            break;
+                        }
+                    }
+                }
+                else{
+                    //add value
+                    QTreeWidgetItem *child = new QTreeWidgetItem();
+                    child->setText(CTreeVar::VARNAME,kukavarloc->getStructureMember(i));
+                    child->setText(CTreeVar::VARVALUE,kukavarloc->getStructureValue(i,datatype));
+                    item->insertChild(i,child);
+                    if(datatype==KukaVar::INT){
+                        addCombo(child);
+                    }
+                }
+            }
+            break;
+        }
+    case KukaVar::INT:
+        {
+            if(QComboBox* comboBox = dynamic_cast<QComboBox*>(treeWidget->itemWidget(item,CTreeVar::OPTIONS))){
+                if(comboBox->currentText().toAscii()==tr("Binary code")){
+                    QString binary;
+                    toBinary(varvalue.toInt(),&binary);
+                    item->setText(CTreeVar::VARVALUE,binary);
+                }
+                else if(comboBox->currentText().toAscii()==tr("Hex code")){
+                    QString hex;
+                    toHex(varvalue.toInt(),&hex);
+                    item->setText(CTreeVar::VARVALUE,hex);
+                }
+                else{
+                    //qDebug() << "Valore variabile int " << varvalue;
+                    item->setText(CTreeVar::VARVALUE,varvalue);
+                }
+
+            }
+            else
+                addCombo(item);
+            break;
+        }
+    default:
+        {
+
+            break;
+        }
+    }//case
+
+    treeWidget->resizeColumnToContents(CTreeVar::VARNAME);
+    delete kukavarloc;
+    kukavarloc=NULL;
+}
+
+void OpenShowVarDock::addCombo(QTreeWidgetItem *child){
+    QComboBox *combo = new QComboBox(this);
+    combo->addItem(tr("Int code"));
+    combo->addItem(tr("Binary code"));
+    combo->addItem(tr("Hex code"));
+    treeWidget->setItemWidget(child,2,combo);
+}
+
+void OpenShowVarDock::toBinary(int value, QString *binary){
+    int mask;
+    for(int i=0;i<16;i++){
+        mask = 1 << i;
+        if(i==4 || i==8 || i==12)
+            binary->prepend(" ");
+        if(value & mask)
+            binary->prepend("1");
+        else
+            binary->prepend("0");
+    }
+    //binary->append(QString("%1").arg(value, 0, 2));
+}
+
+/*!	\brief Restituisce il valore esadecimale di una variabile
+ *
+ *	Restituisce il corrispondente valore esadecibale della variabile
+ *	ricevuta come parametro
+ *
+ *	\param value Variabile contenente il valore da trasformare
+ *	\param binary Stringa contenente il valore esadecimale
+ */
+
+void OpenShowVarDock::toHex(int value, QString *hex){
+    hex->append(QString("0x%1").arg(value, 0, 16));
+    hex->toUpper();
+}

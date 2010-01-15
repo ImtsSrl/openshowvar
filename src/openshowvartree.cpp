@@ -43,8 +43,8 @@ OpenShowVarTree::OpenShowVarTree(QWidget *parent)
 	treeWidget->setHeaderLabels(QStringList() << tr("Variable name") << tr("Variable value") << tr("") << tr("Read time") << tr("IP Robot"));
 	//treeWidget->header()->setResizeMode(0, QHeaderView::Stretch);
 	//treeWidget->header()->setResizeMode(1, QHeaderView::Stretch);
-	treeWidget->setColumnWidth(VARNAME,110);
-	treeWidget->setColumnWidth(VARVALUE,350);
+        treeWidget->setColumnWidth(CTreeVar::VARNAME,110);
+        treeWidget->setColumnWidth(CTreeVar::VARVALUE,350);
 	treeWidget->setColumnHidden(4,true);
 
 	/*
@@ -143,14 +143,14 @@ void OpenShowVarTree::closeEvent ( QCloseEvent * event )
 
 void OpenShowVarTree::DoubleClicked(QTreeWidgetItem * item, int column)
 {
-	if(!item->text(VARVALUE).isEmpty()){
-		QByteArray varname=item->text(VARNAME).toAscii();
-		QByteArray varvalue=item->text(VARVALUE).toAscii();
-		QHostAddress varip=(QHostAddress)item->text(ROBOTIP);
+        if(!item->text(CTreeVar::VARVALUE).isEmpty()){
+                QByteArray varname=item->text(CTreeVar::VARNAME).toAscii();
+                QByteArray varvalue=item->text(CTreeVar::VARVALUE).toAscii();
+                QHostAddress varip=(QHostAddress)item->text(CTreeVar::ROBOTIP);
 
 		QTreeWidgetItem *structurename=item->parent();
 		if(structurename!=NULL)
-			roboteditvar = new RobotVarEdit(&structurename->text(VARVALUE).toAscii(), &structurename->text(VARNAME).toAscii(), varip, this);
+                        roboteditvar = new RobotVarEdit(&structurename->text(CTreeVar::VARVALUE).toAscii(), &structurename->text(CTreeVar::VARNAME).toAscii(), varip, this);
 		else
 			roboteditvar = new RobotVarEdit(&varvalue, &varname, varip, this);
 
@@ -210,7 +210,7 @@ void OpenShowVarTree::on_delButton_clicked()
 		else
 			item=treeWidget->currentItem();
 
-		database->deleteVar(item->text(VARNAME).toAscii(),(QHostAddress)item->text(ROBOTIP));
+                database->deleteVar(item->text(CTreeVar::VARNAME).toAscii(),(QHostAddress)item->text(CTreeVar::ROBOTIP));
 	}
 	delete item;
 	item=NULL;
@@ -275,15 +275,15 @@ void OpenShowVarTree::insertNew(const QString &variabile, const QString &iprobot
 	QTreeWidgetItem *item;
 
 	item = new QTreeWidgetItem(treeWidget);
-	item->setText(VARNAME, variabile.toUpper());
-	item->setText(ROBOTIP, iprobot);
+        item->setText(CTreeVar::VARNAME, variabile.toUpper());
+        item->setText(CTreeVar::ROBOTIP, iprobot);
 
         //Evita il problema del blocco durante il drag della riga
         item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 
-	item->setToolTip(VARNAME,tr("Robot IP %1").arg(iprobot));
+        item->setToolTip(CTreeVar::VARNAME,tr("Robot IP %1").arg(iprobot));
 
-	item->setTextAlignment(TIME,(Qt::AlignRight | Qt::AlignVCenter));
+        item->setTextAlignment(CTreeVar::TIME,(Qt::AlignRight | Qt::AlignVCenter));
 
         database->addVar(variabile.toUpper().toAscii(),QHostAddress(iprobot));
 
@@ -307,10 +307,10 @@ void OpenShowVarTree::lettura()
 
 		qbVariabile.clear();
 
-		qsVariabile=treeWidget->topLevelItem(row)->text(VARNAME);
+                qsVariabile=treeWidget->topLevelItem(row)->text(CTreeVar::VARNAME);
 		qbVariabile.append(qsVariabile);
 
-		if(database->readVar(qsVariabile.toAscii(),(QHostAddress)treeWidget->topLevelItem(row)->text(ROBOTIP), &value, &readtime)){
+                if(database->readVar(qsVariabile.toAscii(),(QHostAddress)treeWidget->topLevelItem(row)->text(CTreeVar::ROBOTIP), &value, &readtime)){
 
 						//qDebug() << "Trovato " << value << " Tempo di lettura: " << readtime << " [ms]";
 
@@ -319,21 +319,21 @@ void OpenShowVarTree::lettura()
 
 			QTreeWidgetItem *item = treeWidget->topLevelItem(row);
 
-			item->setText(VARVALUE,value);
+                        item->setText(CTreeVar::VARVALUE,value);
 
 			QBrush brush;
 
 			if(readtime>=0){
-				item->setText(TIME,tempo);
+                                item->setText(CTreeVar::TIME,tempo);
 				brush.setColor(Qt::black);
 			}
 			else{
-				item->setText(TIME,tr("TIMEOUT"));
+                                item->setText(CTreeVar::TIME,tr("TIMEOUT"));
 				brush.setColor(Qt::red);
 			}
 
-			item->setForeground(VARVALUE,brush);
-                        this->splitvaluetoview(item, item->text(VARNAME), item->text(VARVALUE));
+                        item->setForeground(CTreeVar::VARVALUE,brush);
+                        this->splitvaluetoview(item, item->text(CTreeVar::VARNAME), item->text(CTreeVar::VARVALUE));
 		}//if
 	}//for
 
@@ -447,7 +447,7 @@ void OpenShowVarTree::splitvaluetoview(QTreeWidgetItem *item, QString varname, Q
 							darobot.insert(kukavarloc->getStructureMember(i));
 
 					for(int i=0;i<item->childCount();i++)
-							dalista.insert(item->child(i)->text(VARNAME),i);
+                                                        dalista.insert(item->child(i)->text(CTreeVar::VARNAME),i);
 
 					QHashIterator<QString, int> i(dalista);
 					while (i.hasNext()){
@@ -475,18 +475,18 @@ void OpenShowVarTree::splitvaluetoview(QTreeWidgetItem *item, QString varname, Q
 									{
 									case KukaVar::INT:
 									{
-											if(((QComboBox*)treeWidget->itemWidget(child,OPTIONS))->currentText().toAscii()==tr("Binary code")){
+                                                                                        if(((QComboBox*)treeWidget->itemWidget(child,CTreeVar::OPTIONS))->currentText().toAscii()==tr("Binary code")){
 													QString binary;
 													toBinary(elementvalue.toInt(),&binary);
-													child->setText(VARVALUE,binary);
+                                                                                                        child->setText(CTreeVar::VARVALUE,binary);
 											}
-											else if(((QComboBox*)treeWidget->itemWidget(child,OPTIONS))->currentText().toAscii()==tr("Hex code")){
+                                                                                        else if(((QComboBox*)treeWidget->itemWidget(child,CTreeVar::OPTIONS))->currentText().toAscii()==tr("Hex code")){
 													QString hex;
 													toHex(elementvalue.toInt(),&hex);
-													child->setText(VARVALUE,hex);
+                                                                                                        child->setText(CTreeVar::VARVALUE,hex);
 											}
 											else
-													child->setText(VARVALUE,elementvalue);
+                                                                                                        child->setText(CTreeVar::VARVALUE,elementvalue);
 									break;
 									}
 									case KukaVar::STRUCTURE:
@@ -498,7 +498,7 @@ void OpenShowVarTree::splitvaluetoview(QTreeWidgetItem *item, QString varname, Q
 									//altro tipo di dato
 									default:
 									{
-											child->setText(VARVALUE,elementvalue);
+                                                                                        child->setText(CTreeVar::VARVALUE,elementvalue);
 											//qDebug() << "Nome variabile: " << item->child(i)->text(1) << " tipo dato: " << datatype;
 											break;
 										}
@@ -507,8 +507,8 @@ void OpenShowVarTree::splitvaluetoview(QTreeWidgetItem *item, QString varname, Q
 							else{
 							//add value
 									QTreeWidgetItem *child = new QTreeWidgetItem();
-									child->setText(VARNAME,kukavarloc->getStructureMember(i));
-									child->setText(VARVALUE,kukavarloc->getStructureValue(i,datatype));
+                                                                        child->setText(CTreeVar::VARNAME,kukavarloc->getStructureMember(i));
+                                                                        child->setText(CTreeVar::VARVALUE,kukavarloc->getStructureValue(i,datatype));
 									item->insertChild(i,child);
 									if(datatype==KukaVar::INT){
 											addCombo(child);
@@ -519,20 +519,20 @@ void OpenShowVarTree::splitvaluetoview(QTreeWidgetItem *item, QString varname, Q
 			}
 			case KukaVar::INT:
 			{
-					if(QComboBox* comboBox = dynamic_cast<QComboBox*>(treeWidget->itemWidget(item,OPTIONS))){
+                                        if(QComboBox* comboBox = dynamic_cast<QComboBox*>(treeWidget->itemWidget(item,CTreeVar::OPTIONS))){
 							if(comboBox->currentText().toAscii()==tr("Binary code")){
 									QString binary;
 									toBinary(varvalue.toInt(),&binary);
-									item->setText(VARVALUE,binary);
+                                                                        item->setText(CTreeVar::VARVALUE,binary);
 							}
 							else if(comboBox->currentText().toAscii()==tr("Hex code")){
 									QString hex;
 									toHex(varvalue.toInt(),&hex);
-									item->setText(VARVALUE,hex);
+                                                                        item->setText(CTreeVar::VARVALUE,hex);
 							}
 							else{
 								//qDebug() << "Valore variabile int " << varvalue;
-									item->setText(VARVALUE,varvalue);
+                                                                        item->setText(CTreeVar::VARVALUE,varvalue);
 								}
 
 					}
@@ -547,7 +547,7 @@ void OpenShowVarTree::splitvaluetoview(QTreeWidgetItem *item, QString varname, Q
 			}
 	}//case
 
-	treeWidget->resizeColumnToContents(VARNAME);
+        treeWidget->resizeColumnToContents(CTreeVar::VARNAME);
 	delete kukavarloc;
 	kukavarloc=NULL;
 }

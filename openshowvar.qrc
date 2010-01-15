@@ -8,5 +8,8 @@
         <file>images/graph_color.png</file>
         <file>images/graph_plus.png</file>
         <file>images/graph_minus.png</file>
+        <file>images/new.png</file>
+        <file>images/add.png</file>
+        <file alias="delete">images/editdelete.png</file>
     </qresource>
 </RCC>
