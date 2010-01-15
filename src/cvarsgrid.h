@@ -25,6 +25,8 @@ private:
 
 	QLabel				m_dragHere;
 
+	QMutex				m_mutexUpdate;
+
 public:
 
 	CVarsGrid( VariableDB* );

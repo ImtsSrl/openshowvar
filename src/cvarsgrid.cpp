@@ -78,24 +78,25 @@ void CVarsGrid::dragEnterEvent(QDragEnterEvent *event) {
 
 void CVarsGrid::removeVar( const QString& name ){
 
+	m_mutexUpdate.lock();
+
 	for( int i = 0; i< m_lines.size(); i++ ){
 		if( m_linesVar.at( i) == name ){
 
 			m_field.removeLine( m_lines.at(i));
 
-			delete (CGridLine*)m_lines.at(i);
-			m_lines.removeAt(i);
+			delete (CGridLine*)m_lines.takeAt(i);
 
-			//delete m_linesVar.at(i);
 			m_linesVar.removeAt(i);
 
-			//delete m_linesIP.at(i);
 			m_linesIP.removeAt(i);
 
-			delete m_legends.at(i);
-			m_legends.removeAt(i);
+			delete (CVarsGridLineLegend*)m_legendsLayout->takeAt( m_legendsLayout->indexOf( m_legends.at(i) ) );
+
 		}
 	}
+
+	m_mutexUpdate.unlock();
 }
 
 void CVarsGrid::addVar(const QString& str , const QString& ip){
@@ -125,6 +126,8 @@ void CVarsGrid::addVar(const QString& str , const QString& ip){
 
 void CVarsGrid::update(){
 
+	m_mutexUpdate.lock();
+
 	int i=0;
 	int temp;
 	QByteArray value;
@@ -137,6 +140,8 @@ void CVarsGrid::update(){
 	}
 
 	repaint();
+
+	m_mutexUpdate.unlock();
 }
 
 CVarsGrid::~CVarsGrid(){
