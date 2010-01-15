@@ -37,7 +37,10 @@ HEADERS += src/broadcast.h \
     src/robot_view/cglrenderable.h \
     src/robot_view/c3dsmodel.h \
     src/robot_view/lib3ds/lib3ds_impl.h \
-    src/robot_view/lib3ds/lib3ds.h
+    src/robot_view/lib3ds/lib3ds.h \
+    src/cvarsgrid.h \
+    src/cvarsgridlinelegend.h
+
 SOURCES += src/broadcast.cpp \
     src/CDebug.cpp \
     src/CGridField.cpp \
@@ -80,7 +83,10 @@ SOURCES += src/broadcast.cpp \
     src/robot_view/lib3ds/lib3ds_chunk.c \
     src/robot_view/lib3ds/lib3ds_camera.c \
     src/robot_view/lib3ds/lib3ds_background.c \
-    src/robot_view/lib3ds/lib3ds_atmosphere.c
+    src/robot_view/lib3ds/lib3ds_atmosphere.c \
+    src/cvarsgrid.cpp \
+    src/cvarsgridlinelegend.cpp
+
 TRANSLATIONS += lang/openshowvar_de.ts \
     lang/openshowvar_en.ts \
     lang/openshowvar_it.ts

@@ -35,7 +35,7 @@ int OpenShowVarTree::VarValue=1;
 //!\todo Distinguere il robot di provenienza della variabile
 
 OpenShowVarTree::OpenShowVarTree(QWidget *parent)
-    : QWidget(parent)
+	: QWidget(parent)
 {
 	
     treeWidget = new CTreeVar(); // QTreeWidget;
@@ -110,38 +110,34 @@ OpenShowVarTree::OpenShowVarTree(QWidget *parent)
     
     database = new VariableDB();
     
-    //grafico
-    m_Window = new QWidget();
-    m_grid = new CGridField();
-		
-    QGridLayout* lay = new QGridLayout();
-    lay->addWidget(m_grid,0,1, 2,2);
-    m_Window->setLayout(lay);
 
     listVar.readList();
 }
 
 OpenShowVarTree::~OpenShowVarTree()
 {
-	
+
 }
 
 void OpenShowVarTree::closeEvent ( QCloseEvent * event )
-{	
+{
+	timeUpdateGraph.stop();
 	qtimeLettura.stop();
 	listVar.writeList(treeWidget);
-	
+
+	CVarsGrid* g;
+	foreach( g , m_gridList )
+		delete g;
+
 	//delete listaRobot;
 	delete database;
-	delete m_grid;
-	delete m_Window;
 }
 
 /*!	\brief Apre una finestra di edit
- *	
+ *
  *	Dopo aver effettuato il doppioclick, apre la finestra di edit della
  *	variabile.
- *	
+ *
  */
 
 void OpenShowVarTree::DoubleClicked(QTreeWidgetItem * item, int column)
@@ -150,25 +146,25 @@ void OpenShowVarTree::DoubleClicked(QTreeWidgetItem * item, int column)
 		QByteArray varname=item->text(VARNAME).toAscii();
 		QByteArray varvalue=item->text(VARVALUE).toAscii();
 		QHostAddress varip=(QHostAddress)item->text(ROBOTIP);
-		
+
 		QTreeWidgetItem *structurename=item->parent();
 		if(structurename!=NULL)
 			roboteditvar = new RobotVarEdit(&structurename->text(VARVALUE).toAscii(), &structurename->text(VARNAME).toAscii(), varip, this);
 		else
 			roboteditvar = new RobotVarEdit(&varvalue, &varname, varip, this);
-		
+
 		connect(roboteditvar,SIGNAL(writevalue(const QByteArray &, const QByteArray &, const QHostAddress &)),this,SLOT(writeVariable(const QByteArray &, const QByteArray &, const QHostAddress &)));
-		
+
 		QRect rect=frameGeometry();
 		QPoint posmain=pos();
-		
+
 		QPoint pos(rect.width()+posmain.x(),posmain.y());
-	
+
 		//Il metodo show deve essere chiamato dopo il move per avere un corretto posizionamento
 		//della finestra.
-		
+
 		Qt::WindowFlags flags = roboteditvar->windowFlags();
-		
+
 		//roboteditvar->move(pos);
 		roboteditvar->setWindowFlags(flags & ~Qt::WindowContextHelpButtonHint & ~Qt::WindowSystemMenuHint);
 		roboteditvar->show();
@@ -182,11 +178,11 @@ void OpenShowVarTree::insertVar(const QString *varName)
 	connect(insertVar,SIGNAL(insertClose()),this,SLOT(insertClose()));
 
 	insertVar->DropVar(*varName);
-	
+
 	insertVar->setModal(true);
 	insertVar->show();
 	insertVar->activateWindow();
-	
+
 	addButton->setEnabled(false);
 }
 
@@ -201,11 +197,11 @@ void OpenShowVarTree::on_addButton_clicked()
 }
 
 /*!	\brief Cancellazione variabile
- *	
+ *
  *	Rimuove la variabile selezionata dalla lista delle variavili.
  *	Selezionando un membro della struttura e premendo elimina, verra' rimossa
  *	l'intera struttura.
- *	
+ *
  */
 
 void OpenShowVarTree::on_delButton_clicked()
@@ -216,7 +212,7 @@ void OpenShowVarTree::on_delButton_clicked()
 			item=treeWidget->currentItem()->parent();
 		else
 			item=treeWidget->currentItem();
-		
+
 		database->deleteVar(item->text(VARNAME).toAscii(),(QHostAddress)item->text(ROBOTIP));
 	}
 	delete item;
@@ -224,9 +220,9 @@ void OpenShowVarTree::on_delButton_clicked()
 }
 
 /*!	\brief Edit nome variabile
- *	
+ *
  *	Modifica il nome della variabile selezionata nella lista delle variavili.
- *	
+ *
  */
 
 void OpenShowVarTree::on_editButton_clicked()
@@ -237,7 +233,7 @@ void OpenShowVarTree::on_editButton_clicked()
 			item=treeWidget->currentItem()->parent();
 		else
 			item=treeWidget->currentItem();
-		
+
 		InsertVar* editVar = new InsertVar();
 		//connect(insertVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
 		//connect(insertVar,SIGNAL(insertClose()),this,SLOT(insertClose()));
@@ -245,13 +241,13 @@ void OpenShowVarTree::on_editButton_clicked()
 		editVar->setModal(true);
 		editVar->show();
 		editVar->activateWindow();
-	
+
 		//editButton->setEnabled(false);
 	}
 }
 
 void OpenShowVarTree::on_startButton_clicked()
-{	
+{
 	//TODO rendere questo tempo variabile
 	qtimeLettura.start(REFRESHTIME);
 	startButton->setEnabled(false);
@@ -266,28 +262,15 @@ void OpenShowVarTree::on_stopButton_clicked()
 }
 
 /*!	\brief Pressione del tasto grafico
- *	
+ *
  *	Crea una nuova finestra che visualizza la variabile selezionata
  *
  */
 
 void OpenShowVarTree::on_graphButton_clicked()
 {
-	if(treeWidget->currentItem()!=NULL){
-		m_lnOne = new CGridLine();
-		m_grid->addLine(m_lnOne);
-		m_grid->setMaxTime(30000);
-		
-		graphVarName = treeWidget->currentItem()->text(VARNAME).toAscii();
-		graphVarIP = treeWidget->currentItem()->text(ROBOTIP);
-		
-		timeUpdateGraph.start(1000);
-		
-		m_Window->setWindowTitle(tr("Graph of: %1").arg(treeWidget->currentItem()->text(VARNAME)));
-		
-		m_Window->show();
-                m_Window->resize(500,400);
-	}
+	CVarsGrid* g = new CVarsGrid( database );
+	m_gridList.append( g );
 }
 
 void OpenShowVarTree::insertNew(const QString &variabile, const QString &iprobot)
@@ -297,18 +280,21 @@ void OpenShowVarTree::insertNew(const QString &variabile, const QString &iprobot
 	item = new QTreeWidgetItem(treeWidget);
 	item->setText(VARNAME, variabile.toUpper());
 	item->setText(ROBOTIP, iprobot);
-	
+
+		//Evita il problema del blocco durante il drag della riga
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+
 	item->setToolTip(VARNAME,tr("Robot IP %1").arg(iprobot));
-	
+
 	item->setTextAlignment(TIME,(Qt::AlignRight | Qt::AlignVCenter));
-	
-        database->addVar(variabile.toUpper().toAscii(),QHostAddress(iprobot));
-	
+
+		database->addVar(variabile.toUpper().toAscii(),QHostAddress(iprobot));
+
 	addButton->setEnabled(true);
 }
 
 void OpenShowVarTree::insertClose()
-{	
+{
 	addButton->setEnabled(true);
 }
 
@@ -317,29 +303,29 @@ void OpenShowVarTree::lettura()
 	QString qsVariabile, tempo;
 	QByteArray qbVariabile, value;
 	int readtime;
-	
+
 	for(int row=0;row<treeWidget->topLevelItemCount();row++)
-	{	
+	{
 		//qDebug() << treeWidget->topLevelItem(row)->text(0);
-		
+
 		qbVariabile.clear();
-		
+
 		qsVariabile=treeWidget->topLevelItem(row)->text(VARNAME);
 		qbVariabile.append(qsVariabile);
 
                 if(database->readVar(qsVariabile.toAscii(),(QHostAddress)treeWidget->topLevelItem(row)->text(ROBOTIP), &value, &readtime)){
 
-                        //qDebug() << "Trovato " << value << " Tempo di lettura: " << readtime << " [ms]";
-			
+						//qDebug() << "Trovato " << value << " Tempo di lettura: " << readtime << " [ms]";
+
 			tempo.setNum(readtime);
 			tempo.append(" " + tr("[ms]"));
-			
+
 			QTreeWidgetItem *item = treeWidget->topLevelItem(row);
-			
+
 			item->setText(VARVALUE,value);
-			
+
 			QBrush brush;
-			
+
 			if(readtime>=0){
 				item->setText(TIME,tempo);
 				brush.setColor(Qt::black);
@@ -368,20 +354,21 @@ void OpenShowVarTree::lettura()
                             }
                         }
 
-                        this->splitvaluetoview(item, item->text(VARNAME), item->text(VARVALUE));
+			item->setForeground(VARVALUE,brush);
+						this->splitvaluetoview(item, item->text(VARNAME), item->text(VARVALUE));
 		}//if
 	}//for
-	
-        //QTreeWidgetItem *item;
-        //this->splitvaluetoview(item, QString("PIPPO"), QString("{PRO_IP: NAME[] \"/R1/RAGGIUNGIBIL.SRC\", SNR 116, NAME_C[] \"/R1/RAGGIUNGIBIL.SRC\", SNR_C 116, I_EXECUTED FALSE, P_ARRIVED 0, SI01 {CALL_STACK: NAME[] \"/R1/RAGGIUNGIBIL.SRC\", SNR 48, INT_FLAG FALSE}}"));
-        cLog.writeList(treeWidget);
+
+		//QTreeWidgetItem *item;
+		//this->splitvaluetoview(item, QString("PIPPO"), QString("{PRO_IP: NAME[] \"/R1/RAGGIUNGIBIL.SRC\", SNR 116, NAME_C[] \"/R1/RAGGIUNGIBIL.SRC\", SNR_C 116, I_EXECUTED FALSE, P_ARRIVED 0, SI01 {CALL_STACK: NAME[] \"/R1/RAGGIUNGIBIL.SRC\", SNR 48, INT_FLAG FALSE}}"));
+		cLog.writeList(treeWidget);
 }
 
 ///\todo Impostare correttamente l'ip della variabile da correggere
 
 void OpenShowVarTree::writeVariable(const QByteArray &varname, const QByteArray &value, const QHostAddress &varip){
 	int writetime;
-        database->writeVar(varname, varip, value, &writetime);
+		database->writeVar(varname, varip, value, &writetime);
 }
 
 void OpenShowVarTree::addCombo(QTreeWidgetItem *child){
@@ -407,7 +394,7 @@ void OpenShowVarTree::toBinary(int value, QString *binary){
 }
 
 /*!	\brief Restituisce il valore esadecimale di una variabile
- *	
+ *
  *	Restituisce il corrispondente valore esadecibale della variabile
  *	ricevuta come parametro
  *
@@ -421,7 +408,7 @@ void OpenShowVarTree::toHex(int value, QString *hex){
 }
 
 /*!	\brief Aggiornamento grafico
- *	
+ *
  *	Viene richiamata allo scadere del timeout di aggiornamento del
  *	grafico aggiungendo un valore al grafico
  *
@@ -429,16 +416,22 @@ void OpenShowVarTree::toHex(int value, QString *hex){
 
 void OpenShowVarTree::updateGraph()
 {
-	int readtime;
+	/*int readtime;
 	QByteArray value;
 	database->readVar(graphVarName,graphVarIP, &value, &readtime);
 	m_lnOne->addValue(value.toDouble());
+	qDebug() << "added" << value;*/
+
+	CVarsGrid* g;
+	foreach( g , m_gridList ){
+		g->update();
+	}
 }
 
 void OpenShowVarTree::on_stateChanged(int state)
 {
 	Qt::WindowFlags flags = windowFlags();
-	
+
 	if(state==2){
 		//setWindowFlags((flags | Qt::WindowStaysOnTopHint | Qt::CustomizeWindowHint) & 0xffff);
 		setWindowFlags(flags | Qt::WindowStaysOnTopHint | Qt::CustomizeWindowHint);
@@ -455,128 +448,127 @@ void OpenShowVarTree::on_stateChanged(int state)
 
 void OpenShowVarTree::splitvaluetoview(QTreeWidgetItem *item, QString varname, QString varvalue)
 {
+	QByteArray value;
 
-    QByteArray value;
+	varvalue=varvalue.trimmed();
 
-    varvalue=varvalue.trimmed();
+	KukaVar *kukavarloc  = new KukaVar(&varname.toAscii(),&varvalue.toAscii());
 
-    KukaVar *kukavarloc  = new KukaVar(&varname.toAscii(),&varvalue.toAscii());
+	int datatype;
 
-    int datatype;
+	//qDebug() << "Numero elementi: " << kukavarloc->getElementsNumber();
+	//qDebug() << "Tipo variabile: " << kukavarloc->getVarType();
 
-    //qDebug() << "Numero elementi: " << kukavarloc->getElementsNumber();
-    //qDebug() << "Tipo variabile: " << kukavarloc->getVarType();
+	switch(kukavarloc->getVarType()){
+			case KukaVar::STRUCTURE:
+			{
+					QSet<QString> darobot;
+					QHash<QString, int> dalista;
+					for(int i=0;i<kukavarloc->getElementsNumber();i++)
+							darobot.insert(kukavarloc->getStructureMember(i));
 
-    switch(kukavarloc->getVarType()){
-    case KukaVar::STRUCTURE:
-            {
-                    QSet<QString> darobot;
-                    QHash<QString, int> dalista;
-                    for(int i=0;i<kukavarloc->getElementsNumber();i++)
-                            darobot.insert(kukavarloc->getStructureMember(i));
+					for(int i=0;i<item->childCount();i++)
+							dalista.insert(item->child(i)->text(VARNAME),i);
 
-                    for(int i=0;i<item->childCount();i++)
-                            dalista.insert(item->child(i)->text(VARNAME),i);
+					QHashIterator<QString, int> i(dalista);
+					while (i.hasNext()){
+							i.next();
+							if(!darobot.contains(i.key())){
+							//remove this child
+									QTreeWidgetItem *child = item->child(i.value());
+									item->removeChild(child);
+									delete child;
+									child=NULL;
+							}
+					}
 
-                    QHashIterator<QString, int> i(dalista);
-                    while (i.hasNext()){
-                            i.next();
-                            if(!darobot.contains(i.key())){
-                            //remove this child
-                                    QTreeWidgetItem *child = item->child(i.value());
-                                    item->removeChild(child);
-                                    delete child;
-                                    child=NULL;
-                            }
-                    }
+					for(int i=0;i<kukavarloc->getElementsNumber();i++){
+							//qDebug() << "getElementNumber() " << kukavarloc->getStructureMember(i) << " " << kukavarloc->getElementsNumber();
+							if(dalista.contains(kukavarloc->getStructureMember(i))){
+							//update vale
 
-                    for(int i=0;i<kukavarloc->getElementsNumber();i++){
-                            //qDebug() << "getElementNumber() " << kukavarloc->getStructureMember(i) << " " << kukavarloc->getElementsNumber();
-                            if(dalista.contains(kukavarloc->getStructureMember(i))){
-                            //update vale
+								//qDebug() << "Valore i=" << i;
 
-                                //qDebug() << "Valore i=" << i;
+									QTreeWidgetItem *child = item->child(i);
+									QByteArray elementvalue=kukavarloc->getStructureValue(i,datatype);
+									//tipo di dato struttura intero
+									switch(datatype)
+									{
+									case KukaVar::INT:
+									{
+											if(((QComboBox*)treeWidget->itemWidget(child,OPTIONS))->currentText().toAscii()==tr("Binary code")){
+													QString binary;
+													toBinary(elementvalue.toInt(),&binary);
+													child->setText(VARVALUE,binary);
+											}
+											else if(((QComboBox*)treeWidget->itemWidget(child,OPTIONS))->currentText().toAscii()==tr("Hex code")){
+													QString hex;
+													toHex(elementvalue.toInt(),&hex);
+													child->setText(VARVALUE,hex);
+											}
+											else
+													child->setText(VARVALUE,elementvalue);
+									break;
+									}
+									case KukaVar::STRUCTURE:
+									{
+										//qDebug() << "OK, " << kukavarloc->getStructureMember(i) << " ï¿½ una nuova struttura. Che faccio?";
+										this->splitvaluetoview(child,kukavarloc->getStructureMember(i),kukavarloc->getStructureValue(i,datatype));
+										break;
+									}
+									//altro tipo di dato
+									default:
+									{
+											child->setText(VARVALUE,elementvalue);
+											//qDebug() << "Nome variabile: " << item->child(i)->text(1) << " tipo dato: " << datatype;
+											break;
+										}
+									}
+							}
+							else{
+							//add value
+									QTreeWidgetItem *child = new QTreeWidgetItem();
+									child->setText(VARNAME,kukavarloc->getStructureMember(i));
+									child->setText(VARVALUE,kukavarloc->getStructureValue(i,datatype));
+									item->insertChild(i,child);
+									if(datatype==KukaVar::INT){
+											addCombo(child);
+									}
+							}
+					}
+					break;
+			}
+			case KukaVar::INT:
+			{
+					if(QComboBox* comboBox = dynamic_cast<QComboBox*>(treeWidget->itemWidget(item,OPTIONS))){
+							if(comboBox->currentText().toAscii()==tr("Binary code")){
+									QString binary;
+									toBinary(varvalue.toInt(),&binary);
+									item->setText(VARVALUE,binary);
+							}
+							else if(comboBox->currentText().toAscii()==tr("Hex code")){
+									QString hex;
+									toHex(varvalue.toInt(),&hex);
+									item->setText(VARVALUE,hex);
+							}
+							else{
+								//qDebug() << "Valore variabile int " << varvalue;
+									item->setText(VARVALUE,varvalue);
+								}
 
-                                    QTreeWidgetItem *child = item->child(i);
-                                    QByteArray elementvalue=kukavarloc->getStructureValue(i,datatype);
-                                    //tipo di dato struttura intero
-                                    switch(datatype)
-                                    {
-                                    case KukaVar::INT:
-                                    {
-                                            if(((QComboBox*)treeWidget->itemWidget(child,OPTIONS))->currentText().toAscii()==tr("Binary code")){
-                                                    QString binary;
-                                                    toBinary(elementvalue.toInt(),&binary);
-                                                    child->setText(VARVALUE,binary);
-                                            }
-                                            else if(((QComboBox*)treeWidget->itemWidget(child,OPTIONS))->currentText().toAscii()==tr("Hex code")){
-                                                    QString hex;
-                                                    toHex(elementvalue.toInt(),&hex);
-                                                    child->setText(VARVALUE,hex);
-                                            }
-                                            else
-                                                    child->setText(VARVALUE,elementvalue);
-                                    break;
-                                    }
-                                    case KukaVar::STRUCTURE:
-                                    {
-                                        //qDebug() << "OK, " << kukavarloc->getStructureMember(i) << " è una nuova struttura. Che faccio?";
-                                        this->splitvaluetoview(child,kukavarloc->getStructureMember(i),kukavarloc->getStructureValue(i,datatype));
-                                        break;
-                                    }
-                                    //altro tipo di dato
-                                    default:
-                                    {
-                                            child->setText(VARVALUE,elementvalue);
-                                            //qDebug() << "Nome variabile: " << item->child(i)->text(1) << " tipo dato: " << datatype;
-                                            break;
-                                        }
-                                    }
-                            }
-                            else{
-                            //add value
-                                    QTreeWidgetItem *child = new QTreeWidgetItem();
-                                    child->setText(VARNAME,kukavarloc->getStructureMember(i));
-                                    child->setText(VARVALUE,kukavarloc->getStructureValue(i,datatype));
-                                    item->insertChild(i,child);
-                                    if(datatype==KukaVar::INT){
-                                            addCombo(child);
-                                    }
-                            }
-                    }
-                    break;
-            }
-            case KukaVar::INT:
-            {
-                    if(QComboBox* comboBox = dynamic_cast<QComboBox*>(treeWidget->itemWidget(item,OPTIONS))){
-                            if(comboBox->currentText().toAscii()==tr("Binary code")){
-                                    QString binary;
-                                    toBinary(varvalue.toInt(),&binary);
-                                    item->setText(VARVALUE,binary);
-                            }
-                            else if(comboBox->currentText().toAscii()==tr("Hex code")){
-                                    QString hex;
-                                    toHex(varvalue.toInt(),&hex);
-                                    item->setText(VARVALUE,hex);
-                            }
-                            else{
-                                //qDebug() << "Valore variabile int " << varvalue;
-                                    item->setText(VARVALUE,varvalue);
-                                }
+					}
+					else
+							addCombo(item);
+					break;
+			}
+			default:
+			{
 
-                    }
-                    else
-                            addCombo(item);
-                    break;
-            }
-            default:
-            {
+					break;
+			}
+	}//case
 
-                    break;
-            }
-    }//case
-
-    treeWidget->resizeColumnToContents(VARNAME);
-    delete kukavarloc;
-    kukavarloc=NULL;
+	treeWidget->resizeColumnToContents(VARNAME);
+	delete kukavarloc;
+	kukavarloc=NULL;
 }

@@ -32,19 +32,19 @@
 CTreeVar::CTreeVar(QWidget *parent)
 	: QTreeWidget(parent)
 {
-	
+
 }
 
 CTreeVar::~CTreeVar()
 {
-	
+
 }
 
 void CTreeVar::dropEvent(QDropEvent *event)
 {
 	event->acceptProposedAction();
-        if(event->source()!=this)
-            emit dropVar(&event->mimeData()->text());
+		if(event->source()!=this)
+			emit dropVar(&event->mimeData()->text());
 }
 
 void CTreeVar::dragEnterEvent(QDragEnterEvent *event)
@@ -106,18 +106,23 @@ void CTreeVar::startDrag()
         }
     }
 
-    QMimeData *mimeData = new QMimeData;
-    mimeData->setText(varvalue);
-    QDrag *drag = new QDrag(this);
-    drag->setMimeData(mimeData);
+	QMimeData *mimeData = new QMimeData;
+	mimeData->setText(varvalue);
 
-    //QPixmap pixmap("AWESOM-O.png");
-    QPixmap pixmap(":images/AWESOM-O.png");
-    //QPixmap alphaChannel(pixmap.width(), pixmap.height());
-    //alphaChannel.fill(QColor(128,128,128));
-    //pixmap.setAlphaChannel(alphaChannel);
-    drag->setPixmap(pixmap);
+	// dati per il grafico
+	mimeData->setData( "openshowvar/graphdata" , kukavar->getVarName() );
+	mimeData->setData( "openshowvar/graphdataip" , item->text(ROBOTIP).toAscii() );
 
-    Qt::DropAction dropAction = drag->exec();
+	QDrag *drag = new QDrag(this);
+	drag->setMimeData(mimeData);
+
+	//QPixmap pixmap("AWESOM-O.png");
+	QPixmap pixmap(":images/AWESOM-O.png");
+	//QPixmap alphaChannel(pixmap.width(), pixmap.height());
+	//alphaChannel.fill(QColor(128,128,128));
+	//pixmap.setAlphaChannel(alphaChannel);
+	drag->setPixmap(pixmap);
+
+	Qt::DropAction dropAction = drag->exec();
 }
 

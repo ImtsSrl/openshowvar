@@ -8,7 +8,7 @@
 #include "robotvaredit.h"
 #include "showvarconst.h"
 #include "variabledb.h"
-#include "CGridField.h"
+#include "cvarsgrid.h"
 #include "listvarxml.h"
 #include "CLog.h"
 #include "CTreeVar.h"
@@ -23,21 +23,21 @@ class QIcon;
 
 class OpenShowVarTree : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
 	OpenShowVarTree(QWidget *parent = 0);
 	~OpenShowVarTree();
-	
+
 private:
 	KukaVar *kukavar;
 	RobotVarEdit *roboteditvar;
 	QTimer qtimeLettura;
 	QTimer timeUpdateGraph;
 	//RobotServer *listaRobot;
-	
+
 	VariableDB* database;
-	
+
 	QTreeWidget *treeWidget;
 	QPushButton *addButton;
 	QPushButton *delButton;
@@ -50,27 +50,23 @@ private:
         QPushButton *showRobotButton;
         CKUKARobot* m_robotView;
 
-	
 	void addCombo(QTreeWidgetItem *child);
 	void toBinary(int value, QString *binary);
 	void toHex(int value, QString *binary);
 
-        void splitvaluetoview(QTreeWidgetItem *item, QString varname, QString varvalue);
-	
+		void splitvaluetoview(QTreeWidgetItem *item, QString varname, QString varvalue);
+
 	static int VarValue;
-	
+
 	//grafico
-	QWidget* m_Window;
-	CGridField* m_grid;
-	CGridLine* m_lnOne;
+	QList<CVarsGrid*>	m_gridList;
 	QByteArray graphVarName;
 	QHostAddress graphVarIP;
-	
+
 	//xml
 	ListVarXml listVar;
 	CLog cLog;
 
-	
 private slots:
 	void DoubleClicked(QTreeWidgetItem * item, int column);
 	void on_addButton_clicked();
@@ -89,7 +85,7 @@ private slots:
 	void writeVariable(const QByteArray &varname, const QByteArray &value, const QHostAddress &varip);
 	void closeEvent(QCloseEvent * event);
 	void insertVar(const QString *varName);
-	
+
 	void on_stateChanged(int state);
 };
 

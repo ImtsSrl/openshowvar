@@ -29,10 +29,11 @@
 
 #include "CGridField.h"
 #include <QPainter>
+#include "cvarsgrid.h"
 
 void CGridField::setMaxTime(int msec){
 	m_MaxTimeMSec = msec;
-	
+
 	//Aggiorniamo tutte le linee del gra-fico
 	int nLines = m_lineValue.count();
 	for(int i=0;i<nLines;i++)
@@ -44,13 +45,18 @@ int CGridField::getMaxTime(){
 }
 
 CGridField::CGridField(){
-	setMinimumSize(600,100);
 
 	m_MarkPrec = 4;
 	m_MaxTimeMSec = 3000;
 	m_MarkOpacity = 0.3;
+
+	setSizePolicy( QSizePolicy::Minimum , QSizePolicy::Minimum );
+
 }
 
+int CGridField::markPrecision(){
+	return m_MarkPrec;
+}
 
 void CGridField::setMarkPrecision(int mp){
 	if( mp > 0 )
@@ -64,24 +70,50 @@ void CGridField::setMarkOpacity(float v){
 
 void CGridField::paintEvent(QPaintEvent* qpEve){
 	QPainter paint(this);
-	double	max,min;
-	
-	paint.setRenderHints(QPainter::Antialiasing);
-	
-	QRect	r(50,10,width()-60,height()-60);
+	double	max = -999999,min = 999999;
 
-	{
-		m_lineValue[0]->getMaxMinValues(&max,&min);
+	paint.setRenderHints(QPainter::Antialiasing);
+
+	QRect	r(10,10,width()-55,height()-20);
+	QTime	minTime; minTime = QTime::currentTime();
+
+	CGridLine* ll;
+	double tmin = min,tmx = max;
+	QTime	ttime;
+
+	// Calcolo il range dei valori per tutte le linee
+	foreach( ll , m_lineValue ){
+		ll->getMaxMinValues(&tmx,&tmin);
+
+		max = qMax( tmx , max );
+		min = qMin( tmin , min );
+
+		ll->getMinTimeValue( &ttime );
+		if( ttime.isNull() )
+			minTime = ttime;
+		else {
+			minTime = qMin( ttime , minTime );
+		}
+	}
+
+	// Ci aggiungo una tolleranza per evitare che i valori massimi e
+	// minimi coincidano graficamente
+	double plus = (max - min) * 0.15;
+	min -= plus;
+	max += plus;
+
+	if( m_lineValue.size() > 0 ){
+		//m_lineValue[0]->getMaxMinValues(&max,&min);
 
 		paint.drawRect(r);
-		paint.drawText(	5,	20,
-					QString::number(max));
+		paint.drawText(	12,	10,
+					QString::number(max,'f',2));
 
-		paint.drawText(	5,	height()-50,
-					QString::number(min));
+		paint.drawText(	12,	height() - 13,
+					QString::number(min,'f',2));
 
 		int co = m_MarkPrec - 2;
-		int jump = 0;
+		double jump = 0;
 		float posy = r.height()+r.top();
 		double val = 0;
 
@@ -103,32 +135,36 @@ void CGridField::paintEvent(QPaintEvent* qpEve){
 					posy -= r.height() / (float)(co+1);
 
 					paint.setPen(pen_black);
-					paint.drawText(	5,	posy,
-							QString::number(val));
+					paint.drawText(	12,	(int)posy,
+							QString::number(val,'f',2));
 
 					paint.setPen(pen_line);
-					paint.drawLine(r.left(),posy,r.right(),posy);
+					paint.drawLine(r.left(),(int)posy,r.right(),(int)posy);
 				}
 			}
 		}
 	}
-	
+
 	int nLines = m_lineValue.count();
 
 	for(int i=0;i<nLines;i++)
-		m_lineValue[i]->drawInWidget(this,&paint,&r);
+		m_lineValue[i]->drawInWidget(this,&paint,&r,max,min,&minTime);
 }
 
 void CGridField::updateState(){
 	update();
 }
 
+void CGridField::removeLine(CGridLine * ln ){
+	m_lineValue.removeOne(ln);
+}
+
 void CGridField::addLine(CGridLine* line){
 	m_lineValue.append(line);
-	
+
 	line->setMaxTime(m_MaxTimeMSec);
 
 	connect( line, SIGNAL( stateChanged() ), this, SLOT( updateState() ));
-	
+
 	update();
 }

@@ -21,14 +21,13 @@
 #ifndef CGRIDFIELD_H
 #define CGRIDFIELD_H
 
-#include <QWidget>
-#include <QList>
+#include <QtGui>
 #include "CGridLine.h"
 
 class CGridField : public QWidget {
-	
+
 	Q_OBJECT
-			
+
 	public:
 
 		int		m_MaxTimeMSec;
@@ -37,28 +36,29 @@ class CGridField : public QWidget {
 		int		getMaxTime();
 
 	private:
-	
+
 		QList<CGridLine*>	m_lineValue;
 		int			m_MarkPrec;
 		float			m_MarkOpacity;
 
 	public:
-		
+
 		CGridField();
-		
+
 		void addLine(CGridLine* );
+		void removeLine( CGridLine* );
 
 		void setMarkOpacity(float );
 
 		void setMarkPrecision(int );
+		int markPrecision();
 
-	
 	protected:
 
 		void paintEvent(QPaintEvent* qpEve);
-		
+
 	public slots:
-		
+
 		void updateState();
 };
 
