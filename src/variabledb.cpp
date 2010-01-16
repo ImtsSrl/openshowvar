@@ -287,5 +287,9 @@ void VariableDB::renameVar(QByteArray varname, QByteArray newvarname, QHostAddre
  */
 
 void VariableDB::setReadTime(QHostAddress robotip, int* readtime){
-	robotServer[getThreadIndex(robotip)]->setReadFreq(readtime);
+    robotServer[getThreadIndex(robotip)]->setReadFreq(readtime);
+}
+
+void VariableDB::setAllReadTime(int* readtime){
+    //robotServer[getThreadIndex(robotip)]->setReadFreq(readtime);
 }

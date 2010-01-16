@@ -109,6 +109,10 @@ void OpenShowVarDock::createActions()
     refVarAct->setCurrentIndex(refVarAct->findText("1000"));
     connect(refVarAct,SIGNAL(currentIndexChanged(const QString &)),this,SLOT(on_refVarAct(const QString &)));
 
+    refVarDatabaseAct = new QSpinBox(this);
+    //refVarDatabaseAct->setValue(1000);
+    connect(refVarDatabaseAct,SIGNAL(valueChanged(int)),this,SLOT(on_refVarDatabaseAct(int)));
+
     editVarAct = new QAction(QIcon(":editvar"), tr("&Edit Var..."), this);
     editVarAct->setStatusTip(tr("Edit variable value"));
     connect(editVarAct, SIGNAL(triggered()), this, SLOT(on_editVar()));
@@ -162,6 +166,7 @@ void OpenShowVarDock::createToolBars()
     robotToolBar->addAction(addGraphAct);
     robotToolBar->addSeparator();
     robotToolBar->addWidget(refVarAct);
+    robotToolBar->addWidget(refVarDatabaseAct);
 
     editToolBar = addToolBar(tr("Edit"));
     editToolBar->addAction(editVarAct);
@@ -521,4 +526,9 @@ void OpenShowVarDock::on_clearList()
 void OpenShowVarDock::on_refVarAct(const QString &text)
 {
     qtimeLettura.start(text.toInt());
+}
+
+void OpenShowVarDock::on_refVarDatabaseAct(int i)
+{
+    //database->setReadTime();
 }

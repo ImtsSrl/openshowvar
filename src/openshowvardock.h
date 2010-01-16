@@ -34,6 +34,7 @@ private slots:
 
     void on_insertVar(const QString *varName);
     void on_refVarAct(const QString &text);
+    void on_refVarDatabaseAct(int i);
     void on_writeVariable(const QByteArray &varname, const QByteArray &value, const QHostAddress &varip);
     void on_saveVar();
     void on_openVar();
@@ -83,6 +84,7 @@ private:
 
     QAction *newVarAct;
     QComboBox *refVarAct;
+    QSpinBox* refVarDatabaseAct;
     QAction *deleteVarAct;
     QAction *addGraphAct;
     QAction *editVarAct;
