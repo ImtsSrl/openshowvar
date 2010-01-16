@@ -31,7 +31,6 @@ private slots:
     void on_editVar();
 
     void about();
-    void insertCustomer(const QString &customer);
 
     void on_insertVar(const QString *varName);
     void on_writeVariable(const QByteArray &varname, const QByteArray &value, const QHostAddress &varip);
