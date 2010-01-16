@@ -47,8 +47,8 @@ OpenShowVarDock::OpenShowVarDock()
 
     database = new VariableDB();
 
-    qtimeLettura.start(REFRESHTIME);
     connect(&qtimeLettura, SIGNAL(timeout()), this, SLOT(lettura()));
+    qtimeLettura.start(REFRESHTIME);
 
     connect(&timeUpdateGraph, SIGNAL(timeout()), this, SLOT(updateGraph()));
     timeUpdateGraph.start(500);
@@ -89,10 +89,10 @@ void OpenShowVarDock::about()
 
 void OpenShowVarDock::createActions()
 {
-    newLetterAct = new QAction(QIcon(":/images/add.png"), tr("&Add Robot Var..."),this);
-    //newLetterAct->setShortcuts(QKeySequence::New);
-    newLetterAct->setStatusTip(tr("Insert a new robot var"));
-    connect(newLetterAct, SIGNAL(triggered()), this, SLOT(newVar()));
+    newVarAct = new QAction(QIcon(":/images/add.png"), tr("&Add Robot Var..."),this);
+    //newVarAct->setShortcuts(QKeySequence::New);
+    newVarAct->setStatusTip(tr("Insert a new robot var"));
+    connect(newVarAct, SIGNAL(triggered()), this, SLOT(newVar()));
 
     deleteVarAct = new QAction(QIcon(":delete"), tr("&Delete a robot var"), this);
     deleteVarAct->setStatusTip(tr("Delete a robot var from var list"));
@@ -101,6 +101,13 @@ void OpenShowVarDock::createActions()
     addGraphAct = new QAction(QIcon(":addGraph"), tr("&Show graph"), this);
     addGraphAct->setStatusTip(tr("Show var graph"));
     connect(addGraphAct, SIGNAL(triggered()), this, SLOT(addGraph()));
+
+    refVarAct = new QComboBox(this);
+    QStringList scaleTime;
+    scaleTime << "100" << "500" << "1000" << "2000";
+    refVarAct->addItems(scaleTime);
+    refVarAct->setCurrentIndex(refVarAct->findText("1000"));
+    connect(refVarAct,SIGNAL(currentIndexChanged(const QString &)),this,SLOT(on_refVarAct(const QString &)));
 
     editVarAct = new QAction(QIcon(":editvar"), tr("&Edit Var..."), this);
     editVarAct->setStatusTip(tr("Edit variable value"));
@@ -131,7 +138,7 @@ void OpenShowVarDock::createActions()
 void OpenShowVarDock::createMenus()
 {
     robotMenu = menuBar()->addMenu(tr("&Robot"));
-    robotMenu->addAction(newLetterAct);
+    robotMenu->addAction(newVarAct);
     robotMenu->addAction(deleteVarAct);
     robotMenu->addSeparator();
     robotMenu->addAction(addGraphAct);
@@ -150,9 +157,11 @@ void OpenShowVarDock::createMenus()
 void OpenShowVarDock::createToolBars()
 {
     robotToolBar = addToolBar(tr("Robot"));
-    robotToolBar->addAction(newLetterAct);
+    robotToolBar->addAction(newVarAct);
     robotToolBar->addAction(deleteVarAct);
     robotToolBar->addAction(addGraphAct);
+    robotToolBar->addSeparator();
+    robotToolBar->addWidget(refVarAct);
 
     editToolBar = addToolBar(tr("Edit"));
     editToolBar->addAction(editVarAct);
@@ -507,4 +516,9 @@ void OpenShowVarDock::on_clearList()
         database->deleteVar(treeWidget->topLevelItem(row)->text(CTreeVar::VARNAME).toAscii(),(QHostAddress)treeWidget->topLevelItem(row)->text(CTreeVar::ROBOTIP));
     }
     treeWidget->clear();
+}
+
+void OpenShowVarDock::on_refVarAct(const QString &text)
+{
+    qtimeLettura.start(text.toInt());
 }

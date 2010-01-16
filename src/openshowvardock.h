@@ -33,6 +33,7 @@ private slots:
     void about();
 
     void on_insertVar(const QString *varName);
+    void on_refVarAct(const QString &text);
     void on_writeVariable(const QByteArray &varname, const QByteArray &value, const QHostAddress &varip);
     void on_saveVar();
     void on_openVar();
@@ -75,12 +76,13 @@ private:
     QToolBar *robotToolBar;
 
     QToolBar *editToolBar;
-    QAction *newLetterAct;
 
     QAction *aboutAct;
     QAction *aboutQtAct;
     QAction *quitAct;
 
+    QAction *newVarAct;
+    QComboBox *refVarAct;
     QAction *deleteVarAct;
     QAction *addGraphAct;
     QAction *editVarAct;
