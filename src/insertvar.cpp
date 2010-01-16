@@ -128,8 +128,11 @@ void InsertVar::on_insertButton_clicked(){
     QString text=lineEdit->text();
     QList<QString> selectedRobot;
     selectedRobot = comboRobotList->currentText().split("@");
-    emit insertNewVar(text, selectedRobot[1]);
-    lineEdit->clear();
+    if(!text.isNull() && !selectedRobot[0].isNull())
+    {
+        emit insertNewVar(text, selectedRobot[1]);
+        lineEdit->clear();
+    }
 }
 
 void InsertVar::on_abortButton_clicked(){
