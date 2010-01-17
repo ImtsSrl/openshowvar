@@ -101,6 +101,8 @@ void CVarsGrid::loadFromXml( QDomElement* dom ){
 	if( name.length() > 0 && ip.length() > 0 )
 	    addVar(name,ip);
 
+	m_lines.last()->loadAttributeXml( &ln );
+
 	ln = ln.nextSiblingElement( "LINE" );
     }
 
@@ -144,6 +146,8 @@ const QDomElement& CVarsGrid::saveToXml( QDomElement* main ){
 
 	ln.setAttribute( "NAME" , m_linesVar[i] );
 	ln.setAttribute( "IP" , m_linesIP[i] );
+
+	m_lines[i]->saveAttributeXml( &ln );
 
 	vg.appendChild( ln );
     }

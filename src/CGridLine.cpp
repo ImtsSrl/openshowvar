@@ -62,6 +62,16 @@ float CGridLine::width(){
 	return m_drawWidth;
 }
 
+void CGridLine::saveAttributeXml( QDomElement* dom ){
+    dom->setAttribute( "COLOR" , m_color.name() );
+    dom->setAttribute( "WIDTH" , m_drawWidth );
+}
+
+void CGridLine::loadAttributeXml( QDomElement* dom ){
+    m_color.setNamedColor( dom->attribute( "COLOR" , "#000000" ) );
+    m_drawWidth = dom->attribute( "WIDTH" , "1.0" ).toFloat();
+}
+
 void CGridLine::setWidth( float f ){
 	if( f > 0 ) m_drawWidth = f;
 }
