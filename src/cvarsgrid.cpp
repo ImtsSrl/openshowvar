@@ -92,6 +92,18 @@ void CVarsGrid::loadFromXml( QDomElement* dom ){
     rct.setWidth( dom->attribute( "WIDTH" , "100" ).toInt() );
     rct.setHeight( dom->attribute( "HEIGHT" , "200" ).toInt() );
 
+    QDomElement ln = dom->firstChildElement( "LINE" );
+
+    while( !ln.isNull() ){
+	QString name ( ln.attribute( "NAME" , "" ) );
+	QString ip ( ln.attribute( "IP" , "" ) );
+
+	if( name.length() > 0 && ip.length() > 0 )
+	    addVar(name,ip);
+
+	ln = ln.nextSiblingElement( "LINE" );
+    }
+
     setGeometry( rct );
 }
 
@@ -126,6 +138,15 @@ const QDomElement& CVarsGrid::saveToXml( QDomElement* main ){
     vg.setAttribute( "Y" , geometry().y() );
     vg.setAttribute( "WIDTH" , geometry().width() );
     vg.setAttribute( "HEIGHT" , geometry().height() );
+
+    for(int i = 0; i < m_lines.size(); i++ ){
+	QDomElement ln = main->ownerDocument().createElement( "LINE" );
+
+	ln.setAttribute( "NAME" , m_linesVar[i] );
+	ln.setAttribute( "IP" , m_linesIP[i] );
+
+	vg.appendChild( ln );
+    }
 
     main->appendChild( vg );
 }
