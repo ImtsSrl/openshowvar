@@ -74,16 +74,25 @@ const QList<CVarsGrid*>& CVarsGrid::loadAllFromXml( const QString& filename , Va
 	grid = new CVarsGrid( vardb );
 	ret.append( grid );
 
-	if( !(child = node.namedItem("GEOMETRY") ).isNull() ){
-	    QStringList poss ( child.firstChild().toElement().text().split(',') );
-	    if( poss.size() != 4 ) continue;
-	    grid->setGeometry( QRect( poss[0].toInt() , poss[1].toInt() , poss[2].toInt() , poss[3].toInt() ));
-	}
+	QDomElement ele = node.toElement();
+	grid->loadFromXml( &ele );
 
 	node = node.nextSibling();
     }
 
+    qDebug() << "loading done";
     return ret;
+}
+
+void CVarsGrid::loadFromXml( QDomElement* dom ){
+    QRect rct;
+
+    rct.setX( dom->attribute( "X" , "10" ).toInt() );
+    rct.setY( dom->attribute( "Y" , "10" ).toInt() );
+    rct.setWidth( dom->attribute( "WIDTH" , "100" ).toInt() );
+    rct.setHeight( dom->attribute( "HEIGHT" , "200" ).toInt() );
+
+    setGeometry( rct );
 }
 
 void CVarsGrid::saveAllToXml(const QList<CVarsGrid*>& list , const QString& filename ){
@@ -91,15 +100,13 @@ void CVarsGrid::saveAllToXml(const QList<CVarsGrid*>& list , const QString& file
     CVarsGrid* grid;
 
     foreach( grid , list ){
-	QDomElement vg = main.createElement( "VARSGRID" );
-	main.appendChild( vg );
 
-	QDomElement pos = main.createElement( "GEOMETRY" );
-	vg.appendChild( pos );
+	QDomElement grids = main.createElement("VARSGRIDS");
 
-	QString spos;
-	spos.sprintf( "%d,%d,%d,%d" , grid->geometry().x() , grid->geometry().y() , grid->geometry().width() , grid->geometry().height() );
-	pos.appendChild( main.createTextNode( spos ) );
+	grid->saveToXml( &grids );
+
+	main.appendChild( grids );
+
     }
 
     QFile file( filename );
@@ -110,12 +117,17 @@ void CVarsGrid::saveAllToXml(const QList<CVarsGrid*>& list , const QString& file
     file.close();
 }
 
-void CVarsGrid::loadFromXml( QDomElement* dom ){
+const QDomElement& CVarsGrid::saveToXml( QDomElement* main ){
 
-}
 
-QDomElement& CVarsGrid::saveToXml() const {
+    QDomElement vg = main->ownerDocument().createElement( "VARSGRID" );
 
+    vg.setAttribute( "X" , geometry().x() );
+    vg.setAttribute( "Y" , geometry().y() );
+    vg.setAttribute( "WIDTH" , geometry().width() );
+    vg.setAttribute( "HEIGHT" , geometry().height() );
+
+    main->appendChild( vg );
 }
 
 void CVarsGrid::menuTrig( QAction* act ){

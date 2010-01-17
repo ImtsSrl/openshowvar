@@ -50,7 +50,7 @@ public:
 	void dropEvent(QDropEvent *event);
 
 	void loadFromXml( QDomElement* );
-	QDomElement& saveToXml() const;
+	const QDomElement& saveToXml( QDomElement* );
 
 	static const QList<CVarsGrid*>& loadAllFromXml( const QString& file , VariableDB* vardb );
 	static void saveAllToXml(const QList<CVarsGrid*>& list , const QString& file );
