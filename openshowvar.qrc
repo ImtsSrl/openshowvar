@@ -17,5 +17,6 @@
         <file alias="saveVar">images/filesave.png</file>
         <file alias="openVar">images/fileopen.png</file>
         <file alias="clearList">images/editdeleteall.png</file>
+        <file alias="run">images/run.png</file>
     </qresource>
 </RCC>

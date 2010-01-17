@@ -98,6 +98,11 @@ void OpenShowVarDock::createActions()
     deleteVarAct->setStatusTip(tr("Delete a robot var from var list"));
     connect(deleteVarAct, SIGNAL(triggered()), this, SLOT(deleteVar()));
 
+    readVarAct=new QAction(QIcon(":run"),tr("&Run"), this);
+    readVarAct->setCheckable(true);
+    readVarAct->setChecked(true);
+    connect(readVarAct,SIGNAL(toggled(bool)),this,SLOT(on_readVarAct(bool)));
+
     addGraphAct = new QAction(QIcon(":addGraph"), tr("&Show graph"), this);
     addGraphAct->setStatusTip(tr("Show var graph"));
     connect(addGraphAct, SIGNAL(triggered()), this, SLOT(addGraph()));
@@ -165,6 +170,7 @@ void OpenShowVarDock::createToolBars()
     robotToolBar = addToolBar(tr("Robot"));
     robotToolBar->addAction(newVarAct);
     robotToolBar->addAction(deleteVarAct);
+    robotToolBar->addAction(readVarAct);
     robotToolBar->addAction(addGraphAct);
     robotToolBar->addSeparator();
     robotToolBar->addWidget(refVarAct);
@@ -533,4 +539,12 @@ void OpenShowVarDock::on_refVarAct(const QString &text)
 void OpenShowVarDock::on_refVarDatabaseAct(int i)
 {
     database->setAllReadTime(&i);
+}
+
+void OpenShowVarDock::on_readVarAct(bool checked)
+{
+    if(checked)
+        qtimeLettura.start();
+    else
+        qtimeLettura.stop();
 }
