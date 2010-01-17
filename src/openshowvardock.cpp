@@ -110,7 +110,9 @@ void OpenShowVarDock::createActions()
     connect(refVarAct,SIGNAL(currentIndexChanged(const QString &)),this,SLOT(on_refVarAct(const QString &)));
 
     refVarDatabaseAct = new QSpinBox(this);
-    //refVarDatabaseAct->setValue(1000);
+    refVarDatabaseAct->setRange(10,2000);
+    refVarDatabaseAct->setSingleStep(50);
+    refVarDatabaseAct->setSuffix(" [ms]");
     connect(refVarDatabaseAct,SIGNAL(valueChanged(int)),this,SLOT(on_refVarDatabaseAct(int)));
 
     editVarAct = new QAction(QIcon(":editvar"), tr("&Edit Var..."), this);
@@ -530,5 +532,5 @@ void OpenShowVarDock::on_refVarAct(const QString &text)
 
 void OpenShowVarDock::on_refVarDatabaseAct(int i)
 {
-    //database->setReadTime();
+    database->setAllReadTime(&i);
 }

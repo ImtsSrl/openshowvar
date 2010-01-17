@@ -43,6 +43,7 @@ class VariableDB : public QObject
 		void deleteVar(QByteArray varname, QHostAddress robotip);
 		void renameVar(QByteArray varname, QByteArray newvarname, QHostAddress robotip);
 		void setReadTime(QHostAddress robotip, int* readtime);
+                int  getRobotNumber();
                 void setAllReadTime(int* readtime);
 		
 	private:
