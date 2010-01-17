@@ -53,6 +53,8 @@ OpenShowVarDock::OpenShowVarDock()
     connect(&timeUpdateGraph, SIGNAL(timeout()), this, SLOT(updateGraph()));
     timeUpdateGraph.start(500);
 
+    connect(&listVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
+
     setWindowIcon(QIcon(":openshowvar"));
     resize(700,500);
 }
@@ -518,7 +520,6 @@ void OpenShowVarDock::on_saveVar()
 void OpenShowVarDock::on_openVar()
 {
     QString files = QFileDialog::getOpenFileName(this,tr("Select files to open"),"./","Var list (*.xml)");
-    connect(&listVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
     listVar.readList(files);
 }
 

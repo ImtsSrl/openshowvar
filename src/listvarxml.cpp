@@ -113,16 +113,17 @@ void ListVarXml::readList(const QString filename)
 }
 
 void ListVarXml::estraiVariabile(const QDomElement &element){
-	QDomNode node = element.firstChild();
-	QString variable, robot;
-	
-	while(!node.isNull()){
-		QDomElement e = node.toElement();
-		variable = e.text();
-		node = node.nextSibling();
-		e = node.toElement();
-		robot = e.text();
-		node = node.nextSibling();
-		emit insertNewVar(variable, robot);
-	}
+    QDomNode node = element.firstChild();
+    QString variable, robot;
+
+    while(!node.isNull()){
+        qDebug() << "Inserimento variabile";
+        QDomElement e = node.toElement();
+        variable = e.text();
+        node = node.nextSibling();
+        e = node.toElement();
+        robot = e.text();
+        node = node.nextSibling();
+        emit insertNewVar(variable, robot);
+    }
 }
