@@ -52,7 +52,7 @@ OpenShowVarDock::OpenShowVarDock()
 
 	connect(&timeUpdateGraph, SIGNAL(timeout()), this, SLOT(updateGraph()));
 	timeUpdateGraph.start(500);
-	m_gridList.append(CVarsGrid::loadAllFromXml("graph.xml",database));
+	//m_gridList.append(CVarsGrid::loadAllFromXml("graph.xml",database));
 
 	connect(&listVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
 
@@ -62,7 +62,7 @@ OpenShowVarDock::OpenShowVarDock()
 
 OpenShowVarDock::~OpenShowVarDock()
 {
-	CVarsGrid::saveAllToXml(m_gridList,"graph.xml");
+	//CVarsGrid::saveAllToXml(m_gridList,"graph.xml");
 }
 
 void OpenShowVarDock::newVar()
