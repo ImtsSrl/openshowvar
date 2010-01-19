@@ -181,7 +181,11 @@ void OpenShowVarDock::createToolBars()
     robotToolBar->addAction(readVarAct);
     robotToolBar->addAction(addGraphAct);
     robotToolBar->addSeparator();
+    QLabel *refTime=new QLabel("Ref. TIME:");
+    robotToolBar->addWidget(refTime);
     robotToolBar->addWidget(refVarAct);
+    QLabel *readTime=new QLabel("Read TIME:");
+    robotToolBar->addWidget(readTime);
     robotToolBar->addWidget(refVarDatabaseAct);
 
     editToolBar = addToolBar(tr("Edit"));
