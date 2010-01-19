@@ -104,6 +104,14 @@ InsertVar::InsertVar(){
 
     qtimeBroadcast.start(5000);
     connect(&qtimeBroadcast, SIGNAL(timeout()), this, SLOT(on_Broadcast()));
+
+    QStringList wordList;
+    wordList << "$ov_pro" << "$timer[1]" << "$axix_act" << "$pos_act";
+
+    QCompleter *completer = new QCompleter(wordList, this);
+    completer->setCompletionMode(QCompleter::InlineCompletion);
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
+    lineEdit->setCompleter(completer);
 }
 
 InsertVar::~InsertVar(){
