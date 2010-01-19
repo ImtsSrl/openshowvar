@@ -62,7 +62,7 @@ OpenShowVarDock::OpenShowVarDock()
 
 OpenShowVarDock::~OpenShowVarDock()
 {
-    CVarsGrid::saveAllToXml(m_gridList,"graph.xml");
+    //CVarsGrid::saveAllToXml(m_gridList,"graph.xml");
 }
 
 void OpenShowVarDock::newVar()
@@ -73,16 +73,16 @@ void OpenShowVarDock::newVar()
 
 void OpenShowVarDock::addGraph()
 {
-    QDockWidget *dock = new QDockWidget(tr("New robot variable"), this);
-    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    QDockWidget *dock = new QDockWidget(tr("New Graph"), this);
+    dock->setAllowedAreas(Qt::TopDockWidgetArea);
 
     CVarsGrid* g = new CVarsGrid( database );
     m_gridList.append( g );
 
     dock->setWidget(g);
-    addDockWidget(Qt::RightDockWidgetArea, dock);
+    addDockWidget(Qt::TopDockWidgetArea, dock);
 
-//    statusBar()->showMessage(tr("Ready"), 2000);
+    statusBar()->showMessage(tr("Add new graph window"), 2000);
 }
 
 void OpenShowVarDock::about()
