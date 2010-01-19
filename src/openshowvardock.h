@@ -23,6 +23,7 @@ class OpenShowVarDock : public QMainWindow
 
 public:
     OpenShowVarDock();
+    ~OpenShowVarDock();
 
 private slots:
     void newVar();
