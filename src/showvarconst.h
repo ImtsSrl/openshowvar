@@ -30,14 +30,6 @@ const char WRITEVARIABLE=1;
 
 const int NUMBYTEINT=3;
 
-enum ColumName {
-    VARNAME,
-    VARVALUE,
-    OPTIONS,
-    TIME,
-    ROBOTIP
-};
-
 #define DEBUGWIN 0;
 
 #endif

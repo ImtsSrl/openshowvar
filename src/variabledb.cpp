@@ -232,14 +232,15 @@ void VariableDB::deleteVar(QByteArray varname, QHostAddress robotip){
  *	\param robotip nome della variabile da leggere
  */
 
-void VariableDB::startNewThread(QHostAddress robotip){
-	for(int i=0;i<MAXROBOTSERVER;i++){
-		if(robotServer[i]==NULL){
-			robotServer[i] = new ClientCross(&robotip,REFRESHTIME);
-			robotServer[i]->start();
-			break;
-		}
-	}
+void VariableDB::startNewThread(QHostAddress robotip)
+{
+    for(int i=0;i<MAXROBOTSERVER;i++){
+        if(robotServer[i]==NULL){
+            robotServer[i] = new ClientCross(&robotip,REFRESHTIME);
+            robotServer[i]->start();
+            break;
+        }
+    }
 }
 
 /*!	\brief Inizializzazione di un nuovo thread
@@ -287,5 +288,30 @@ void VariableDB::renameVar(QByteArray varname, QByteArray newvarname, QHostAddre
  */
 
 void VariableDB::setReadTime(QHostAddress robotip, int* readtime){
-	robotServer[getThreadIndex(robotip)]->setReadFreq(readtime);
+    robotServer[getThreadIndex(robotip)]->setReadFreq(readtime);
+}
+
+/*!	\brief Tempo di aggiornamento globale variabili
+ *
+ *	Imposta il tempo di aggiornamento delle variabili per tutti i robot
+ *
+ *	\param readtime Nuovo tempo di lettura
+ */
+
+void VariableDB::setAllReadTime(int* readtime)
+{
+    for(int i=0;i<MAXROBOTSERVER;i++)
+        if(!robotServer[i]==NULL)
+            robotServer[i]->setReadFreq(readtime);
+}
+
+/*!	\brief Numero di thread attivi
+ *
+ *	Restituisce il numero di thread attivi
+ *
+ */
+
+int VariableDB::getRobotNumber()
+{
+    return 0;
 }

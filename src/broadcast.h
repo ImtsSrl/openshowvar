@@ -46,9 +46,12 @@ class Broadcast : public QUdpSocket
 #endif
 		
 	private:
-		QNetworkInterface networkInterface;
-		
+                QNetworkInterface networkInterface;
+                QList<QNetworkAddressEntry> address;
 		QUdpSocket* privateBind[MAXBROADCASTNETWORK];
+                QNetworkAddressEntry broadcastAddress[MAXBROADCASTNETWORK];
+                int interfaceCount;
+                int initBroadcastNetwork();
 		
 	private slots:
 		void processPending(int index);

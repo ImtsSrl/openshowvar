@@ -47,11 +47,15 @@ public:
 private:
 	QComboBox* comboRobotList;
 	Broadcast* broadcast;
+
+        QTimer qtimeBroadcast;
 	
 private slots:
 	void on_insertButton_clicked();
 	void on_lineEdit_textChanged();
+        void on_lineEdit_returnPressed();
 	void on_abortButton_clicked();
+        void on_Broadcast();
 	void Robot(QList<QByteArray> &datirobot);
 	void closeEvent(QCloseEvent * event);
 	

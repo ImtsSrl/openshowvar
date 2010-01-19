@@ -37,104 +37,108 @@
 
 InsertVar::InsertVar(){
 	
-	//label di inserimento e lineedit
-	varLabel = new QLabel(tr("Var name"));
-	lineEdit = new QLineEdit();
-	
-	//TODO il punto deve essere ripetuto solo una volta
-	//QRegExp regExp("[$]?[._A-Za-z0-9]{1,30}([[][0-9]{0,3}[]]){0,3}");
-	//QRegExp regExp("[$]?[_A-Za-z0-9]{1,30}[.]?[_A-Za-z0-9]{1,30}([[][0-9]{0,3}[]]){0,3}");
-        //QRegExp regExp("[$]?[_A-Za-z0-9]{1,30}[.]?[_A-Za-z0-9]{1,30}([[][0-9]{0,3}([,]{0,1}[0-9]{1,3}){0,1}([,]{0,1}[0-9]{1,3}){0,1}[]]){0,1}");
-	
-        //QRegExp regExp("[$]?[_A-Za-z0-9]{1,30}[.]?[_A-Za-z0-9]{1,30}([[][0-9]{0,3}([,]{0,1}[0-9]{1,3}){0,1}([,]{0,1}[0-9]{1,3}){0,1}[]][.]?[_A-Za-z0-9]{1,30}){0,1}");
-        QRegExp regExp("[$]?[_A-Za-z0-9]{1,30}[.]?[_A-Za-z0-9]{1,30}([[][0-9]{0,3}([,]{0,1}[0-9]{1,3}){0,1}([,]{0,1}[0-9]{1,3}){0,1}[]]){0,1}([.]?[_A-Za-z0-9]{1,30}){0,1}");
+    //label di inserimento e lineedit
+    varLabel = new QLabel(tr("Var name"));
+    lineEdit = new QLineEdit();
 
-        lineEdit->setValidator(new QRegExpValidator(regExp, this));
-		
-	//lista dei robot presenti
-	labelRobot = new QLabel(tr("Robot list (Serial @ IP Address)"));
-	comboRobotList = new QComboBox;
-	QFont font("Helvetica", 10, QFont::Bold);
-	comboRobotList->setFont(font);
-	
-	//comandi
-	insertButton = new QPushButton(tr("Insert"));
-	insertButton->setEnabled(false);
-	abortButton = new QPushButton(tr("Abort"));
-	
-	/*la finestra è strutturata su tre righe:
+    QRegExp regExp("[$]?[_A-Za-z0-9]{1,30}[.]?[_A-Za-z0-9]{1,30}([[][0-9]{0,3}([,]{0,1}[0-9]{1,3}){0,1}([,]{0,1}[0-9]{1,3}){0,1}[]]){0,1}([.]?[_A-Za-z0-9]{1,30}){0,1}");
+
+    lineEdit->setValidator(new QRegExpValidator(regExp, this));
+
+    //lista dei robot presenti
+    labelRobot = new QLabel(tr("Robot list (Serial @ IP Address)"));
+    comboRobotList = new QComboBox;
+    QFont font("Helvetica", 10, QFont::Bold);
+    comboRobotList->setFont(font);
+
+    //comandi
+    insertButton = new QPushButton(tr("Insert"));
+    insertButton->setEnabled(false);
+    abortButton = new QPushButton(tr("Abort"));
+
+    /*la finestra è strutturata su tre righe:
 	la prima descrizione e inserimento
 	la seconda lista dei robot
 	la terza comandi
 	*/
-	QHBoxLayout* insertLayout = new QHBoxLayout;
-	QHBoxLayout* robotLayout = new QHBoxLayout;
-	QHBoxLayout* commandLayout = new QHBoxLayout;
-	
-	insertLayout->addWidget(varLabel);
-	insertLayout->addSpacing(20);
-	insertLayout->addWidget(lineEdit);
-	
-	robotLayout->addWidget(labelRobot);
-	robotLayout->addSpacing(20);
-	robotLayout->addWidget(comboRobotList);
-	
-	commandLayout->addStretch();
-	commandLayout->addWidget(insertButton);
-	commandLayout->addWidget(abortButton);
-	
-	QVBoxLayout* mainLayout = new QVBoxLayout;
-	
-	mainLayout->addLayout(insertLayout);
-	mainLayout->addLayout(robotLayout);
-	mainLayout->addLayout(commandLayout);
-	setLayout(mainLayout);
-	
-	setMaximumSize(500,200);
-	setWindowTitle(tr("New variable"));
-	resize(430,150);
-	
-	broadcast = new Broadcast(this);
-	
-	connect(broadcast, SIGNAL(addRobot(QList<QByteArray> &)), this, SLOT(Robot(QList<QByteArray> &)));
-	connect(insertButton,SIGNAL(clicked()), this, SLOT(on_insertButton_clicked()));
-	connect(lineEdit,SIGNAL(textChanged(const QString &)), this, SLOT(on_lineEdit_textChanged()));
-	connect(abortButton, SIGNAL(clicked()), this, SLOT(on_abortButton_clicked()));
-	
-	connect(broadcast, SIGNAL(newMsg(QString &)), this, SLOT(newMsg(QString &)));
-	
-	setWindowIcon(QIcon("openshowvar.png"));
-	
-	broadcast->send();
+    QHBoxLayout* insertLayout = new QHBoxLayout;
+    QHBoxLayout* robotLayout = new QHBoxLayout;
+    QHBoxLayout* commandLayout = new QHBoxLayout;
+
+    insertLayout->addWidget(varLabel);
+    insertLayout->addSpacing(20);
+    insertLayout->addWidget(lineEdit);
+
+    robotLayout->addWidget(labelRobot);
+    robotLayout->addSpacing(20);
+    robotLayout->addWidget(comboRobotList);
+
+    commandLayout->addStretch();
+    commandLayout->addWidget(insertButton);
+    //commandLayout->addWidget(abortButton);
+
+    QVBoxLayout* mainLayout = new QVBoxLayout;
+
+    mainLayout->addLayout(insertLayout);
+    mainLayout->addLayout(robotLayout);
+    mainLayout->addLayout(commandLayout);
+    setLayout(mainLayout);
+
+//    setMaximumSize(500,200);
+//    setWindowTitle(tr("New variable"));
+//    resize(430,150);
+
+    broadcast = new Broadcast(this);
+
+    connect(broadcast, SIGNAL(addRobot(QList<QByteArray> &)), this, SLOT(Robot(QList<QByteArray> &)));
+    connect(insertButton,SIGNAL(clicked()), this, SLOT(on_insertButton_clicked()));
+    connect(lineEdit,SIGNAL(textChanged(const QString &)), this, SLOT(on_lineEdit_textChanged()));
+    connect(lineEdit,SIGNAL(returnPressed()), this, SLOT(on_lineEdit_returnPressed()));
+    //connect(abortButton, SIGNAL(clicked()), this, SLOT(on_abortButton_clicked()));
+
+    connect(broadcast, SIGNAL(newMsg(QString &)), this, SLOT(newMsg(QString &)));
+
+    setWindowIcon(QIcon("openshowvar.png"));
+
+    broadcast->send();
+
+    qtimeBroadcast.start(5000);
+    connect(&qtimeBroadcast, SIGNAL(timeout()), this, SLOT(on_Broadcast()));
 }
 
 InsertVar::~InsertVar(){
-	
+    delete broadcast;
 }
 
 void InsertVar::DropVar(QString varName){
-	lineEdit->setText(varName);
+    lineEdit->setText(varName);
 }
 
 void InsertVar::on_lineEdit_textChanged()
 {
-	insertButton->setEnabled(lineEdit->hasAcceptableInput() && !comboRobotList->currentText().isEmpty());
+    insertButton->setEnabled(lineEdit->hasAcceptableInput() && !comboRobotList->currentText().isEmpty());
+}
+
+void InsertVar::on_lineEdit_returnPressed()
+{
+    on_insertButton_clicked();
 }
 
 void InsertVar::on_insertButton_clicked(){
-	QString text=lineEdit->text();
-	QList<QString> selectedRobot;
-	selectedRobot = comboRobotList->currentText().split("@");
-	emit insertNewVar(text, selectedRobot[1]);
-	delete broadcast;
-	accept();
-	delete this;
+    QString text=lineEdit->text();
+    QList<QString> selectedRobot;
+    selectedRobot = comboRobotList->currentText().split("@");
+    if(!text.isNull() && !selectedRobot[0].isNull())
+    {
+        emit insertNewVar(text, selectedRobot[1]);
+        lineEdit->clear();
+    }
 }
 
 void InsertVar::on_abortButton_clicked(){
-	emit insertClose();
-	delete broadcast;
-	reject();
+    emit insertClose();
+    delete broadcast;
+    reject();
 }
 
 /*!	\brief Aggiunta robot alla lista
@@ -145,19 +149,27 @@ void InsertVar::on_abortButton_clicked(){
  */
 
 void InsertVar::Robot(QList<QByteArray> &datirobot){
-	comboRobotList->addItem(datirobot[2] + "@" + datirobot[3]);
-	//comboRobotList->setEditable(true);
-	//comboRobotList->lineEdit()->setAlignment(Qt::AlignHCenter);
-	//comboRobotList->setItemData(0,Qt::AlignHCenter, Qt::TextAlignmentRole);
-	
-	on_lineEdit_textChanged();
+    QString robot=datirobot[2] + "@" + datirobot[3];
+    if(comboRobotList->findText(robot))
+        comboRobotList->addItem(robot);
+
+    //comboRobotList->setEditable(true);
+    //comboRobotList->lineEdit()->setAlignment(Qt::AlignHCenter);
+    //comboRobotList->setItemData(0,Qt::AlignHCenter, Qt::TextAlignmentRole);
+
+    on_lineEdit_textChanged();
 }
 
 void InsertVar::closeEvent (QCloseEvent* event)
 {
-	on_abortButton_clicked();
+    on_abortButton_clicked();
 }
 
 void InsertVar::newMsg(QString &msg){
-	this->setWindowTitle(msg);
+    this->setWindowTitle(msg);
+}
+
+void InsertVar::on_Broadcast()
+{
+    broadcast->send();
 }
