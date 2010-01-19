@@ -120,12 +120,14 @@ void OpenShowVarDock::createActions()
     scaleTime << "100" << "500" << "1000" << "2000";
     refVarAct->addItems(scaleTime);
     refVarAct->setCurrentIndex(refVarAct->findText("1000"));
+    refVarAct->setToolTip(tr("Set video refresh time"));
     connect(refVarAct,SIGNAL(currentIndexChanged(const QString &)),this,SLOT(on_refVarAct(const QString &)));
 
     refVarDatabaseAct = new QSpinBox(this);
     refVarDatabaseAct->setRange(10,2000);
     refVarDatabaseAct->setSingleStep(50);
     refVarDatabaseAct->setSuffix(" [ms]");
+    refVarDatabaseAct->setToolTip(tr("Set database refresh time"));
     connect(refVarDatabaseAct,SIGNAL(valueChanged(int)),this,SLOT(on_refVarDatabaseAct(int)));
 
     editVarAct = new QAction(QIcon(":editvar"), tr("&Edit Var..."), this);
@@ -175,16 +177,21 @@ void OpenShowVarDock::createMenus()
 
 void OpenShowVarDock::createToolBars()
 {
+    QFont ToolBarFont;
+    ToolBarFont.setBold(true);
+
     robotToolBar = addToolBar(tr("Robot"));
     robotToolBar->addAction(newVarAct);
     robotToolBar->addAction(deleteVarAct);
     robotToolBar->addAction(readVarAct);
     robotToolBar->addAction(addGraphAct);
     robotToolBar->addSeparator();
-    QLabel *refTime=new QLabel("Ref. TIME:");
+    QLabel *refTime=new QLabel(tr("Ref. TIME:"));
+    refTime->setFont(ToolBarFont);
     robotToolBar->addWidget(refTime);
     robotToolBar->addWidget(refVarAct);
-    QLabel *readTime=new QLabel("Read TIME:");
+    QLabel *readTime=new QLabel(tr("Read TIME:"));
+    readTime->setFont(ToolBarFont);
     robotToolBar->addWidget(readTime);
     robotToolBar->addWidget(refVarDatabaseAct);
 
