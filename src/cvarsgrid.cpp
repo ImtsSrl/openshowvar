@@ -55,21 +55,21 @@ void CVarsGrid::mouseReleaseEvent( QMouseEvent* eve ){
 }
 
 const QList<CVarsGrid*>& CVarsGrid::loadAllFromXml( const QString& filename , VariableDB* vardb ) {
-    QDomDocument main;
-    QList<CVarsGrid*> ret;
+	QDomDocument main;
+	QList<CVarsGrid*> ret;
 
-    QFile file(filename);
-    file.open(QIODevice::ReadOnly);
+	QFile file(filename);
+	file.open(QIODevice::ReadOnly);
 
-    main.setContent(&file);
-    file.close();
+	main.setContent(&file);
+	file.close();
 
-    QDomNode node = main.documentElement().firstChild();
-    QDomNode child;
+	QDomNode node = main.documentElement().firstChild();
+	QDomNode child;
 
-    CVarsGrid* grid;
+	CVarsGrid* grid;
 
-    while( !node.isNull() ){
+	while( !node.isNull() ){
 
 	grid = new CVarsGrid( vardb );
 	ret.append( grid );
@@ -78,42 +78,42 @@ const QList<CVarsGrid*>& CVarsGrid::loadAllFromXml( const QString& filename , Va
 	grid->loadFromXml( &ele );
 
 	node = node.nextSibling();
-    }
+	}
 
-    qDebug() << "loading done";
-    return ret;
+	qDebug() << "loading done";
+	return ret;
 }
 
 void CVarsGrid::loadFromXml( QDomElement* dom ){
-    QRect rct;
+	QRect rct;
 
-    rct.setX( dom->attribute( "X" , "10" ).toInt() );
-    rct.setY( dom->attribute( "Y" , "10" ).toInt() );
-    rct.setWidth( dom->attribute( "WIDTH" , "100" ).toInt() );
-    rct.setHeight( dom->attribute( "HEIGHT" , "200" ).toInt() );
+	/*rct.setX( dom->attribute( "X" , "10" ).toInt() );
+	rct.setY( dom->attribute( "Y" , "10" ).toInt() );
+	rct.setWidth( dom->attribute( "WIDTH" , "100" ).toInt() );
+	rct.setHeight( dom->attribute( "HEIGHT" , "200" ).toInt() );*/
 
-    QDomElement ln = dom->firstChildElement( "LINE" );
+	QDomElement ln = dom->firstChildElement( "LINE" );
 
-    while( !ln.isNull() ){
-	QString name ( ln.attribute( "NAME" , "" ) );
-	QString ip ( ln.attribute( "IP" , "" ) );
+	while( !ln.isNull() ){
+		QString name ( ln.attribute( "NAME" , "" ) );
+		QString ip ( ln.attribute( "IP" , "" ) );
 
-	if( name.length() > 0 && ip.length() > 0 )
-	    addVar(name,ip);
+		if( name.length() > 0 && ip.length() > 0 )
+			addVar(name,ip);
 
-	m_lines.last()->loadAttributeXml( &ln );
+		m_lines.last()->loadAttributeXml( &ln );
 
-	ln = ln.nextSiblingElement( "LINE" );
-    }
+		ln = ln.nextSiblingElement( "LINE" );
+	}
 
-    setGeometry( rct );
+	//setGeometry( rct );
 }
 
 void CVarsGrid::saveAllToXml(const QList<CVarsGrid*>& list , const QString& filename ){
-    QDomDocument main;
-    CVarsGrid* grid;
+	QDomDocument main;
+	CVarsGrid* grid;
 
-    foreach( grid , list ){
+	foreach( grid , list ){
 
 	QDomElement grids = main.createElement("VARSGRIDS");
 
@@ -121,27 +121,27 @@ void CVarsGrid::saveAllToXml(const QList<CVarsGrid*>& list , const QString& file
 
 	main.appendChild( grids );
 
-    }
+	}
 
-    QFile file( filename );
-    QTextStream out(&file);
-    file.open(QIODevice::WriteOnly);
-    const int Indent=4;
-    main.save(out, Indent);
-    file.close();
+	QFile file( filename );
+	QTextStream out(&file);
+	file.open(QIODevice::WriteOnly);
+	const int Indent=4;
+	main.save(out, Indent);
+	file.close();
 }
 
 const QDomElement& CVarsGrid::saveToXml( QDomElement* main ){
 
 
-    QDomElement vg = main->ownerDocument().createElement( "VARSGRID" );
+	QDomElement vg = main->ownerDocument().createElement( "VARSGRID" );
 
-    vg.setAttribute( "X" , geometry().x() );
-    vg.setAttribute( "Y" , geometry().y() );
-    vg.setAttribute( "WIDTH" , geometry().width() );
-    vg.setAttribute( "HEIGHT" , geometry().height() );
+	/*vg.setAttribute( "X" , geometry().x() );
+	vg.setAttribute( "Y" , geometry().y() );
+	vg.setAttribute( "WIDTH" , geometry().width() );
+	vg.setAttribute( "HEIGHT" , geometry().height() );*/
 
-    for(int i = 0; i < m_lines.size(); i++ ){
+	for(int i = 0; i < m_lines.size(); i++ ){
 	QDomElement ln = main->ownerDocument().createElement( "LINE" );
 
 	ln.setAttribute( "NAME" , m_linesVar[i] );
@@ -150,9 +150,9 @@ const QDomElement& CVarsGrid::saveToXml( QDomElement* main ){
 	m_lines[i]->saveAttributeXml( &ln );
 
 	vg.appendChild( ln );
-    }
+	}
 
-    main->appendChild( vg );
+	main->appendChild( vg );
 }
 
 void CVarsGrid::menuTrig( QAction* act ){
@@ -180,6 +180,10 @@ void CVarsGrid::menuTrig( QAction* act ){
 		m_field.setMarkPrecision( m_field.markPrecision() -  2 );
 		repaint();
 	}
+}
+
+const QSize CVarsGrid::sizeHint(){
+	return QSize(200 , 60 );
 }
 
 void CVarsGrid::dropEvent(QDropEvent *event) {
