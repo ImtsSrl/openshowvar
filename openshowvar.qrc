@@ -18,5 +18,6 @@
         <file alias="openVar">images/fileopen.png</file>
         <file alias="clearList">images/editdeleteall.png</file>
         <file alias="run">images/run.png</file>
+        <file alias="kukavar">resources/kukavar.txt</file>
     </qresource>
 </RCC>

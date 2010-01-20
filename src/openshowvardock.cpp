@@ -56,6 +56,17 @@ OpenShowVarDock::OpenShowVarDock()
 
 	connect(&listVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
 
+        dockInsertVar = new QDockWidget(tr("New robot variable"), this);
+        dockInsertVar->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+        insertVar = new InsertVar();
+        dockInsertVar->setWidget(insertVar);
+        addDockWidget(Qt::BottomDockWidgetArea, dockInsertVar);
+        connect(insertVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
+        connect(dockInsertVar,SIGNAL(visibilityChanged(const bool &)),this,SLOT(insertClose(const bool &)));
+        //insertVar->DropVar(*varName);
+        dockInsertVar->setVisible(false);
+
+
 	setWindowIcon(QIcon(":openshowvar"));
 	resize(700,500);
 }
@@ -209,21 +220,7 @@ void OpenShowVarDock::createStatusBar()
 
 void OpenShowVarDock::on_insertVar(const QString *varName)
 {
-	if(insertVar==NULL)
-	{
-		QDockWidget *dock = new QDockWidget(tr("New robot variable"), this);
-		dock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-
-		insertVar = new InsertVar();
-
-		dock->setWidget(insertVar);
-		addDockWidget(Qt::BottomDockWidgetArea, dock);
-
-		connect(insertVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
-		connect(dock,SIGNAL(visibilityChanged(const bool &)),this,SLOT(insertClose(const bool &)));
-
-		insertVar->DropVar(*varName);
-	}
+    dockInsertVar->setVisible(true);
 }
 
 void OpenShowVarDock::insertNew(const QString &variabile, const QString &iprobot)
@@ -262,10 +259,7 @@ void OpenShowVarDock::deleteVar()
 
 void OpenShowVarDock::insertClose(const bool &visible)
 {
-	if(!visible){
-		delete insertVar;
-		insertVar=NULL;
-	}
+
 }
 
 void OpenShowVarDock::lettura()

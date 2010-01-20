@@ -59,6 +59,8 @@ private:
     void toBinary(int value, QString *binary);
     void toHex(int value, QString *binary);
 
+    QDockWidget *dockInsertVar;
+
     VariableDB* database;
     InsertVar* insertVar;
 
