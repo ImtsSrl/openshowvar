@@ -104,14 +104,6 @@ InsertVar::InsertVar(){
 
     qtimeBroadcast.start(5000);
     connect(&qtimeBroadcast, SIGNAL(timeout()), this, SLOT(on_Broadcast()));
-
-//    completer = new QCompleter(this);
-//    completer->setModel(modelFromFile(":kukavar"));
-//    //completer->setCompletionMode(QCompleter::InlineCompletion);
-//    completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
-//    completer->setCaseSensitivity(Qt::CaseInsensitive);
-//    completer->setWrapAround(false);
-//    lineEdit->setCompleter(completer);
 }
 
 InsertVar::~InsertVar(){
@@ -180,27 +172,4 @@ void InsertVar::newMsg(QString &msg){
 void InsertVar::on_Broadcast()
 {
     broadcast->send();
-}
-
-QAbstractItemModel *InsertVar::modelFromFile(const QString& fileName)
-{
-    QFile file(fileName);
-    if (!file.open(QFile::ReadOnly))
-        return new QStringListModel(completer);
-
-#ifndef QT_NO_CURSOR
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-#endif
-    QStringList words;
-
-    while (!file.atEnd()) {
-        QByteArray line = file.readLine();
-        if (!line.isEmpty())
-            words << line.trimmed();
-    }
-
-#ifndef QT_NO_CURSOR
-    QApplication::restoreOverrideCursor();
-#endif
-    return new QStringListModel(words, completer);
 }

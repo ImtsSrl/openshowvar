@@ -51,9 +51,6 @@ private:
 
         QTimer qtimeBroadcast;
 
-        QAbstractItemModel *modelFromFile(const QString& fileName);
-        QCompleter *completer;
-	
 private slots:
 	void on_insertButton_clicked();
 	void on_lineEdit_textChanged();

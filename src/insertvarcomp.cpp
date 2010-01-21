@@ -29,7 +29,25 @@ InsertVarComp::InsertVarComp(QWidget *parent)
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     completer->setCompletionMode(QCompleter::PopupCompletion);
     completer->setWrapAround(false);
-    setCompleter(completer);
+    //setCompleter(completer);
+
+    QObject::connect(completer, SIGNAL(activated(const QString&)),
+                     this, SLOT(insertCompletion(const QString&)));
+}
+
+void InsertVarComp::insertCompletion(const QString& completion)
+{
+    qDebug() << "Passato";
+    if (completer->widget() != this)
+        return;
+    this->setText(completion);
+}
+
+void InsertVarComp::focusInEvent(QFocusEvent *e)
+{
+    if (completer)
+        completer->setWidget(this);
+    QLineEdit::focusInEvent(e);
 }
 
 void InsertVarComp::keyPressEvent(QKeyEvent *e)
@@ -62,16 +80,18 @@ void InsertVarComp::keyPressEvent(QKeyEvent *e)
     bool hasModifier = (e->modifiers() != Qt::NoModifier) && !ctrlOrShift;
     QString completionPrefix = this->text(); // textUnderCursor();
 
-    if (!isShortcut && (hasModifier || e->text().isEmpty()|| completionPrefix.length() < 3
+    if (!isShortcut && (hasModifier || e->text().isEmpty()|| completionPrefix.length() < 1
                       || eow.contains(e->text().right(1)))) {
         completer->popup()->hide();
         return;
     }
 
+    //qDebug() << completionPrefix << " " << completer->completionPrefix();
     if (completionPrefix != completer->completionPrefix()) {
         completer->setCompletionPrefix(completionPrefix);
         completer->popup()->setCurrentIndex(completer->completionModel()->index(0, 0));
     }
+
     QRect cr = cursorRect();
     cr.setWidth(completer->popup()->sizeHintForColumn(0)
                 + completer->popup()->verticalScrollBar()->sizeHint().width());
