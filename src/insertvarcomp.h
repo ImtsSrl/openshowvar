@@ -17,58 +17,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
-#ifndef INSERTVAR_H
-#define INSERTVAR_H
+
+#ifndef INSERTVARCOMP_H
+#define INSERTVARCOMP_H
 
 #include <QtGui>
-#include <QList>
 
-#include "broadcast.h"
-#include "insertvarcomp.h"
-
-class QPushButton;
-class QByteArray;
-class QComboBox;
-
-class InsertVar : public QDialog
+class InsertVarComp : public QLineEdit
 {
-	Q_OBJECT
-	
+        Q_OBJECT
+
 public:
-	InsertVar();
-	~InsertVar();
-	void DropVar(QString varName);
-	
-	QLabel* varLabel, *labelRobot;
-        InsertVarComp* lineEdit;
-	QPushButton* insertButton;
-	QPushButton* abortButton;
-	
+    InsertVarComp(QWidget *parent=0);
+
+protected:
+    void keyPressEvent(QKeyEvent *e);
+
 private:
-	QComboBox* comboRobotList;
-	Broadcast* broadcast;
+    QCompleter *completer;
+    QAbstractItemModel *modelFromFile(const QString& fileName);
 
-        QTimer qtimeBroadcast;
-
-        QAbstractItemModel *modelFromFile(const QString& fileName);
-        QCompleter *completer;
-	
-private slots:
-	void on_insertButton_clicked();
-	void on_lineEdit_textChanged();
-        void on_lineEdit_returnPressed();
-	void on_abortButton_clicked();
-        void on_Broadcast();
-	void Robot(QList<QByteArray> &datirobot);
-	void closeEvent(QCloseEvent * event);
-	
-	void newMsg(QString & msg);
-	
-signals:
-	void insertNewVar(const QString &str, const QString &iprobot);
-	void insertClose();
-	
 };
 
 #endif

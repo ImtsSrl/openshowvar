@@ -29,7 +29,8 @@ HEADERS += src/broadcast.h \
     src/variabledb.h \
     src/cvarsgrid.h \
     src/cvarsgridlinelegend.h \
-    src/openshowvardock.h
+    src/openshowvardock.h \
+    src/insertvarcomp.h
 SOURCES += src/broadcast.cpp \
     src/CDebug.cpp \
     src/CGridField.cpp \
@@ -48,7 +49,8 @@ SOURCES += src/broadcast.cpp \
     src/variabledb.cpp \
     src/cvarsgrid.cpp \
     src/cvarsgridlinelegend.cpp \
-    src/openshowvardock.cpp
+    src/openshowvardock.cpp \
+    src/insertvarcomp.cpp
 TRANSLATIONS += lang/openshowvar_de.ts \
     lang/openshowvar_en.ts \
     lang/openshowvar_it.ts

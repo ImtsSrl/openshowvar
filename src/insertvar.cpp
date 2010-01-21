@@ -39,7 +39,7 @@ InsertVar::InsertVar(){
 	
     //label di inserimento e lineedit
     varLabel = new QLabel(tr("Var name"));
-    lineEdit = new QLineEdit();
+    lineEdit = new InsertVarComp();
 
     QRegExp regExp("[$]?[_A-Za-z0-9]{1,30}[.]?[_A-Za-z0-9]{1,30}([[][0-9]{0,3}([,]{0,1}[0-9]{1,3}){0,1}([,]{0,1}[0-9]{1,3}){0,1}[]]){0,1}([.]?[_A-Za-z0-9]{1,30}){0,1}");
 
@@ -105,13 +105,13 @@ InsertVar::InsertVar(){
     qtimeBroadcast.start(5000);
     connect(&qtimeBroadcast, SIGNAL(timeout()), this, SLOT(on_Broadcast()));
 
-    completer = new QCompleter(this);
-    completer->setModel(modelFromFile(":kukavar"));
-    completer->setCompletionMode(QCompleter::InlineCompletion);
-    completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
-    completer->setCaseSensitivity(Qt::CaseInsensitive);
-    completer->setWrapAround(false);
-    lineEdit->setCompleter(completer);
+//    completer = new QCompleter(this);
+//    completer->setModel(modelFromFile(":kukavar"));
+//    //completer->setCompletionMode(QCompleter::InlineCompletion);
+//    completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
+//    completer->setCaseSensitivity(Qt::CaseInsensitive);
+//    completer->setWrapAround(false);
+//    lineEdit->setCompleter(completer);
 }
 
 InsertVar::~InsertVar(){
