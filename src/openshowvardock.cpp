@@ -66,7 +66,6 @@ OpenShowVarDock::OpenShowVarDock()
         //insertVar->DropVar(*varName);
         dockInsertVar->setVisible(false);
 
-
 	setWindowIcon(QIcon(":openshowvar"));
 	resize(700,500);
 }

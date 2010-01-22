@@ -33,6 +33,7 @@ public:
 protected:
     void keyPressEvent(QKeyEvent *e);
     void focusInEvent(QFocusEvent *e);
+    void focusOutEvent(QFocusEvent *e);
 
 private slots:
     void insertCompletion(const QString &completion);

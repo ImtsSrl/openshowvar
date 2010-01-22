@@ -42,7 +42,6 @@ InsertVar::InsertVar(){
     lineEdit = new InsertVarComp();
 
     QRegExp regExp("[$]?[_A-Za-z0-9]{1,30}[.]?[_A-Za-z0-9]{1,30}([[][0-9]{0,3}([,]{0,1}[0-9]{1,3}){0,1}([,]{0,1}[0-9]{1,3}){0,1}[]]){0,1}([.]?[_A-Za-z0-9]{1,30}){0,1}");
-
     lineEdit->setValidator(new QRegExpValidator(regExp, this));
 
     //lista dei robot presenti
@@ -83,10 +82,6 @@ InsertVar::InsertVar(){
     mainLayout->addLayout(robotLayout);
     mainLayout->addLayout(commandLayout);
     setLayout(mainLayout);
-
-//    setMaximumSize(500,200);
-//    setWindowTitle(tr("New variable"));
-//    resize(430,150);
 
     broadcast = new Broadcast(this);
 

@@ -37,7 +37,6 @@ InsertVarComp::InsertVarComp(QWidget *parent)
 
 void InsertVarComp::insertCompletion(const QString& completion)
 {
-    qDebug() << "Passato";
     if (completer->widget() != this)
         return;
     this->setText(completion);
@@ -48,6 +47,15 @@ void InsertVarComp::focusInEvent(QFocusEvent *e)
     if (completer)
         completer->setWidget(this);
     QLineEdit::focusInEvent(e);
+}
+
+void InsertVarComp::focusOutEvent(QFocusEvent *e)
+{
+    switch(e->reason()){
+    case Qt::TabFocusReason:
+        //insertCompletion(completer->currentCompletion());
+        this->setFocus();
+    }
 }
 
 void InsertVarComp::keyPressEvent(QKeyEvent *e)
