@@ -121,6 +121,10 @@ void OpenShowVarDock::createActions()
     readVarAct->setChecked(true);
     connect(readVarAct,SIGNAL(toggled(bool)),this,SLOT(on_readVarAct(bool)));
 
+    onTopAct=new QAction(QIcon(":onTop"),tr("&Always on top"), this);
+    onTopAct->setCheckable(true);
+    connect(onTopAct,SIGNAL(toggled(bool)),this,SLOT(on_onTopAct(bool)));
+
     addGraphAct = new QAction(QIcon(":addGraph"), tr("&Show graph"), this);
     addGraphAct->setStatusTip(tr("Show var graph"));
     connect(addGraphAct, SIGNAL(triggered()), this, SLOT(addGraph()));
@@ -194,6 +198,7 @@ void OpenShowVarDock::createToolBars()
     robotToolBar->addAction(newVarAct);
     robotToolBar->addAction(deleteVarAct);
     robotToolBar->addAction(readVarAct);
+    robotToolBar->addAction(onTopAct);
     robotToolBar->addAction(addGraphAct);
     robotToolBar->addSeparator();
     QLabel *refTime=new QLabel(tr("Ref. TIME:"));
@@ -554,8 +559,30 @@ void OpenShowVarDock::on_refVarDatabaseAct(int i)
 
 void OpenShowVarDock::on_readVarAct(bool checked)
 {
-	if(checked)
-		qtimeLettura.start();
-	else
-		qtimeLettura.stop();
+    if(checked)
+    {
+        readVarAct->setIcon(QIcon(":run"));
+        qtimeLettura.start();
+    }
+    else
+    {
+        readVarAct->setIcon(QIcon(":resume"));
+        qtimeLettura.stop();
+    }
+}
+
+void OpenShowVarDock::on_onTopAct(bool checked)
+{
+    Qt::WindowFlags flags = windowFlags();
+
+    if(checked)
+    {
+        setWindowFlags(flags | Qt::WindowStaysOnTopHint | Qt::CustomizeWindowHint);
+        show();
+    }
+    else
+    {
+        setWindowFlags((flags & (0xffffffff^Qt::WindowStaysOnTopHint)));//  &! Qt::WindowStaysOnTopHint &! Qt::CustomizeWindowHint);
+        show();
+    }
 }

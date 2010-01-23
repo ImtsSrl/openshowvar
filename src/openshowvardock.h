@@ -37,6 +37,7 @@ private slots:
     void on_refVarAct(const QString &text);
     void on_refVarDatabaseAct(int i);
     void on_readVarAct(bool checked);
+    void on_onTopAct(bool checked);
     void on_writeVariable(const QByteArray &varname, const QByteArray &value, const QHostAddress &varip);
     void on_saveVar();
     void on_openVar();
@@ -88,6 +89,7 @@ private:
 
     QAction *newVarAct;
     QAction* readVarAct;
+    QAction* onTopAct;
     QComboBox *refVarAct;
     QSpinBox* refVarDatabaseAct;
     QAction *deleteVarAct;
