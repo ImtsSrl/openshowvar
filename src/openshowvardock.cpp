@@ -66,6 +66,8 @@ OpenShowVarDock::OpenShowVarDock()
         //insertVar->DropVar(*varName);
         dockInsertVar->setVisible(false);
 
+        listVar.readList("varlist.xml");
+
 	setWindowIcon(QIcon(":openshowvar"));
 	resize(700,500);
 }
@@ -585,4 +587,12 @@ void OpenShowVarDock::on_onTopAct(bool checked)
         setWindowFlags((flags & (0xffffffff^Qt::WindowStaysOnTopHint)));//  &! Qt::WindowStaysOnTopHint &! Qt::CustomizeWindowHint);
         show();
     }
+}
+
+void OpenShowVarDock::closeEvent ( QCloseEvent * event )
+{
+    timeUpdateGraph.stop();
+    qtimeLettura.stop();
+    listVar.writeList(treeWidget,"varlist.xml");
+    delete database;
 }

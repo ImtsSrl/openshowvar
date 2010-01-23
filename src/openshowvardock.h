@@ -42,6 +42,7 @@ private slots:
     void on_saveVar();
     void on_openVar();
     void on_clearList();
+    void closeEvent(QCloseEvent * event);
     void insertNew(const QString &variabile, const QString &robotip);
     void insertClose(const bool &visible);
     void on_editVarClose(const bool &visible);
