@@ -40,7 +40,7 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
 
     QVBoxLayout *topLayout = new QVBoxLayout;
     QGridLayout *leftLayout = new QGridLayout;
-    QHBoxLayout *bottomLayout = new QHBoxLayout;
+    QVBoxLayout *bottomLayout = new QVBoxLayout;
     //QSignalMapper* mapper[40];
 
     switch(robotvar->getVarType()){
@@ -50,11 +50,11 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
             QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
             titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
-            QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getStructureName()));
+            QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg(robotvar->getStructureName().data()));
             structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
             topLayout->addWidget(titleLabel);
             topLayout->addWidget(structureLabel);
-            topLayout->addStretch();
+            //topLayout->addStretch();
 
             for (int i=0;i<robotvar->getElementsNumber();i++)
             {
@@ -100,11 +100,11 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
             //top labels
             QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
             titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-            QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
+            QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg(robotvar->getVarTypeName().data()));
             structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
             topLayout->addWidget(titleLabel);
             topLayout->addWidget(structureLabel);
-            topLayout->addStretch();
+            //topLayout->addStretch();
 
             addInt(1,robotvar->getVarName(),robotvar->getValue().toInt());
 
@@ -121,11 +121,11 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
             //top labels
             QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
             titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-            QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
+            QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg(robotvar->getVarTypeName().data()));
             structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
             topLayout->addWidget(titleLabel);
             topLayout->addWidget(structureLabel);
-            topLayout->addStretch();
+            //topLayout->addStretch();
 
             addReal(1,robotvar->getVarName(),robotvar->getValue().toDouble());
 
@@ -142,11 +142,11 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
             //top labels
             QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
             titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-            QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
+            QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg(robotvar->getVarTypeName().data()));
             structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
             topLayout->addWidget(titleLabel);
             topLayout->addWidget(structureLabel);
-            topLayout->addStretch();
+            //topLayout->addStretch();
 
             addBool(1,robotvar->getVarName(),robotvar->getValue());
 
@@ -163,11 +163,11 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
             //top labels
             QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
             titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-            QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg((QString)robotvar->getVarTypeName()));
+            QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg(robotvar->getVarTypeName().data()));
             structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
             topLayout->addWidget(titleLabel);
             topLayout->addWidget(structureLabel);
-            topLayout->addStretch();
+            //topLayout->addStretch();
 
             addChar(1,robotvar->getVarName(),robotvar->getValue());
 
@@ -186,6 +186,7 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
     //QPushButton *abortButton = new QPushButton(tr("Abort"));
     bottomLayout->addWidget(okButton);
     //bottomLayout->addWidget(abortButton);
+    bottomLayout->addStretch();
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addLayout(topLayout);
