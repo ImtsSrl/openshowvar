@@ -156,6 +156,8 @@ void CGridField::paintEvent(QPaintEvent* qpEve){
 
 	for(int i=0;i<nLines;i++)
 		m_lineValue[i]->drawInWidget(this,&paint,&r,max,min,&minTime);
+
+	setMinimumSize( 200 , m_MarkPrec * ( fontMetrics().height() + 3 ) );
 }
 
 void CGridField::updateState(){

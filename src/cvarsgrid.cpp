@@ -179,10 +179,6 @@ void CVarsGrid::menuTrig( QAction* act ){
 	}
 }
 
-const QSize CVarsGrid::sizeHint(){
-	return QSize(200 , 60 );
-}
-
 void CVarsGrid::dropEvent(QDropEvent *event) {
 	 event->acceptProposedAction();
 

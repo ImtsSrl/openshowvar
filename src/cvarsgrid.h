@@ -55,8 +55,6 @@ public:
 	static const QList<CVarsGrid*>& loadAllFromXml( const QString& file , VariableDB* vardb );
 	static void saveAllToXml(const QList<CVarsGrid*>& list , const QString& file );
 
-	const QSize sizeHint();
-
 public slots:
 
 	void menuTrig( QAction* );
