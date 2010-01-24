@@ -53,6 +53,9 @@ CGridField::CGridField(){
 
 	setSizePolicy( QSizePolicy::Minimum , QSizePolicy::Minimum );
 
+	m_averageCount = 0;
+	m_averageRenderTime = 0;
+	m_antialiasEnabled = true;
 }
 
 int CGridField::markPrecision(){
@@ -77,7 +80,12 @@ void CGridField::paintEvent(QPaintEvent* qpEve){
 	QPainter paint(this);
 	double	max = DBL_MIN,min = DBL_MAX;
 
-	paint.setRenderHints(QPainter::Antialiasing);
+	QTime tstart;
+	tstart.start();
+	if( m_antialiasEnabled )
+	    paint.setRenderHints(QPainter::Antialiasing);
+	else
+	    paint.setRenderHints(QPainter::Antialiasing , false );
 
 	QRect	r(10,10,width()-55,height()-20);
 	QTime	minTime; minTime = QTime::currentTime();
@@ -158,6 +166,22 @@ void CGridField::paintEvent(QPaintEvent* qpEve){
 		m_lineValue[i]->drawInWidget(this,&paint,&r,max,min,&minTime);
 
 	setMinimumSize( 200 , m_MarkPrec * ( fontMetrics().height() + 3 ) );
+
+	//paint.drawText( width() - fontMetrics().width(QString::number( m_averageRenderTime )), height() - fontMetrics().height() , QString::number( m_averageRenderTime )  );
+
+	if( m_averageCount == 10 ){
+	    if( m_averageRenderTime > 60 ){
+		m_antialiasEnabled = false;
+	    }
+	    m_averageCount = m_averageRenderTime = 0;
+	} else {
+	    m_averageCount++;
+
+	    if( m_averageRenderTime == 0)
+		m_averageRenderTime = tstart.elapsed();
+	    else
+		m_averageRenderTime = (m_averageRenderTime + tstart.elapsed()) / 2;
+	}
 }
 
 void CGridField::updateState(){

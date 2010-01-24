@@ -41,6 +41,10 @@ class CGridField : public QWidget {
 		int			m_MarkPrec;
 		float			m_MarkOpacity;
 
+		int			m_averageCount;
+		int			m_averageRenderTime;
+		int			m_antialiasEnabled;
+
 	public:
 
 		CGridField();
