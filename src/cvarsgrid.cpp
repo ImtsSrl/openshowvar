@@ -32,9 +32,6 @@ CVarsGrid::CVarsGrid( VariableDB* db ){
 
 	m_field.hide();
 
-
-	show();
-
 	setAcceptDrops( true );
 }
 
