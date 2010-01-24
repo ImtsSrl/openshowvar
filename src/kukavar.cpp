@@ -338,6 +338,7 @@ void KukaVar::setValue(QByteArray varvalue)
     case INT:
         {
             elementsnumber=1;
+            vartype="INT";
 
             newvarvalue=this->varvalue;
             break;
@@ -345,6 +346,7 @@ void KukaVar::setValue(QByteArray varvalue)
     case REAL:
         {
             elementsnumber=1;
+            vartype="REAL";
 
             newvarvalue=this->varvalue;
             break;
@@ -352,6 +354,7 @@ void KukaVar::setValue(QByteArray varvalue)
     case BOOL:
         {
             elementsnumber=1;
+            vartype="BOOL";
 
             newvarvalue=this->varvalue;
             break;
@@ -359,6 +362,7 @@ void KukaVar::setValue(QByteArray varvalue)
     case CHAR:
         {
             elementsnumber=1;
+            vartype="CHAR";
 
             newvarvalue=this->varvalue;
             break;
