@@ -383,5 +383,6 @@ QByteArray KukaVar::createStructure()
 		retvar += ", " + newarrayvalue[i];
 	retvar += "}";
 	
+        qDebug() << retvar;
 	return retvar;
 }

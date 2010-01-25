@@ -86,7 +86,7 @@ void Broadcast::processPending(int index)
 	debugWindow->addDebug(QString("Ricevuta risposta su indice %1").arg(index));
 #endif
 */
-    qDebug() << "Ricevuto nuovo robot";
+    //qDebug() << "Ricevuto nuovo robot";
     
     QByteArray datagram;
     QHostAddress sender;

@@ -61,36 +61,35 @@ RobotVarEdit::RobotVarEdit(const QByteArray& variabile, const QByteArray& varnam
                 int tipodato;
                 robotvar->getStructureValue(i,tipodato);
 
-                widget[i] = new QLabel(robotvar->getStructureMember(i));
                 switch(tipodato){
                 case KukaVar::INT:
-                    addInt(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato).toInt());
-                    addMap(i+robotvar->getElementsNumber(),i,tipodato);
+                    addInt(i+1,robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato).toInt());
+                    addMap(i+1,i,tipodato);
 
                     break;
                 case KukaVar::REAL:
-                    addReal(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato).toDouble());
-                    addMap(i+robotvar->getElementsNumber(),i,tipodato);
+                    addReal(i+1,robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato).toDouble());
+                    addMap(i+1,i,tipodato);
 
                     break;
                 case KukaVar::BOOL:
-                    addBool(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato));
-                    addMap(i+robotvar->getElementsNumber(),i,tipodato);
+                    addBool(i,robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato));
+                    addMap(i,i,tipodato);
 
                     break;
                 case KukaVar::CHAR:
-                    {
-                        addChar(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato));
-                        addMap(i+robotvar->getElementsNumber(),i,tipodato);
-                        break;
-                    }
+                    addChar(i,robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato));
+                    addMap(i,i,tipodato);
+
+                    break;
                 default:
-                    widget[i+robotvar->getElementsNumber()] = new QLineEdit(robotvar->getStructureValue(i,tipodato));
+                    widget[i] = new QLineEdit(robotvar->getStructureValue(i,tipodato));
+
                     break;
                 }
 
                 leftLayout->addWidget(widget[i],i,0);
-                leftLayout->addWidget(widget[i+robotvar->getElementsNumber()],i,1);
+                leftLayout->addWidget(widget[i+1],i,1);
             }
             break;
         }
@@ -210,24 +209,32 @@ void RobotVarEdit::on_okButton()
     case KukaVar::STRUCTURE:
         {
             //set new value for robotvar
-            for (int i=0;i<robotvar->getElementsNumber();i++){
-                //qDebug() << widget[i+robotvar->getElementsNumber()];
-                if (QSpinBox* spinBox = dynamic_cast<QSpinBox*>(widget[i+robotvar->getElementsNumber()]))
+            for (int i=0;i<robotvar->getElementsNumber();i++)
+            {
+                int j=i+1;
+                qDebug() << "Ciclo " << j;
+                if (QSpinBox* spinBox = dynamic_cast<QSpinBox*>(widget[j]))
                 {
-                    robotvar->setFieldValue(((QSpinBox*)widget[i+robotvar->getElementsNumber()])->text().toAscii(),i);
+                    qDebug() << "SpinBox";
+                    //robotvar->setFieldValue(((QSpinBox*)widget[i+1])->text().toAscii(),i);
                 }
-                else if (QDoubleSpinBox* doublespinBox = dynamic_cast<QDoubleSpinBox*>(widget[i+robotvar->getElementsNumber()]))
+                else if (QDoubleSpinBox* doublespinBox = dynamic_cast<QDoubleSpinBox*>(widget[j]))
                 {
-                    robotvar->setFieldValue(((QDoubleSpinBox*)widget[i+robotvar->getElementsNumber()])->text().replace(",",".").toAscii(),i);
+                    qDebug() << "DoubleSpinBox";
+                    //robotvar->setFieldValue(((QDoubleSpinBox*)widget[i+1])->text().replace(",",".").toAscii(),i);
                 }
-                else if (QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(widget[i+robotvar->getElementsNumber()]))
+                else if (QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(widget[j]))
                 {
-                    robotvar->setFieldValue(((QLineEdit*)widget[i+robotvar->getElementsNumber()])->text().toAscii(),i);
+                    qDebug() << "LineEdit";
+                    //robotvar->setFieldValue(((QLineEdit*)widget[i+elementnumber])->text().toAscii(),i);
                 }
-                else if (QComboBox* comboBox = dynamic_cast<QComboBox*>(widget[i+robotvar->getElementsNumber()]))
+                else if (QComboBox* comboBox = dynamic_cast<QComboBox*>(widget[j]))
                 {
-                    robotvar->setFieldValue(((QComboBox*)widget[i+robotvar->getElementsNumber()])->currentText().toAscii(),i);
+                    qDebug() << "ComboBox";
+                    //robotvar->setFieldValue(((QComboBox*)widget[i+elementnumber])->currentText().toAscii(),i);
                 }
+                else
+                    qDebug() << "Nessuna delle precedenti";
             }
             //send new value to robot
             emit writevalue(robotvar->getVarName(),QByteArray(robotvar->createStructure()), varip);
@@ -268,8 +275,6 @@ void RobotVarEdit::on_okButton()
         }
     }
     on_Accept();
-    //FIXME this command close everytime the window. I want rally this?
-    //accept();
 }
 
 void RobotVarEdit::on_abortButton()
@@ -351,7 +356,7 @@ void RobotVarEdit::addInt(int widgetindex, QByteArray varName, int value){
 
 void RobotVarEdit::addReal(int widgetindex, QByteArray varName, double value){
 
-    //qDebug() << "Indice widget reale: " << widgetindex << " valore: " << value;
+    qDebug() << "Indice widget reale: " << widgetindex << " valore: " << value;
 
     widget[widgetindex-1] = new QLabel(varName);
     widget[widgetindex] = new QDoubleSpinBox();
