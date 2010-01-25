@@ -143,6 +143,16 @@ void CGridLine::addValue(double val){
 
 		if( timeTo > m_msecMax )
 			m_values->removeAt(0);
+
+		CGridValue* her;
+		m_maxValue = DBL_MIN;m_minValue = DBL_MAX;
+
+		foreach( her , *m_values ){
+		    if( her->m_value > m_maxValue )
+			m_maxValue = her->m_value;
+		    if( her->m_value < m_minValue )
+			m_minValue = her->m_value;
+		}
 	}
 
 	m_values->append( vval );
