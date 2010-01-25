@@ -73,18 +73,18 @@ VariableDB::~VariableDB()
 
 bool VariableDB::readVar(QByteArray varname, QHostAddress robotip, QByteArray* varvalue, int* readtime)
 {
-	for(int i=0;i<listvar.count();i++){
-                //qDebug() << "Indice: " << i << " robotip: " << listvar[i]->getRobotIP() << " nome variabile: " << listvar[i]->getVarName() << " valore variabile: " << listvar[i]->getValue();
-		if(listvar[i]->getRobotIP() == robotip && listvar[i]->getVarName() == varname){
-			int threadid=getThreadIndex(robotip);
-			robotServer[threadid]->mutex.lock();
-			*readtime = listvar[i]->getReadTime();
-			*varvalue = listvar[i]->getValue();
-			robotServer[threadid]->mutex.unlock();
-			return true;
-		}
-	}
-	return false;
+    for(int i=0;i<listvar.count();i++){
+        //qDebug() << "Indice: " << i << " robotip: " << listvar[i]->getRobotIP() << " nome variabile: " << listvar[i]->getVarName() << " valore variabile: " << listvar[i]->getValue();
+        if(listvar[i]->getRobotIP() == robotip && listvar[i]->getVarName() == varname){
+            int threadid=getThreadIndex(robotip);
+            robotServer[threadid]->mutex.lock();
+            *readtime = listvar[i]->getReadTime();
+            *varvalue = listvar[i]->getValue();
+            robotServer[threadid]->mutex.unlock();
+            return true;
+        }
+    }
+    return false;
 }
 
 /*!	\brief Scrittura di una variabile
@@ -100,16 +100,17 @@ bool VariableDB::readVar(QByteArray varname, QHostAddress robotip, QByteArray* v
 
 bool VariableDB::writeVar(QByteArray varname, QHostAddress robotip, QByteArray varvalue, int* writetime)
 {
-	for(int i=0;i<listvar.count();i++){
-		if(listvar[i]->getRobotIP() == robotip && listvar[i]->getVarName() == varname){
-			int threadid=getThreadIndex(robotip);
-			robotServer[threadid]->mutex.lock();
-			listvar[i]->setNewValue(varvalue);
-			robotServer[threadid]->mutex.unlock();
-			return true;
-		}
-	}
-	return false;
+    for(int i=0;i<listvar.count();i++){
+        if(listvar[i]->getRobotIP() == robotip && listvar[i]->getVarName() == varname){
+            int threadid=getThreadIndex(robotip);
+            robotServer[threadid]->mutex.lock();
+            listvar[i]->setNewValue(varvalue);
+            *writetime = listvar[i]->getReadTime();
+            robotServer[threadid]->mutex.unlock();
+            return true;
+        }
+    }
+    return false;
 }
 
 /*!	\brief Aggiunta variabile da leggere

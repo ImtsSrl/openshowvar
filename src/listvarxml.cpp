@@ -41,7 +41,7 @@ ListVarXml::ListVarXml(){
 ListVarXml::~ListVarXml(){
 	
 }
-/*
+
 /*!	\brief Scrittura lista variabili
  *
  *	Scrive su file la lista delle variabili e i relativi ip di provenienza nel seguente
