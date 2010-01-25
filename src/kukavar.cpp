@@ -55,10 +55,10 @@
 *	\param varname Nome della variabile
 */
 
-KukaVar::KukaVar(const QByteArray* varname, const QByteArray* varvalue)
+KukaVar::KukaVar(const QByteArray& varname, const QByteArray& varvalue)
 {
-	this->varname=*varname;
-	this->varvalue=*varvalue;
+        this->varname=varname;
+        this->varvalue=varvalue;
 	
         setValue(this->varvalue);
 }

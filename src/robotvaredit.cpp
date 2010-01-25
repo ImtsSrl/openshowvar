@@ -29,7 +29,7 @@
 
 #include "robotvaredit.h"
 
-RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varname, const QHostAddress varip, QWidget *parent)
+RobotVarEdit::RobotVarEdit(const QByteArray& variabile, const QByteArray& varname, const QHostAddress varip, QWidget *parent)
 	: QDialog(parent)
 {
     this->varip = varip;
@@ -47,7 +47,7 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
     case KukaVar::STRUCTURE:
         {
             //top labels
-            QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
+            QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname.data()));
             titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
             QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg(robotvar->getStructureName().data()));
@@ -98,7 +98,7 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
         {
             //INT
             //top labels
-            QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
+            QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname.data()));
             titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
             QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg(robotvar->getVarTypeName().data()));
             structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
@@ -119,7 +119,7 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
         {
             //REAL
             //top labels
-            QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
+            QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname.data()));
             titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
             QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg(robotvar->getVarTypeName().data()));
             structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
@@ -140,7 +140,7 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
         {
             //BOOL
             //top labels
-            QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
+            QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname.data()));
             titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
             QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg(robotvar->getVarTypeName().data()));
             structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
@@ -161,7 +161,7 @@ RobotVarEdit::RobotVarEdit(const QByteArray *variabile, const QByteArray *varnam
         {
             //CHAR
             //top labels
-            QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname->data()));
+            QLabel *titleLabel = new QLabel(tr("Variable edit: %1").arg(varname.data()));
             titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
             QLabel *structureLabel = new QLabel(tr("Variable type: %1").arg(robotvar->getVarTypeName().data()));
             structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);

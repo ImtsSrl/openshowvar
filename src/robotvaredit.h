@@ -31,7 +31,7 @@ class RobotVarEdit : public QDialog
 	Q_OBJECT
 			
 	public:
-		RobotVarEdit(const QByteArray *variabile, const QByteArray *varname, const QHostAddress varip, QWidget *parent = 0);
+                RobotVarEdit(const QByteArray& variabile, const QByteArray& varname, const QHostAddress varip, QWidget *parent = 0);
 		~RobotVarEdit();
 		
 	private:

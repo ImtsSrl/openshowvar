@@ -31,7 +31,7 @@ class CTreeVar : public QTreeWidget
 		QPoint startPos;
 		
 	signals:
-		void dropVar(const QString *varName);
+                void dropVar(const QString& varName);
 };
 
 #endif

@@ -54,7 +54,7 @@ void CTreeVar::dropEvent(QDropEvent *event)
 {
 	event->acceptProposedAction();
 		if(event->source()!=this)
-			emit dropVar(&event->mimeData()->text());
+                        emit dropVar(event->mimeData()->text());
 }
 
 void CTreeVar::dragEnterEvent(QDragEnterEvent *event)
@@ -101,7 +101,7 @@ void CTreeVar::startDrag()
     }
 
     //Se la variabile e' una struttura elimino il tipo di dato e passo solo il valore
-    KukaVar *kukavar = new KukaVar(&item->text(VARNAME).toAscii(),&item->text(VARVALUE).toAscii());
+    KukaVar *kukavar = new KukaVar(item->text(VARNAME).toAscii(),item->text(VARVALUE).toAscii());
 
     switch(kukavar->getVarType()){
     case KukaVar::STRUCTURE:
@@ -133,6 +133,6 @@ void CTreeVar::startDrag()
 	//pixmap.setAlphaChannel(alphaChannel);
 	drag->setPixmap(pixmap);
 
-	Qt::DropAction dropAction = drag->exec();
+        drag->exec();
 }
 

@@ -319,7 +319,7 @@ void OpenShowVarDock::splitvaluetoview(QTreeWidgetItem *item, QString varname, Q
 {
 	varvalue=varvalue.trimmed();
 
-	KukaVar *kukavarloc  = new KukaVar(&varname.toAscii(),&varvalue.toAscii());
+        KukaVar *kukavarloc  = new KukaVar(varname.toAscii(),varvalue.toAscii());
 
 	int datatype;
 
@@ -446,7 +446,7 @@ void OpenShowVarDock::editVar(QTreeWidgetItem * item)
 	QByteArray varvalue=item->text(CTreeVar::VARVALUE).toAscii();
 	QHostAddress varip=(QHostAddress)item->text(CTreeVar::ROBOTIP);
 
-	RobotVarEdit *roboteditvar=new RobotVarEdit(&varvalue, &varname, varip, this);
+        RobotVarEdit *roboteditvar=new RobotVarEdit(varvalue, varname, varip, this);
 	connect(roboteditvar,SIGNAL(writevalue(const QByteArray &, const QByteArray &, const QHostAddress &)),this,SLOT(on_writeVariable(const QByteArray &, const QByteArray &, const QHostAddress &)));
 
 	QDockWidget *dock = new QDockWidget(tr("New robot variable"), this);

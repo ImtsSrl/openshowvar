@@ -195,33 +195,33 @@ void VariableDB::addVar(QByteArray varname, QHostAddress robotip){
  */
 
 void VariableDB::deleteVar(QByteArray varname, QHostAddress robotip){
-	for(int i=0;i<listvar.count();i++){
-		if(listvar[i]->getRobotIP() == robotip && listvar[i]->getVarName() == varname){
-			
-			/*listvar.removeAt(i);
+    for(int varindex=0;varindex<listvar.count();varindex++){
+        if(listvar[varindex]->getRobotIP() == robotip && listvar[varindex]->getVarName() == varname){
+
+            /*listvar.removeAt(i);
 			robotServer[getThreadIndex(robotip)]->delVar(i);
 			*/
-			qDebug() << "Rimozione variabile: " << varname << " " << robotip;
-			
-			//Verifico se il thread gestisce altre variabili
-			bool ippresent=false;
-			for(int i=0;i<listvar.count();i++){
-				if(listvar[i]->getRobotIP() == robotip){
-					ippresent=true;
-				}
-			}
-			if(!ippresent){
-				int threadid = getThreadIndex(robotip);
-				robotServer[threadid]->stop();
-				delete robotServer[threadid];
-				robotServer[threadid]=NULL;
-			}
-			
-			listvar.removeAt(i);
-			robotServer[getThreadIndex(robotip)]->delVar(i);
-			
-		}
-	}
+            qDebug() << "Rimozione variabile: " << varname << " " << robotip;
+
+            //Verifico se il thread gestisce altre variabili
+            bool ippresent=false;
+            for(int i=0;i<listvar.count();i++){
+                if(listvar[i]->getRobotIP() == robotip){
+                    ippresent=true;
+                }
+            }
+            if(!ippresent){
+                int threadid = getThreadIndex(robotip);
+                robotServer[threadid]->stop();
+                delete robotServer[threadid];
+                robotServer[threadid]=NULL;
+            }
+
+            listvar.removeAt(varindex);
+            robotServer[getThreadIndex(robotip)]->delVar(varindex);
+
+        }
+    }
 }
 
 /*!	\brief Inizializzazione di un nuovo thread
@@ -301,7 +301,7 @@ void VariableDB::setReadTime(QHostAddress robotip, int* readtime){
 void VariableDB::setAllReadTime(int* readtime)
 {
     for(int i=0;i<MAXROBOTSERVER;i++)
-        if(!robotServer[i]==NULL)
+        if(robotServer[i]!=NULL)
             robotServer[i]->setReadFreq(readtime);
 }
 
