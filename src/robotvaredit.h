@@ -43,7 +43,7 @@ class RobotVarEdit : public QDialog
 		void on_Accept();
                 void addInt(int widgetindex, QByteArray varName, int value);
                 void addBool(int widgetindex, QByteArray varName, QByteArray value);
-                void addReal(int widgetIndex, QByteArray varName, double value);
+                void addReal(int widgetindex, QByteArray varName, double value);
                 void addChar(int widgetindex, QByteArray varName, QByteArray value);
                 void addStructure(int widgetindex,int value);
 

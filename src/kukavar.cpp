@@ -91,8 +91,8 @@ int KukaVar::VarType(const QByteArray variabile)
 	if((variabile.toLong()) || (variabile.data()==QByteArray("0")))
 		return INT;
 	
-	if((variabile.toFloat()) || (variabile.data()==QByteArray("0.0")))
-		return REAL;
+        if((variabile.toFloat()) || (variabile.data()==QByteArray("0.0")))
+                return REAL;
 	
 	if((variabile.data()==QByteArray("TRUE")) || (variabile.data()==QByteArray("FALSE")))
 		return BOOL;
@@ -101,7 +101,7 @@ int KukaVar::VarType(const QByteArray variabile)
         //if(variabile.endsWith("]"))
 		return CHAR;
             }
-	
+
 	return ERRTYPE;
 }
 

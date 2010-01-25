@@ -69,7 +69,7 @@ RobotVarEdit::RobotVarEdit(const QByteArray& variabile, const QByteArray& varnam
 
                     break;
                 case KukaVar::REAL:
-                    addInt(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato).toDouble());
+                    addReal(i+robotvar->getElementsNumber(),robotvar->getStructureMember(i), robotvar->getStructureValue(i,tipodato).toDouble());
                     addMap(i+robotvar->getElementsNumber(),i,tipodato);
 
                     break;
@@ -335,7 +335,7 @@ void RobotVarEdit::on_Accept()
 
 void RobotVarEdit::addInt(int widgetindex, QByteArray varName, int value){
 
-    //qDebug() << "Indice widget: " << widgetindex << " valore: " << value;
+    //qDebug() << "Indice widget intero: " << widgetindex << " valore: " << value;
 
     widget[widgetindex-1] = new QLabel(varName);
     widget[widgetindex] = new QSpinBox();
@@ -349,12 +349,15 @@ void RobotVarEdit::addInt(int widgetindex, QByteArray varName, int value){
  *
  */
 
-void RobotVarEdit::addReal(int widgetIndex, QByteArray varName, double value){
-    widget[widgetIndex-1] = new QLabel(varName);
-    widget[widgetIndex] = new QDoubleSpinBox();
-    ((QDoubleSpinBox*)widget[widgetIndex])->setDecimals(4);
-    ((QDoubleSpinBox*)widget[widgetIndex])->setRange(-9999,9999);
-    ((QDoubleSpinBox*)widget[widgetIndex])->setValue(value);
+void RobotVarEdit::addReal(int widgetindex, QByteArray varName, double value){
+
+    //qDebug() << "Indice widget reale: " << widgetindex << " valore: " << value;
+
+    widget[widgetindex-1] = new QLabel(varName);
+    widget[widgetindex] = new QDoubleSpinBox();
+    ((QDoubleSpinBox*)widget[widgetindex])->setDecimals(4);
+    ((QDoubleSpinBox*)widget[widgetindex])->setRange(-99999,99999);
+    ((QDoubleSpinBox*)widget[widgetindex])->setValue(value);
 }
 
 /*!	\brief Inserimento elemento di tipo char
@@ -412,7 +415,7 @@ void RobotVarEdit::addStructure(int widgetindex, int value){
  */
 
 void RobotVarEdit::addMap(int widgetIndex, int mapIndex, int tipodato){
-    qDebug() << "Indice widget: " << widgetIndex << " mapIndex: " << mapIndex << " tipo dato: " << tipodato;
+    //qDebug() << "Indice widget: " << widgetIndex << " mapIndex: " << mapIndex << " tipo dato: " << tipodato;
     mapper[mapIndex] = new QSignalMapper(this);
     switch(tipodato){
     case KukaVar::BOOL:
