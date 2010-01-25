@@ -23,7 +23,6 @@
 
 #include <QApplication>
 
-#include "openshowvartree.h"
 #include "openshowvardock.h"
 
 int main(int argc, char *argv[])
@@ -37,7 +36,6 @@ int main(int argc, char *argv[])
 	translator.load(QString("openshowvar_") + locale);
 	app.installTranslator(&translator);
 	
-        //OpenShowVarTree *showvar = new OpenShowVarTree;
         OpenShowVarDock *showvar = new OpenShowVarDock;
 	
 	Qt::WindowFlags flags = showvar->windowFlags();

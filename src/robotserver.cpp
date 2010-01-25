@@ -95,7 +95,7 @@ void RobotServer::closeEvent ( QCloseEvent * event )
  *
  *	"KUKA|#KR2100P_2 S C2 FLR ZH150/18|944288|192.168.0.1"
  *
- *	Questo messaggio viene opportunamente trattato da openshowvartree e viene
+ *	Questo messaggio viene opportunamente trattato da openshowvardock e viene
  *	inserito in una QList (parametro della funzione).
  *
  *	La variabile robotName contiene le seguenti informazioni in questa sequenza:

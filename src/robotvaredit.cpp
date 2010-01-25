@@ -211,30 +211,49 @@ void RobotVarEdit::on_okButton()
             //set new value for robotvar
             for (int i=0;i<robotvar->getElementsNumber();i++)
             {
-                int j=i+1;
-                qDebug() << "Ciclo " << j;
-                if (QSpinBox* spinBox = dynamic_cast<QSpinBox*>(widget[j]))
+                qDebug() << "Ciclo " << i;
+                int tipodato;
+                robotvar->getStructureValue(i,tipodato);
+
+                switch(tipodato)
                 {
-                    qDebug() << "SpinBox";
+                case KukaVar::INT:
+                    {
+                    ((QSpinBox*)widget[i+1])->setValue(2);
                     //robotvar->setFieldValue(((QSpinBox*)widget[i+1])->text().toAscii(),i);
+                    break;
                 }
-                else if (QDoubleSpinBox* doublespinBox = dynamic_cast<QDoubleSpinBox*>(widget[j]))
-                {
-                    qDebug() << "DoubleSpinBox";
+                case KukaVar::REAL:
+                    {
+                    ((QDoubleSpinBox*)widget[i+1])->setValue(2);
                     //robotvar->setFieldValue(((QDoubleSpinBox*)widget[i+1])->text().replace(",",".").toAscii(),i);
+                    break;
                 }
-                else if (QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(widget[j]))
-                {
-                    qDebug() << "LineEdit";
-                    //robotvar->setFieldValue(((QLineEdit*)widget[i+elementnumber])->text().toAscii(),i);
                 }
-                else if (QComboBox* comboBox = dynamic_cast<QComboBox*>(widget[j]))
-                {
-                    qDebug() << "ComboBox";
-                    //robotvar->setFieldValue(((QComboBox*)widget[i+elementnumber])->currentText().toAscii(),i);
-                }
-                else
-                    qDebug() << "Nessuna delle precedenti";
+
+//                if (QSpinBox* spinBox = dynamic_cast<QSpinBox*>(widget[j]))
+//                {
+//                    qDebug() << "SpinBox";
+//                    //robotvar->setFieldValue(((QSpinBox*)widget[i+1])->text().toAscii(),i);
+//                }
+//                //else if (QDoubleSpinBox* doublespinBox = dynamic_cast<QDoubleSpinBox*>(widget[j]))
+//                else if(tipodato==3)
+//                {
+//                    qDebug() << "DoubleSpinBox";
+//                    //robotvar->setFieldValue(((QDoubleSpinBox*)widget[i+1])->text().replace(",",".").toAscii(),i);
+//                }
+//                else if (QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(widget[j]))
+//                {
+//                    qDebug() << "LineEdit";
+//                    //robotvar->setFieldValue(((QLineEdit*)widget[i+elementnumber])->text().toAscii(),i);
+//                }
+//                else if (QComboBox* comboBox = dynamic_cast<QComboBox*>(widget[j]))
+//                {
+//                    qDebug() << "ComboBox";
+//                    //robotvar->setFieldValue(((QComboBox*)widget[i+elementnumber])->currentText().toAscii(),i);
+//                }
+//                else
+//                    qDebug() << "Nessuna delle precedenti";
             }
             //send new value to robot
             emit writevalue(robotvar->getVarName(),QByteArray(robotvar->createStructure()), varip);
@@ -360,7 +379,7 @@ void RobotVarEdit::addReal(int widgetindex, QByteArray varName, double value){
 
     widget[widgetindex-1] = new QLabel(varName);
     widget[widgetindex] = new QDoubleSpinBox();
-    ((QDoubleSpinBox*)widget[widgetindex])->setDecimals(4);
+    ((QDoubleSpinBox*)widget[widgetindex])->setDecimals(5);
     ((QDoubleSpinBox*)widget[widgetindex])->setRange(-99999,99999);
     ((QDoubleSpinBox*)widget[widgetindex])->setValue(value);
 }
