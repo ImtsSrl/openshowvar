@@ -26,6 +26,8 @@
 
 #include "kukavar.h"
 
+#define MAX_WIDGET_IN_EDIT_VAR 40
+
 class RobotVarEdit : public QDialog
 {
 	Q_OBJECT
@@ -35,10 +37,12 @@ class RobotVarEdit : public QDialog
 		~RobotVarEdit();
 		
 	private:
+
 		KukaVar *robotvar;
-		QWidget *widget[40];
-		QHostAddress varip;
-                QSignalMapper* mapper[40];
+                QWidget *widget[MAX_WIDGET_IN_EDIT_VAR];
+                QLabel *label[MAX_WIDGET_IN_EDIT_VAR];
+                QSignalMapper* mapper[MAX_WIDGET_IN_EDIT_VAR];
+                QHostAddress varip;
 		
 		void on_Accept();
                 void addInt(int widgetindex, QByteArray varName, int value);
