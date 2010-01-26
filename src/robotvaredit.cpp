@@ -437,3 +437,13 @@ void RobotVarEdit::addMap(int widgetIndex, int mapIndex, int tipodato){
     mapper[mapIndex]->setMapping(widget[widgetIndex], mapIndex);
     connect(mapper[mapIndex], SIGNAL(mapped(int)), this, SLOT(on_Changed(int)));
 }
+
+void RobotVarEdit::closeEvent (QCloseEvent* event)
+{
+    for (int i=0;i<robotvar->getElementsNumber();i++)
+    {
+        delete widget[i];
+        delete label[i];
+        delete mapper[i];
+    }
+}

@@ -58,6 +58,7 @@ class RobotVarEdit : public QDialog
 		void on_abortButton();
 		void on_namedLineEdit_textChanged(const QString &text);
 		void on_Changed(int index);
+                void closeEvent (QCloseEvent* event);
 		
 	signals:
 		void writevalue(const QByteArray &, const QByteArray &, const QHostAddress &);
