@@ -38,10 +38,9 @@ RobotVarEdit::RobotVarEdit(const QByteArray& variabile, const QByteArray& varnam
 
     robotvar = new KukaVar(varname, variabile);
 
-    QVBoxLayout *topLayout = new QVBoxLayout;
-    QGridLayout *leftLayout = new QGridLayout;
-    QVBoxLayout *bottomLayout = new QVBoxLayout;
-    //QSignalMapper* mapper[40];
+    QVBoxLayout *topLayout = new QVBoxLayout();
+    QGridLayout *leftLayout = new QGridLayout();
+    QVBoxLayout *bottomLayout = new QVBoxLayout();
 
     switch(robotvar->getVarType()){
     case KukaVar::STRUCTURE:
@@ -54,7 +53,6 @@ RobotVarEdit::RobotVarEdit(const QByteArray& variabile, const QByteArray& varnam
             structureLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
             topLayout->addWidget(titleLabel);
             topLayout->addWidget(structureLabel);
-            //topLayout->addStretch();
 
             for (int i=0;i<robotvar->getElementsNumber();i++)
             {
@@ -177,17 +175,22 @@ RobotVarEdit::RobotVarEdit(const QByteArray& variabile, const QByteArray& varnam
 
             break;
         }
+    default:
+        {
+            delete robotvar;
+            return;
+        }
     }
 
 
     //bottom commands
-    QPushButton *okButton = new QPushButton(tr("OK"));
+    QPushButton *okButton = new QPushButton(tr("OK"),this);
     //QPushButton *abortButton = new QPushButton(tr("Abort"));
     bottomLayout->addWidget(okButton);
     //bottomLayout->addWidget(abortButton);
     bottomLayout->addStretch();
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addLayout(topLayout);
     mainLayout->addLayout(leftLayout);
     mainLayout->addLayout(bottomLayout);
@@ -446,4 +449,5 @@ void RobotVarEdit::closeEvent (QCloseEvent* event)
         delete label[i];
         delete mapper[i];
     }
+    delete robotvar;
 }

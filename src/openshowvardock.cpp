@@ -35,7 +35,7 @@ OpenShowVarDock::OpenShowVarDock()
 {
 	insertVar=NULL;
 
-	treeWidget = new CTreeVar();
+        treeWidget = new CTreeVar(this);
 	setCentralWidget(treeWidget);
 
 	createActions();
@@ -442,6 +442,7 @@ void OpenShowVarDock::splitvaluetoview(QTreeWidgetItem *item, QString varname, Q
 
 void OpenShowVarDock::editVar(QTreeWidgetItem * item)
 {
+    if(item->text(CTreeVar::TIME)!=tr("TIMEOUT")){
 	QByteArray varname=item->text(CTreeVar::VARNAME).toAscii();
 	QByteArray varvalue=item->text(CTreeVar::VARVALUE).toAscii();
 	QHostAddress varip=(QHostAddress)item->text(CTreeVar::ROBOTIP);
@@ -454,6 +455,7 @@ void OpenShowVarDock::editVar(QTreeWidgetItem * item)
 	dock->setWidget(roboteditvar);
 	connect(dock,SIGNAL(visibilityChanged(const bool &)),this,SLOT(on_editVarClose(const bool &)));
 	addDockWidget(Qt::RightDockWidgetArea, dock);
+    }
 }
 
 void OpenShowVarDock::addCombo(QTreeWidgetItem *child){
