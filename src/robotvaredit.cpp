@@ -237,28 +237,28 @@ void RobotVarEdit::on_okButton()
     case KukaVar::INT:
         {
             //INT
-            robotvar->setValue(((QSpinBox*)widget[1])->text().toAscii());
+            robotvar->setValue(((QSpinBox*)widget[0])->text().toAscii());
             emit writevalue(robotvar->getVarName(),robotvar->getNewValue(), varip);
             break;
         }
     case KukaVar::REAL:
         {
             //REAL
-            robotvar->setValue(((QDoubleSpinBox*)widget[1])->text().replace(",",".").toAscii());
+            robotvar->setValue(((QDoubleSpinBox*)widget[0])->text().replace(",",".").toAscii());
             emit writevalue(robotvar->getVarName(),robotvar->getNewValue(), varip);
             break;
         }
     case KukaVar::BOOL:
         {
             //BOOL
-            robotvar->setValue(((QComboBox*)widget[1])->currentText().toAscii());
+            robotvar->setValue(((QComboBox*)widget[0])->currentText().toAscii());
             emit writevalue(robotvar->getVarName(),robotvar->getNewValue(), varip);
             break;
         }
     case KukaVar::CHAR:
         {
             //CHAR
-            robotvar->setValue(((QLineEdit*)widget[1])->text().toAscii());
+            robotvar->setValue(((QLineEdit*)widget[0])->text().toAscii());
             emit writevalue(robotvar->getVarName(),robotvar->getNewValue(), varip);
             break;
         }
