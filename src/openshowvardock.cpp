@@ -602,7 +602,10 @@ void OpenShowVarDock::closeEvent ( QCloseEvent * event )
 
 void OpenShowVarDock::on_itemClicked(QTreeWidgetItem *item, int column)
 {
-    if(treeWidget->currentItem()!=NULL)
+    if(treeWidget->currentItem()!=NULL){
         if(item->text(CTreeVar::TIME)!=tr("TIMEOUT"))
             editVarAct->setEnabled(true);
+    }
+    else
+        editVarAct->setEnabled(false);
 }
