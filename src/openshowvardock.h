@@ -9,6 +9,7 @@
 #include "cvarsgrid.h"
 #include "robotvaredit.h"
 #include "listvarxml.h"
+#include "CLog.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -38,6 +39,7 @@ private slots:
     void on_refVarDatabaseAct(int i);
     void on_readVarAct(bool checked);
     void on_onTopAct(bool checked);
+    void on_log(bool checked);
     void on_writeVariable(const QByteArray &varname, const QByteArray &value, const QHostAddress &varip);
     void on_saveVar();
     void on_openVar();
@@ -100,6 +102,7 @@ private:
     QAction *saveVarAct;
     QAction *openVarAct;
     QAction *clearListAct;
+    QAction* logAct;
 
     ListVarXml listVar;
 
@@ -107,6 +110,10 @@ private:
     QList<CVarsGrid*>	m_gridList;
     QByteArray graphVarName;
     QHostAddress graphVarIP;
+
+    //log
+    CLog cLog;
+    bool saveLog;
 };
 
 #endif

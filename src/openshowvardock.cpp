@@ -70,6 +70,8 @@ OpenShowVarDock::OpenShowVarDock()
 
         listVar.readList("varlist.xml");
 
+        saveLog=false;
+
 	setWindowIcon(QIcon(":openshowvar"));
 	resize(700,500);
 }
@@ -165,14 +167,20 @@ void OpenShowVarDock::createActions()
     clearListAct->setStatusTip(tr("Delete all"));
     connect(clearListAct, SIGNAL(triggered()), this, SLOT(on_clearList()));
 
+    logAct = new QAction(QIcon(":log"), tr("&Start/Stop log"), this);
+    logAct->setStatusTip(tr("Log"));
+    logAct->setCheckable(true);
+    connect(logAct, SIGNAL(toggled(bool)), this, SLOT(on_log(bool)));
+
 //    quitAct = new QAction(tr("&Quit"), this);
 //    quitAct->setShortcuts(QKeySequence::Quit);
 //    quitAct->setStatusTip(tr("Quit the application"));
 //    connect(quitAct, SIGNAL(triggered()), this, SLOT(close()));
 //
-	aboutAct = new QAction(tr("&About"), this);
-	aboutAct->setStatusTip(tr("Show the application's About box"));
-	connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+
+    aboutAct = new QAction(tr("&About"), this);
+    aboutAct->setStatusTip(tr("Show the application's About box"));
+    connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 }
 
 void OpenShowVarDock::createMenus()
@@ -220,6 +228,7 @@ void OpenShowVarDock::createToolBars()
     editToolBar->addAction(clearListAct);
     editToolBar->addAction(openVarAct);
     editToolBar->addAction(saveVarAct);
+    editToolBar->addAction(logAct);
 }
 
 void OpenShowVarDock::createStatusBar()
@@ -313,9 +322,8 @@ void OpenShowVarDock::lettura()
 		}//if
 	}//for
 
-	//QTreeWidgetItem *item;
-	//this->splitvaluetoview(item, QString("PIPPO"), QString("{PRO_IP: NAME[] \"/R1/RAGGIUNGIBIL.SRC\", SNR 116, NAME_C[] \"/R1/RAGGIUNGIBIL.SRC\", SNR_C 116, I_EXECUTED FALSE, P_ARRIVED 0, SI01 {CALL_STACK: NAME[] \"/R1/RAGGIUNGIBIL.SRC\", SNR 48, INT_FLAG FALSE}}"));
-	//cLog.writeList(treeWidget);
+        if(saveLog)
+            cLog.writeList(treeWidget);
 }
 
 void OpenShowVarDock::splitvaluetoview(QTreeWidgetItem *item, QString varname, QString varvalue)
@@ -550,6 +558,11 @@ void OpenShowVarDock::on_clearList()
 		database->deleteVar(treeWidget->topLevelItem(row)->text(CTreeVar::VARNAME).toAscii(),(QHostAddress)treeWidget->topLevelItem(row)->text(CTreeVar::ROBOTIP));
 	}
 	treeWidget->clear();
+}
+
+void OpenShowVarDock::on_log(bool checked)
+{
+    saveLog=checked;
 }
 
 void OpenShowVarDock::on_refVarAct(const QString &text)

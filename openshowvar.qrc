@@ -22,5 +22,6 @@
         <file alias="onTop">images/window_fullscreen.png</file>
         <file alias="resume">images/agt_resume.png</file>
         <file alias="run">images/agt_runit.png</file>
+        <file alias="log">images/text-x-log.png</file>
     </qresource>
 </RCC>
