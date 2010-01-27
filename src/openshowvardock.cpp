@@ -66,6 +66,8 @@ OpenShowVarDock::OpenShowVarDock()
         //insertVar->DropVar(*varName);
         dockInsertVar->setVisible(false);
 
+        connect(treeWidget,SIGNAL(itemClicked(QTreeWidgetItem*,int)),this,SLOT(on_itemClicked(QTreeWidgetItem*,int)));
+
         listVar.readList("varlist.xml");
 
 	setWindowIcon(QIcon(":openshowvar"));
@@ -148,6 +150,7 @@ void OpenShowVarDock::createActions()
 
     editVarAct = new QAction(QIcon(":editvar"), tr("&Edit Var..."), this);
     editVarAct->setStatusTip(tr("Edit variable value"));
+    editVarAct->setEnabled(false);
     connect(editVarAct, SIGNAL(triggered()), this, SLOT(on_editVar()));
 
     saveVarAct = new QAction(QIcon(":saveVar"), tr("&Save var list"), this);
@@ -442,20 +445,18 @@ void OpenShowVarDock::splitvaluetoview(QTreeWidgetItem *item, QString varname, Q
 
 void OpenShowVarDock::editVar(QTreeWidgetItem * item)
 {
-    if(item->text(CTreeVar::TIME)!=tr("TIMEOUT")){
-	QByteArray varname=item->text(CTreeVar::VARNAME).toAscii();
-	QByteArray varvalue=item->text(CTreeVar::VARVALUE).toAscii();
-	QHostAddress varip=(QHostAddress)item->text(CTreeVar::ROBOTIP);
+    QByteArray varname=item->text(CTreeVar::VARNAME).toAscii();
+    QByteArray varvalue=item->text(CTreeVar::VARVALUE).toAscii();
+    QHostAddress varip=(QHostAddress)item->text(CTreeVar::ROBOTIP);
 
-        RobotVarEdit *roboteditvar=new RobotVarEdit(varvalue, varname, varip, this);
-	connect(roboteditvar,SIGNAL(writevalue(const QByteArray &, const QByteArray &, const QHostAddress &)),this,SLOT(on_writeVariable(const QByteArray &, const QByteArray &, const QHostAddress &)));
+    RobotVarEdit *roboteditvar=new RobotVarEdit(varvalue, varname, varip, this);
+    connect(roboteditvar,SIGNAL(writevalue(const QByteArray &, const QByteArray &, const QHostAddress &)),this,SLOT(on_writeVariable(const QByteArray &, const QByteArray &, const QHostAddress &)));
 
-	QDockWidget *dock = new QDockWidget(tr("New robot variable"), this);
-	dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	dock->setWidget(roboteditvar);
-	connect(dock,SIGNAL(visibilityChanged(const bool &)),this,SLOT(on_editVarClose(const bool &)));
-	addDockWidget(Qt::RightDockWidgetArea, dock);
-    }
+    QDockWidget *dock = new QDockWidget(tr("New robot variable"), this);
+    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    dock->setWidget(roboteditvar);
+    connect(dock,SIGNAL(visibilityChanged(const bool &)),this,SLOT(on_editVarClose(const bool &)));
+    addDockWidget(Qt::RightDockWidgetArea, dock);
 }
 
 void OpenShowVarDock::addCombo(QTreeWidgetItem *child){
@@ -597,4 +598,11 @@ void OpenShowVarDock::closeEvent ( QCloseEvent * event )
     qtimeLettura.stop();
     listVar.writeList(treeWidget,"varlist.xml");
     delete database;
+}
+
+void OpenShowVarDock::on_itemClicked(QTreeWidgetItem *item, int column)
+{
+    if(treeWidget->currentItem()!=NULL)
+        if(item->text(CTreeVar::TIME)!=tr("TIMEOUT"))
+            editVarAct->setEnabled(true);
 }
