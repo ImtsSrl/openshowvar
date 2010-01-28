@@ -112,7 +112,7 @@ private:
     QHostAddress graphVarIP;
 
     //log
-    CLog cLog;
+    CLog* cLog;
     bool saveLog;
 };
 

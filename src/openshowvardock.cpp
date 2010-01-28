@@ -70,6 +70,7 @@ OpenShowVarDock::OpenShowVarDock()
 
         listVar.readList("varlist.xml");
 
+        cLog = new CLog("log.xml");
         saveLog=false;
 
 	setWindowIcon(QIcon(":openshowvar"));
@@ -323,7 +324,7 @@ void OpenShowVarDock::lettura()
 	}//for
 
         if(saveLog)
-            cLog.writeList(treeWidget);
+            cLog->writeList(treeWidget);
 }
 
 void OpenShowVarDock::splitvaluetoview(QTreeWidgetItem *item, QString varname, QString varvalue)
@@ -610,6 +611,7 @@ void OpenShowVarDock::closeEvent ( QCloseEvent * event )
     timeUpdateGraph.stop();
     qtimeLettura.stop();
     listVar.writeList(treeWidget,"varlist.xml");
+    delete cLog;
     delete database;
 }
 

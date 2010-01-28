@@ -35,8 +35,8 @@
  *
  */
 
-CLog::CLog(){
-	
+CLog::CLog(const QString filename){
+    logfile=filename;
 }
 
 CLog::~CLog(){
@@ -59,40 +59,38 @@ CLog::~CLog(){
  */
 
 void CLog::writeList(QTreeWidget *tree){
-	QDomDocument doc;
-	
-	//if(tree->topLevelItemCount()){
-	QDateTime tempolettura;
-	
-	QDomElement variablelist = doc.createElement("LOG");
-	variablelist.setAttribute("DATA", tempolettura.currentDateTime().toString());
-	doc.appendChild(variablelist);
-		
-	for(int row=0;row<tree->topLevelItemCount();row++)
-	{
-		QDomElement variable = doc.createElement("VAR");
-		variable.setAttribute("NAME",tree->topLevelItem(row)->text(0));
-		QDomElement varvalue = doc.createElement("VALUE");
-		QDomElement readtime = doc.createElement("READTIME");
-		QDomElement robotip = doc.createElement("ROBOT");
-		QDomText var = doc.createTextNode(tree->topLevelItem(row)->text(1));
-		QDomText time = doc.createTextNode(tree->topLevelItem(row)->text(3));
-		QDomText ip = doc.createTextNode(tree->topLevelItem(row)->text(4));
-		variablelist.appendChild(variable);
-		variable.appendChild(varvalue);
-		variable.appendChild(readtime);
-		variable.appendChild(robotip);
-		varvalue.appendChild(var);
-		readtime.appendChild(time);
-		robotip.appendChild(ip);
-	}
-		
-	QFile file(FILENAMELOG);
-	QTextStream out(&file);
-	file.open(QIODevice::Append);
-	//file.open(QIODevice::WriteOnly);
-	const int Indent=4;
-	doc.save(out, Indent);
-	file.close();
-	//}
+    QDomDocument doc;
+
+    QDateTime tempolettura;
+
+    QDomElement variablelist = doc.createElement("LOG");
+    variablelist.setAttribute("DATA", tempolettura.currentDateTime().toString());
+    doc.appendChild(variablelist);
+
+    for(int row=0;row<tree->topLevelItemCount();row++)
+    {
+        QDomElement variable = doc.createElement("VAR");
+        variable.setAttribute("NAME",tree->topLevelItem(row)->text(0));
+        QDomElement varvalue = doc.createElement("VALUE");
+        QDomElement readtime = doc.createElement("READTIME");
+        QDomElement robotip = doc.createElement("ROBOT");
+        QDomText var = doc.createTextNode(tree->topLevelItem(row)->text(1));
+        QDomText time = doc.createTextNode(tree->topLevelItem(row)->text(3));
+        QDomText ip = doc.createTextNode(tree->topLevelItem(row)->text(4));
+        variablelist.appendChild(variable);
+        variable.appendChild(varvalue);
+        variable.appendChild(readtime);
+        variable.appendChild(robotip);
+        varvalue.appendChild(var);
+        readtime.appendChild(time);
+        robotip.appendChild(ip);
+    }
+
+    QFile file(logfile);
+    QTextStream out(&file);
+    file.open(QIODevice::Append);
+    //file.open(QIODevice::WriteOnly);
+    const int Indent=4;
+    doc.save(out, Indent);
+    file.close();
 }
