@@ -477,17 +477,17 @@ void OpenShowVarDock::addCombo(QTreeWidgetItem *child){
 }
 
 void OpenShowVarDock::toBinary(int value, QString *binary){
-	int mask;
-	for(int i=0;i<16;i++){
-		mask = 1 << i;
-		if(i==4 || i==8 || i==12)
-			binary->prepend(" ");
-		if(value & mask)
-			binary->prepend("1");
-		else
-			binary->prepend("0");
-	}
-	//binary->append(QString("%1").arg(value, 0, 2));
+    int mask;
+    for(int i=0;i<32;i++){
+        mask = 1 << i;
+        if(i==4 || i==8 || i==12 || i==16 || i==20 || i==24 || i==28)
+            binary->prepend(" ");
+        if(value & mask)
+            binary->prepend("1");
+        else
+            binary->prepend("0");
+    }
+    //binary->append(QString("%1").arg(value, 0, 2));
 }
 
 /*!	\brief Restituisce il valore esadecimale di una variabile
@@ -500,8 +500,8 @@ void OpenShowVarDock::toBinary(int value, QString *binary){
  */
 
 void OpenShowVarDock::toHex(int value, QString *hex){
-	hex->append(QString("0x%1").arg(value, 0, 16));
-	hex->toUpper();
+    hex->append(QString("0x%1").arg(value, 0, 16));
+    hex->toUpper();
 }
 
 void OpenShowVarDock::updateGraph()
