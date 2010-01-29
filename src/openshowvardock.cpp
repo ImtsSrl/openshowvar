@@ -67,6 +67,7 @@ OpenShowVarDock::OpenShowVarDock()
         dockInsertVar->setVisible(false);
 
         connect(treeWidget,SIGNAL(itemClicked(QTreeWidgetItem*,int)),this,SLOT(on_itemClicked(QTreeWidgetItem*,int)));
+        connect(treeWidget,SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),this,SLOT(on_itemDoubleClicked(QTreeWidgetItem*,int)));
 
         listVar.readList("varlist.xml");
 
@@ -620,6 +621,18 @@ void OpenShowVarDock::on_itemClicked(QTreeWidgetItem *item, int column)
     if(treeWidget->currentItem()!=NULL){
         if(item->text(CTreeVar::TIME)!=tr("TIMEOUT"))
             editVarAct->setEnabled(true);
+    }
+    else
+        editVarAct->setEnabled(false);
+}
+
+void OpenShowVarDock::on_itemDoubleClicked(QTreeWidgetItem *item, int column)
+{
+    if(treeWidget->currentItem()!=NULL){
+        if(item->text(CTreeVar::TIME)!=tr("TIMEOUT")){
+            editVarAct->setEnabled(true);
+            editVar(item);
+        }
     }
     else
         editVarAct->setEnabled(false);

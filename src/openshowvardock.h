@@ -45,6 +45,7 @@ private slots:
     void on_openVar();
     void on_clearList();
     void on_itemClicked(QTreeWidgetItem *item, int column);
+    void on_itemDoubleClicked(QTreeWidgetItem *item, int column);
     void closeEvent(QCloseEvent * event);
     void insertNew(const QString &variabile, const QString &robotip);
     void insertClose(const bool &visible);
