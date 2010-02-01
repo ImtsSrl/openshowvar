@@ -37,6 +37,7 @@ private slots:
     void on_insertVar(const QString *varName);
     void on_refVarAct(const QString &text);
     void on_refVarDatabaseAct(int i);
+    void on_valueChanged(int i);
     void on_readVarAct(bool checked);
     void on_onTopAct(bool checked);
     void on_log(bool checked);
