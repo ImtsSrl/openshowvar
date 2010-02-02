@@ -37,6 +37,7 @@ OpenShowVarDock::OpenShowVarDock()
 
         treeWidget = new CTreeVar(this);
 	setCentralWidget(treeWidget);
+        treeWidget->setItemDelegateForColumn(CTreeVar::VARVALUE,new CInlineEdit);
 
 	createActions();
 	createMenus();
@@ -67,7 +68,7 @@ OpenShowVarDock::OpenShowVarDock()
         dockInsertVar->setVisible(false);
 
         connect(treeWidget,SIGNAL(itemClicked(QTreeWidgetItem*,int)),this,SLOT(on_itemClicked(QTreeWidgetItem*,int)));
-        connect(treeWidget,SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),this,SLOT(on_itemDoubleClicked(QTreeWidgetItem*,int)));
+//        connect(treeWidget,SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),this,SLOT(on_itemDoubleClicked(QTreeWidgetItem*,int)));
 
         listVar.readList("varlist.xml");
 
@@ -245,14 +246,13 @@ void OpenShowVarDock::on_insertVar(const QString *varName)
 
 void OpenShowVarDock::insertNew(const QString &variabile, const QString &iprobot)
 {
-	QTreeWidgetItem *item;
+        QTreeWidgetItem *item = new QTreeWidgetItem(treeWidget);
 
-	item = new QTreeWidgetItem(treeWidget);
-	item->setText(CTreeVar::VARNAME, variabile.toUpper());
+        item->setText(CTreeVar::VARNAME, variabile.toUpper());
 	item->setText(CTreeVar::ROBOTIP, iprobot);
 
 	//Evita il problema del blocco durante il drag della riga
-	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+        item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 
 	item->setToolTip(CTreeVar::VARNAME,tr("Robot IP %1").arg(iprobot));
 
@@ -370,6 +370,7 @@ void OpenShowVarDock::splitvaluetoview(QTreeWidgetItem *item, QString varname, Q
                     //qDebug() << "Valore i=" << i;
 
                     QTreeWidgetItem *child = item->child(i);
+                    
                     QByteArray elementvalue=kukavarloc->getStructureValue(i,datatype);
                     //tipo di dato struttura intero
                     switch(datatype)
@@ -626,20 +627,20 @@ void OpenShowVarDock::on_itemClicked(QTreeWidgetItem *item, int column)
         editVarAct->setEnabled(false);
 }
 
-void OpenShowVarDock::on_itemDoubleClicked(QTreeWidgetItem *item, int column)
-{
-    if(treeWidget->currentItem()!=NULL){
-        if(item->text(CTreeVar::TIME)!=tr("TIMEOUT")){
-            QSpinBox *editspin = new QSpinBox(this);
-            editspin->setRange(0,100);
-            editspin->setValue(item->text(CTreeVar::VARVALUE).toInt());
-            treeWidget->setItemWidget(item,CTreeVar::VARVALUE,editspin);
-            connect(editspin,SIGNAL(valueChanged(int)),this,SLOT(on_valueChanged(int)));
-        }
-    }
-    else
-        editVarAct->setEnabled(false);
-}
+//void OpenShowVarDock::on_itemDoubleClicked(QTreeWidgetItem *item, int column)
+//{
+//    if(treeWidget->currentItem()!=NULL){
+//        if(item->text(CTreeVar::TIME)!=tr("TIMEOUT")){
+//            QSpinBox *editspin = new QSpinBox(this);
+//            editspin->setRange(0,100);
+//            editspin->setValue(item->text(CTreeVar::VARVALUE).toInt());
+//            treeWidget->setItemWidget(item,CTreeVar::VARVALUE,editspin);
+//            connect(editspin,SIGNAL(valueChanged(int)),this,SLOT(on_valueChanged(int)));
+//        }
+//    }
+//    else
+//        editVarAct->setEnabled(false);
+//}
 
 void OpenShowVarDock::on_valueChanged(int i)
 {
