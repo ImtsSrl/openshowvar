@@ -25,6 +25,7 @@
 #include <QList>
 
 #include "broadcast.h"
+#include "insertvarcomp.h"
 
 class QPushButton;
 class QByteArray;
@@ -40,18 +41,22 @@ public:
 	void DropVar(QString varName);
 	
 	QLabel* varLabel, *labelRobot;
-	QLineEdit* lineEdit;
+        InsertVarComp* lineEdit;
 	QPushButton* insertButton;
 	QPushButton* abortButton;
 	
 private:
 	QComboBox* comboRobotList;
 	Broadcast* broadcast;
-	
+
+        QTimer qtimeBroadcast;
+
 private slots:
 	void on_insertButton_clicked();
 	void on_lineEdit_textChanged();
+        void on_lineEdit_returnPressed();
 	void on_abortButton_clicked();
+        void on_Broadcast();
 	void Robot(QList<QByteArray> &datirobot);
 	void closeEvent(QCloseEvent * event);
 	

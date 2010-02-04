@@ -26,24 +26,28 @@
 
 #include "kukavar.h"
 
+#define MAX_WIDGET_IN_EDIT_VAR 40
+
 class RobotVarEdit : public QDialog
 {
 	Q_OBJECT
 			
 	public:
-		RobotVarEdit(const QByteArray *variabile, const QByteArray *varname, const QHostAddress varip, QWidget *parent = 0);
+                RobotVarEdit(const QByteArray& variabile, const QByteArray& varname, const QHostAddress varip, QWidget *parent = 0);
 		~RobotVarEdit();
 		
 	private:
+
 		KukaVar *robotvar;
-		QWidget *widget[40];
-		QHostAddress varip;
-                QSignalMapper* mapper[40];
+                QWidget *widget[MAX_WIDGET_IN_EDIT_VAR];
+                QLabel *label[MAX_WIDGET_IN_EDIT_VAR];
+                QSignalMapper* mapper[MAX_WIDGET_IN_EDIT_VAR];
+                QHostAddress varip;
 		
 		void on_Accept();
                 void addInt(int widgetindex, QByteArray varName, int value);
                 void addBool(int widgetindex, QByteArray varName, QByteArray value);
-                void addReal(int widgetIndex, QByteArray varName, double value);
+                void addReal(int widgetindex, QByteArray varName, double value);
                 void addChar(int widgetindex, QByteArray varName, QByteArray value);
                 void addStructure(int widgetindex,int value);
 
@@ -54,6 +58,7 @@ class RobotVarEdit : public QDialog
 		void on_abortButton();
 		void on_namedLineEdit_textChanged(const QString &text);
 		void on_Changed(int index);
+                void closeEvent (QCloseEvent* event);
 		
 	signals:
 		void writevalue(const QByteArray &, const QByteArray &, const QHostAddress &);

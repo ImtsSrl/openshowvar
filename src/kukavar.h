@@ -36,7 +36,7 @@ class KukaVar : public QObject
 	friend class RobotVarEdit;
 	
 	public:
-		KukaVar(const QByteArray* varname, const QByteArray* varvalue);
+                KukaVar(const QByteArray& varname, const QByteArray& varvalue);
 		KukaVar(const QByteArray varname);
 		~KukaVar();
 		

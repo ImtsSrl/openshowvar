@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Claudio                                         *
- *   cyberpro@cyberpro-laptop                                              *
+ *   Copyright (C) 2007 by Massimiliano Fago                               *
+ *   massimiliano.fago@gmail.com                                           *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,53 +18,30 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef CGRIDFIELD_H
-#define CGRIDFIELD_H
+#ifndef INSERTVARCOMP_H
+#define INSERTVARCOMP_H
 
 #include <QtGui>
-#include "CGridLine.h"
 
-class CGridField : public QWidget {
+class InsertVarComp : public QLineEdit
+{
+        Q_OBJECT
 
-	Q_OBJECT
+public:
+    InsertVarComp(QWidget *parent=0);
 
-	public:
+protected:
+    void keyPressEvent(QKeyEvent *e);
+    void focusInEvent(QFocusEvent *e);
+    void focusOutEvent(QFocusEvent *e);
 
-		int		m_MaxTimeMSec;
+private slots:
+    void insertCompletion(const QString &completion);
 
-		void		setMaxTime(int msec);
-		int		getMaxTime();
+private:
+    QCompleter *completer;
+    QAbstractItemModel *modelFromFile(const QString& fileName);
 
-	private:
-
-		QList<CGridLine*>	m_lineValue;
-		int			m_MarkPrec;
-		float			m_MarkOpacity;
-
-		int			m_averageCount;
-		int			m_averageRenderTime;
-		int			m_antialiasEnabled;
-
-	public:
-
-		CGridField();
-
-		void addLine(CGridLine* );
-		void removeLine( CGridLine* );
-
-		void setMarkOpacity(float );
-		float markOpacity();
-
-		void setMarkPrecision(int );
-		int markPrecision();
-
-	protected:
-
-		void paintEvent(QPaintEvent* qpEve);
-
-	public slots:
-
-		void updateState();
 };
 
 #endif

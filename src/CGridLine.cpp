@@ -28,13 +28,14 @@
  */
 
 #include "CGridLine.h"
+#include "float.h"
 
 CGridLine::CGridLine(){
 	m_values = new QList<CGridValue*>;
 
 	m_color.setRgb( rand()%255, rand()%255, rand()%255 );
-	m_maxValue = -999999;
-	m_minValue = 999999;
+	m_maxValue = DBL_MIN;
+	m_minValue = DBL_MAX;
 
 	m_drawWidth = 1;
 }
@@ -61,6 +62,16 @@ float CGridLine::width(){
 	return m_drawWidth;
 }
 
+void CGridLine::saveAttributeXml( QDomElement* dom ){
+    dom->setAttribute( "COLOR" , m_color.name() );
+    dom->setAttribute( "WIDTH" , m_drawWidth );
+}
+
+void CGridLine::loadAttributeXml( QDomElement* dom ){
+    m_color.setNamedColor( dom->attribute( "COLOR" , "#000000" ) );
+    m_drawWidth = dom->attribute( "WIDTH" , "1.0" ).toFloat();
+}
+
 void CGridLine::setWidth( float f ){
 	if( f > 0 ) m_drawWidth = f;
 }
@@ -73,6 +84,7 @@ void CGridLine::drawInWidget(QWidget* qw,QPainter* paint,QRect* drawR,double max
 
 	QPen pen( m_color );
 	pen.setWidthF( m_drawWidth );
+	pen.setBrush( QBrush( m_color ));
 	paint->setPen( pen );
 
 	if( items < 2 || drawR == 0)
@@ -89,6 +101,7 @@ void CGridLine::drawInWidget(QWidget* qw,QPainter* paint,QRect* drawR,double max
 
 		ty = (1 - (( m_values->at(i)->m_value - minRange ) / ( maxRange - minRange ))) * drawR->height();
 
+		paint->drawEllipse(QPoint((int)tx + drawR->x(),(int)ty + drawR->y()) , 2,2);
 		paint->drawLine(
 			(int)px + drawR->x(),
 			(int)py + drawR->y(),
@@ -130,6 +143,16 @@ void CGridLine::addValue(double val){
 
 		if( timeTo > m_msecMax )
 			m_values->removeAt(0);
+
+		CGridValue* her;
+		m_maxValue = DBL_MIN;m_minValue = DBL_MAX;
+
+		foreach( her , *m_values ){
+		    if( her->m_value > m_maxValue )
+			m_maxValue = her->m_value;
+		    if( her->m_value < m_minValue )
+			m_minValue = her->m_value;
+		}
 	}
 
 	m_values->append( vval );
@@ -139,8 +162,8 @@ void CGridLine::addValue(double val){
 
 void CGridLine::clearAll(){
 	m_values->clear();
-	m_maxValue = -999999;
-	m_minValue = 999999;
+	m_maxValue = DBL_MIN;
+	m_minValue = DBL_MAX;
 
 	emit stateChanged();
 }

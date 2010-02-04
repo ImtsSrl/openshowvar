@@ -6,6 +6,8 @@
 
 #include "cvarsgridlinelegend.h"
 
+#include <QtXml>
+
 class CVarsGrid : public QWidget {
 
 	Q_OBJECT
@@ -27,6 +29,11 @@ private:
 
 	QMutex				m_mutexUpdate;
 
+	QToolBar			m_mainToolbar;
+	QAction*			m_maintoolMarkDot;
+	QAction*			m_maintoolBall;
+	QAction*			m_maintoolClear;
+
 public:
 
 	CVarsGrid( VariableDB* );
@@ -41,6 +48,12 @@ public:
 
 	void dragEnterEvent(QDragEnterEvent *event);
 	void dropEvent(QDropEvent *event);
+
+	void loadFromXml( QDomElement* );
+	const QDomElement& saveToXml( QDomElement* );
+
+	static const QList<CVarsGrid*>& loadAllFromXml( const QString& file , VariableDB* vardb );
+	static void saveAllToXml(const QList<CVarsGrid*>& list , const QString& file );
 
 public slots:
 

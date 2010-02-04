@@ -23,7 +23,6 @@ HEADERS += src/broadcast.h \
     src/insertvar.h \
     src/kukavar.h \
     src/listvarxml.h \
-    src/openshowvartree.h \
     src/robotserver.h \
     src/robotvar.h \
     src/robotvaredit.h \
@@ -39,8 +38,9 @@ HEADERS += src/broadcast.h \
     src/robot_view/lib3ds/lib3ds_impl.h \
     src/robot_view/lib3ds/lib3ds.h \
     src/cvarsgrid.h \
-    src/cvarsgridlinelegend.h
-
+    src/cvarsgridlinelegend.h \
+    src/openshowvardock.h \
+    src/insertvarcomp.h
 SOURCES += src/broadcast.cpp \
     src/CDebug.cpp \
     src/CGridField.cpp \
@@ -53,7 +53,6 @@ SOURCES += src/broadcast.cpp \
     src/kukavar.cpp \
     src/listvarxml.cpp \
     src/main.cpp \
-    src/openshowvartree.cpp \
     src/robotserver.cpp \
     src/robotvar.cpp \
     src/robotvaredit.cpp \
@@ -85,8 +84,9 @@ SOURCES += src/broadcast.cpp \
     src/robot_view/lib3ds/lib3ds_background.c \
     src/robot_view/lib3ds/lib3ds_atmosphere.c \
     src/cvarsgrid.cpp \
-    src/cvarsgridlinelegend.cpp
-
+    src/cvarsgridlinelegend.cpp \
+    src/openshowvardock.cpp \
+    src/insertvarcomp.cpp
 TRANSLATIONS += lang/openshowvar_de.ts \
     lang/openshowvar_en.ts \
     lang/openshowvar_it.ts

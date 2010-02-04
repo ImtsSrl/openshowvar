@@ -28,6 +28,8 @@
 
 #include "CGridValue.h"
 
+#include <QtXml>
+
 class CGridField;
 
 class CGridLine  : public QObject {
@@ -72,6 +74,9 @@ class CGridLine  : public QObject {
 		void	setWidth( float );
 
 		void	setTooltip(const QString& );
+
+		void	saveAttributeXml( QDomElement* );
+		void	loadAttributeXml( QDomElement* );
 
 	signals:
 

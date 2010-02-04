@@ -95,7 +95,7 @@ void ClientCross::run()
 			{
 				socket.connectToHost(serverName, serverPort);
 				if (!socket.waitForConnected(Timeout)) {
-					qDebug() << "Timeout!";
+                                        //qDebug() << "Timeout!";
 					err=true;
 				}
 				break;

@@ -14,6 +14,8 @@ class CTreeVar : public QTreeWidget
 	public:
 		CTreeVar(QWidget *parent = 0);
 		~CTreeVar();
+
+                static const char VARNAME=0,VARVALUE=1,OPTIONS=2,TIME=3,ROBOTIP=4;
 		
 	protected:
 		void dropEvent(QDropEvent *event);
@@ -29,7 +31,7 @@ class CTreeVar : public QTreeWidget
 		QPoint startPos;
 		
 	signals:
-		void dropVar(const QString *varName);
+                void dropVar(const QString& varName);
 };
 
 #endif

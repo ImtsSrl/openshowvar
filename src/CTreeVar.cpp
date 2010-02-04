@@ -32,7 +32,17 @@
 CTreeVar::CTreeVar(QWidget *parent)
 	: QTreeWidget(parent)
 {
+    setColumnCount(5);
+    setHeaderLabels(QStringList() << tr("Variable name") << tr("Variable value") << tr("") << tr("Read time") << tr("IP Robot"));
+    setColumnWidth(VARNAME,110);
+    setColumnWidth(VARVALUE,350);
+    setColumnHidden(4,true);
 
+    /*
+    abilitazione Drop
+    */
+    setAcceptDrops(true);
+    setDragEnabled(true);
 }
 
 CTreeVar::~CTreeVar()
@@ -44,7 +54,7 @@ void CTreeVar::dropEvent(QDropEvent *event)
 {
 	event->acceptProposedAction();
 		if(event->source()!=this)
-			emit dropVar(&event->mimeData()->text());
+                        emit dropVar(event->mimeData()->text());
 }
 
 void CTreeVar::dragEnterEvent(QDragEnterEvent *event)
@@ -91,7 +101,7 @@ void CTreeVar::startDrag()
     }
 
     //Se la variabile e' una struttura elimino il tipo di dato e passo solo il valore
-    KukaVar *kukavar = new KukaVar(&item->text(VARNAME).toAscii(),&item->text(VARVALUE).toAscii());
+    KukaVar *kukavar = new KukaVar(item->text(VARNAME).toAscii(),item->text(VARVALUE).toAscii());
 
     switch(kukavar->getVarType()){
     case KukaVar::STRUCTURE:
@@ -123,6 +133,6 @@ void CTreeVar::startDrag()
 	//pixmap.setAlphaChannel(alphaChannel);
 	drag->setPixmap(pixmap);
 
-	Qt::DropAction dropAction = drag->exec();
+        drag->exec();
 }
 

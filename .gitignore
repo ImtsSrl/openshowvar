@@ -5,6 +5,7 @@
 *.o
 moc*.*
 Makefile*
+object_script*
 release/
 debug/
 *.pro.user

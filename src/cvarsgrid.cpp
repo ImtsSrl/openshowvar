@@ -5,7 +5,16 @@ CVarsGrid::CVarsGrid( VariableDB* db ){
 
 	m_dragHere.setText( "Drag Variable Here!");
 
+	QVBoxLayout* vlay = new QVBoxLayout();
+
+	m_maintoolMarkDot = m_mainToolbar.addAction( "Dot" );
+	//m_maintoolBall = m_mainToolbar.addAction( "Ball" );
+	m_maintoolClear = m_mainToolbar.addAction( "Clr" );
+	vlay->addWidget( &m_mainToolbar );
+	connect( &m_mainToolbar,SIGNAL(actionTriggered(QAction*)),this,SLOT(menuTrig(QAction*)));
+
 	QHBoxLayout* lay = new QHBoxLayout();
+
 	lay->addWidget( &m_field );
 	lay->addWidget( &m_dragHere );
 
@@ -18,11 +27,10 @@ CVarsGrid::CVarsGrid( VariableDB* db ){
 
 	lay->addLayout( m_legendsLayout );
 
-	setLayout( lay );
+	vlay->addLayout( lay );
+	setLayout( vlay );
 
 	m_field.hide();
-
-	show();
 
 	setAcceptDrops( true );
 }
@@ -43,8 +51,117 @@ void CVarsGrid::mouseReleaseEvent( QMouseEvent* eve ){
 	menu->popup( eve->globalPos() );
 }
 
+const QList<CVarsGrid*>& CVarsGrid::loadAllFromXml( const QString& filename , VariableDB* vardb ) {
+	QDomDocument main;
+	QList<CVarsGrid*> ret;
+
+	QFile file(filename);
+	file.open(QIODevice::ReadOnly);
+
+	main.setContent(&file);
+	file.close();
+
+	QDomNode node = main.documentElement().firstChild();
+	QDomNode child;
+
+	CVarsGrid* grid;
+
+	while( !node.isNull() ){
+
+	grid = new CVarsGrid( vardb );
+	ret.append( grid );
+
+	QDomElement ele = node.toElement();
+	grid->loadFromXml( &ele );
+
+	node = node.nextSibling();
+	}
+
+	qDebug() << "loading done";
+	return ret;
+}
+
+void CVarsGrid::loadFromXml( QDomElement* dom ){
+	QRect rct;
+
+	/*rct.setX( dom->attribute( "X" , "10" ).toInt() );
+	rct.setY( dom->attribute( "Y" , "10" ).toInt() );
+	rct.setWidth( dom->attribute( "WIDTH" , "100" ).toInt() );
+	rct.setHeight( dom->attribute( "HEIGHT" , "200" ).toInt() );*/
+
+	QDomElement ln = dom->firstChildElement( "LINE" );
+
+	while( !ln.isNull() ){
+		QString name ( ln.attribute( "NAME" , "" ) );
+		QString ip ( ln.attribute( "IP" , "" ) );
+
+		if( name.length() > 0 && ip.length() > 0 )
+			addVar(name,ip);
+
+		m_lines.last()->loadAttributeXml( &ln );
+
+		ln = ln.nextSiblingElement( "LINE" );
+	}
+
+	//setGeometry( rct );
+}
+
+void CVarsGrid::saveAllToXml(const QList<CVarsGrid*>& list , const QString& filename ){
+	QDomDocument main;
+	CVarsGrid* grid;
+
+	foreach( grid , list ){
+
+	QDomElement grids = main.createElement("VARSGRIDS");
+
+	grid->saveToXml( &grids );
+
+	main.appendChild( grids );
+
+	}
+
+	QFile file( filename );
+	QTextStream out(&file);
+	file.open(QIODevice::WriteOnly);
+	const int Indent=4;
+	main.save(out, Indent);
+	file.close();
+}
+
+const QDomElement& CVarsGrid::saveToXml( QDomElement* main ){
+
+
+	QDomElement vg = main->ownerDocument().createElement( "VARSGRID" );
+
+	/*vg.setAttribute( "X" , geometry().x() );
+	vg.setAttribute( "Y" , geometry().y() );
+	vg.setAttribute( "WIDTH" , geometry().width() );
+	vg.setAttribute( "HEIGHT" , geometry().height() );*/
+
+	for(int i = 0; i < m_lines.size(); i++ ){
+	QDomElement ln = main->ownerDocument().createElement( "LINE" );
+
+	ln.setAttribute( "NAME" , m_linesVar[i] );
+	ln.setAttribute( "IP" , m_linesIP[i] );
+
+	m_lines[i]->saveAttributeXml( &ln );
+
+	vg.appendChild( ln );
+	}
+
+	main->appendChild( vg );
+}
+
 void CVarsGrid::menuTrig( QAction* act ){
-	if( act->text() == "Clear" ){
+
+	if( act == m_maintoolMarkDot ){
+		if( m_field.markOpacity() != 0 )
+			m_field.setMarkOpacity( 0 );
+		else
+			m_field.setMarkOpacity( 0.3 );
+	}
+
+	if( act->text() == "Clear" || act == m_maintoolClear ){
 		CGridLine* ln;
 		foreach( ln , m_lines ){
 			ln->clearAll();

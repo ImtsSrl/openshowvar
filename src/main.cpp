@@ -22,9 +22,8 @@
 #include "showvarconst.h"
 
 #include <QApplication>
-//#include <kaboutdata.h>
 
-#include "openshowvartree.h"
+#include "openshowvardock.h"
 
 int main(int argc, char *argv[])
 {
@@ -37,9 +36,7 @@ int main(int argc, char *argv[])
 	translator.load(QString("openshowvar_") + locale);
 	app.installTranslator(&translator);
 	
-	//app.setQuitOnLastWindowClosed(false);
-	
-	OpenShowVarTree *showvar = new OpenShowVarTree;
+        OpenShowVarDock *showvar = new OpenShowVarDock;
 	
 	Qt::WindowFlags flags = showvar->windowFlags();
 	//showvar->setWindowFlags(flags  | Qt::WindowStaysOnTopHint | Qt::CustomizeWindowHint);
@@ -47,7 +44,7 @@ int main(int argc, char *argv[])
 	showvar->setAttribute(Qt::WA_DeleteOnClose);
 	showvar->move(100,100);
 	showvar->show();
-        showvar->setWindowTitle("OpenShowVar Beta 0.6.3");
+        showvar->setWindowTitle("OpenShowVar");
 	
 	return app.exec();
 }

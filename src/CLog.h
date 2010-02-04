@@ -32,13 +32,16 @@ const QString FILENAMELOG = "log.xml";
 
 class CLog : public QObject
 {
-	Q_OBJECT
-			
-	public:
-		CLog();
-		~CLog();
-		
-		void writeList(QTreeWidget *tree);
+    Q_OBJECT
+
+public:
+    CLog(const QString filename);
+    ~CLog();
+
+    void writeList(QTreeWidget *tree);
+
+private:
+    QString logfile;
 };
 
 #endif

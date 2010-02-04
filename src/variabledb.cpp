@@ -73,18 +73,18 @@ VariableDB::~VariableDB()
 
 bool VariableDB::readVar(QByteArray varname, QHostAddress robotip, QByteArray* varvalue, int* readtime)
 {
-	for(int i=0;i<listvar.count();i++){
-                //qDebug() << "Indice: " << i << " robotip: " << listvar[i]->getRobotIP() << " nome variabile: " << listvar[i]->getVarName() << " valore variabile: " << listvar[i]->getValue();
-		if(listvar[i]->getRobotIP() == robotip && listvar[i]->getVarName() == varname){
-			int threadid=getThreadIndex(robotip);
-			robotServer[threadid]->mutex.lock();
-			*readtime = listvar[i]->getReadTime();
-			*varvalue = listvar[i]->getValue();
-			robotServer[threadid]->mutex.unlock();
-			return true;
-		}
-	}
-	return false;
+    for(int i=0;i<listvar.count();i++){
+        //qDebug() << "Indice: " << i << " robotip: " << listvar[i]->getRobotIP() << " nome variabile: " << listvar[i]->getVarName() << " valore variabile: " << listvar[i]->getValue();
+        if(listvar[i]->getRobotIP() == robotip && listvar[i]->getVarName() == varname){
+            int threadid=getThreadIndex(robotip);
+            robotServer[threadid]->mutex.lock();
+            *readtime = listvar[i]->getReadTime();
+            *varvalue = listvar[i]->getValue();
+            robotServer[threadid]->mutex.unlock();
+            return true;
+        }
+    }
+    return false;
 }
 
 /*!	\brief Scrittura di una variabile
@@ -100,16 +100,17 @@ bool VariableDB::readVar(QByteArray varname, QHostAddress robotip, QByteArray* v
 
 bool VariableDB::writeVar(QByteArray varname, QHostAddress robotip, QByteArray varvalue, int* writetime)
 {
-	for(int i=0;i<listvar.count();i++){
-		if(listvar[i]->getRobotIP() == robotip && listvar[i]->getVarName() == varname){
-			int threadid=getThreadIndex(robotip);
-			robotServer[threadid]->mutex.lock();
-			listvar[i]->setNewValue(varvalue);
-			robotServer[threadid]->mutex.unlock();
-			return true;
-		}
-	}
-	return false;
+    for(int i=0;i<listvar.count();i++){
+        if(listvar[i]->getRobotIP() == robotip && listvar[i]->getVarName() == varname){
+            int threadid=getThreadIndex(robotip);
+            robotServer[threadid]->mutex.lock();
+            listvar[i]->setNewValue(varvalue);
+            *writetime = listvar[i]->getReadTime();
+            robotServer[threadid]->mutex.unlock();
+            return true;
+        }
+    }
+    return false;
 }
 
 /*!	\brief Aggiunta variabile da leggere
@@ -195,33 +196,33 @@ void VariableDB::addVar(QByteArray varname, QHostAddress robotip){
  */
 
 void VariableDB::deleteVar(QByteArray varname, QHostAddress robotip){
-	for(int i=0;i<listvar.count();i++){
-		if(listvar[i]->getRobotIP() == robotip && listvar[i]->getVarName() == varname){
-			
-			/*listvar.removeAt(i);
+    for(int varindex=0;varindex<listvar.count();varindex++){
+        if(listvar[varindex]->getRobotIP() == robotip && listvar[varindex]->getVarName() == varname){
+
+            /*listvar.removeAt(i);
 			robotServer[getThreadIndex(robotip)]->delVar(i);
 			*/
-			qDebug() << "Rimozione variabile: " << varname << " " << robotip;
-			
-			//Verifico se il thread gestisce altre variabili
-			bool ippresent=false;
-			for(int i=0;i<listvar.count();i++){
-				if(listvar[i]->getRobotIP() == robotip){
-					ippresent=true;
-				}
-			}
-			if(!ippresent){
-				int threadid = getThreadIndex(robotip);
-				robotServer[threadid]->stop();
-				delete robotServer[threadid];
-				robotServer[threadid]=NULL;
-			}
-			
-			listvar.removeAt(i);
-			robotServer[getThreadIndex(robotip)]->delVar(i);
-			
-		}
-	}
+            qDebug() << "Rimozione variabile: " << varname << " " << robotip;
+
+            //Verifico se il thread gestisce altre variabili
+            bool ippresent=false;
+            for(int i=0;i<listvar.count();i++){
+                if(listvar[i]->getRobotIP() == robotip){
+                    ippresent=true;
+                }
+            }
+            if(!ippresent){
+                int threadid = getThreadIndex(robotip);
+                robotServer[threadid]->stop();
+                delete robotServer[threadid];
+                robotServer[threadid]=NULL;
+            }
+
+            listvar.removeAt(varindex);
+            robotServer[getThreadIndex(robotip)]->delVar(varindex);
+
+        }
+    }
 }
 
 /*!	\brief Inizializzazione di un nuovo thread
@@ -232,14 +233,15 @@ void VariableDB::deleteVar(QByteArray varname, QHostAddress robotip){
  *	\param robotip nome della variabile da leggere
  */
 
-void VariableDB::startNewThread(QHostAddress robotip){
-	for(int i=0;i<MAXROBOTSERVER;i++){
-		if(robotServer[i]==NULL){
-			robotServer[i] = new ClientCross(&robotip,REFRESHTIME);
-			robotServer[i]->start();
-			break;
-		}
-	}
+void VariableDB::startNewThread(QHostAddress robotip)
+{
+    for(int i=0;i<MAXROBOTSERVER;i++){
+        if(robotServer[i]==NULL){
+            robotServer[i] = new ClientCross(&robotip,REFRESHTIME);
+            robotServer[i]->start();
+            break;
+        }
+    }
 }
 
 /*!	\brief Inizializzazione di un nuovo thread
@@ -287,5 +289,30 @@ void VariableDB::renameVar(QByteArray varname, QByteArray newvarname, QHostAddre
  */
 
 void VariableDB::setReadTime(QHostAddress robotip, int* readtime){
-	robotServer[getThreadIndex(robotip)]->setReadFreq(readtime);
+    robotServer[getThreadIndex(robotip)]->setReadFreq(readtime);
+}
+
+/*!	\brief Tempo di aggiornamento globale variabili
+ *
+ *	Imposta il tempo di aggiornamento delle variabili per tutti i robot
+ *
+ *	\param readtime Nuovo tempo di lettura
+ */
+
+void VariableDB::setAllReadTime(int* readtime)
+{
+    for(int i=0;i<MAXROBOTSERVER;i++)
+        if(robotServer[i]!=NULL)
+            robotServer[i]->setReadFreq(readtime);
+}
+
+/*!	\brief Numero di thread attivi
+ *
+ *	Restituisce il numero di thread attivi
+ *
+ */
+
+int VariableDB::getRobotNumber()
+{
+    return 0;
 }

@@ -55,10 +55,10 @@
 *	\param varname Nome della variabile
 */
 
-KukaVar::KukaVar(const QByteArray* varname, const QByteArray* varvalue)
+KukaVar::KukaVar(const QByteArray& varname, const QByteArray& varvalue)
 {
-	this->varname=*varname;
-	this->varvalue=*varvalue;
+        this->varname=varname;
+        this->varvalue=varvalue;
 	
         setValue(this->varvalue);
 }
@@ -91,8 +91,8 @@ int KukaVar::VarType(const QByteArray variabile)
 	if((variabile.toLong()) || (variabile.data()==QByteArray("0")))
 		return INT;
 	
-	if((variabile.toFloat()) || (variabile.data()==QByteArray("0.0")))
-		return REAL;
+        if((variabile.toFloat()) || (variabile.data()==QByteArray("0.0")))
+                return REAL;
 	
 	if((variabile.data()==QByteArray("TRUE")) || (variabile.data()==QByteArray("FALSE")))
 		return BOOL;
@@ -101,7 +101,7 @@ int KukaVar::VarType(const QByteArray variabile)
         //if(variabile.endsWith("]"))
 		return CHAR;
             }
-	
+
 	return ERRTYPE;
 }
 
@@ -338,6 +338,7 @@ void KukaVar::setValue(QByteArray varvalue)
     case INT:
         {
             elementsnumber=1;
+            vartype="INT";
 
             newvarvalue=this->varvalue;
             break;
@@ -345,6 +346,7 @@ void KukaVar::setValue(QByteArray varvalue)
     case REAL:
         {
             elementsnumber=1;
+            vartype="REAL";
 
             newvarvalue=this->varvalue;
             break;
@@ -352,6 +354,7 @@ void KukaVar::setValue(QByteArray varvalue)
     case BOOL:
         {
             elementsnumber=1;
+            vartype="BOOL";
 
             newvarvalue=this->varvalue;
             break;
@@ -359,6 +362,7 @@ void KukaVar::setValue(QByteArray varvalue)
     case CHAR:
         {
             elementsnumber=1;
+            vartype="CHAR";
 
             newvarvalue=this->varvalue;
             break;
@@ -379,5 +383,6 @@ QByteArray KukaVar::createStructure()
 		retvar += ", " + newarrayvalue[i];
 	retvar += "}";
 	
+        qDebug() << retvar;
 	return retvar;
 }

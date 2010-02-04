@@ -2,11 +2,26 @@
     <qresource prefix="/">
         <file>images/AWESOM-O.png</file>
         <file>images/bender.png</file>
-        <file>images/openshowvar.png</file>
+        <file alias="openshowvar">images/openshowvar.png</file>
         <file>images/Cartman-AWESOM-O.ico</file>
         <file>images/graph_delete.png</file>
         <file>images/graph_color.png</file>
         <file>images/graph_plus.png</file>
         <file>images/graph_minus.png</file>
+        <file>images/new.png</file>
+        <file>images/add.png</file>
+        <file>images/editdelete.png</file>
+        <file alias="addGraph">images/graph_add.png</file>
+        <file alias="editvar">images/editvar.png</file>
+        <file alias="delete">images/delete.png</file>
+        <file alias="saveVar">images/filesave.png</file>
+        <file alias="openVar">images/fileopen.png</file>
+        <file alias="clearList">images/editdeleteall.png</file>
+        <file alias="bigrun">images/run.png</file>
+        <file alias="kukavar">resources/kukavar.txt</file>
+        <file alias="onTop">images/window_fullscreen.png</file>
+        <file alias="resume">images/agt_resume.png</file>
+        <file alias="run">images/agt_runit.png</file>
+        <file alias="log">images/text-x-log.png</file>
     </qresource>
 </RCC>
