@@ -23,5 +23,8 @@
         <file alias="resume">images/agt_resume.png</file>
         <file alias="run">images/agt_runit.png</file>
         <file alias="log">images/text-x-log.png</file>
+        <file alias="robotView">images/robotView.png</file>
+        <file alias="rotate">images/rotate.png</file>
+        <file alias="traslate">images/traslate.png</file>
     </qresource>
 </RCC>

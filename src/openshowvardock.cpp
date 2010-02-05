@@ -47,6 +47,8 @@ OpenShowVarDock::OpenShowVarDock()
 
 	database = new VariableDB();
 
+        m_robotView = NULL;
+
 	connect(&qtimeLettura, SIGNAL(timeout()), this, SLOT(lettura()));
 	qtimeLettura.start(REFRESHTIME);
 
@@ -174,15 +176,29 @@ void OpenShowVarDock::createActions()
     logAct->setCheckable(true);
     connect(logAct, SIGNAL(toggled(bool)), this, SLOT(on_log(bool)));
 
+    m_showRobotView = new QAction( QIcon(":robotView"), tr("Show RobotView"), this );
+    m_showRobotView->setStatusTip( tr("RobotView") );
+    connect( m_showRobotView, SIGNAL(triggered()), this, SLOT(showHideRobotView()) );
+
 //    quitAct = new QAction(tr("&Quit"), this);
 //    quitAct->setShortcuts(QKeySequence::Quit);
 //    quitAct->setStatusTip(tr("Quit the application"));
 //    connect(quitAct, SIGNAL(triggered()), this, SLOT(close()));
-//
 
     aboutAct = new QAction(tr("&About"), this);
     aboutAct->setStatusTip(tr("Show the application's About box"));
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+}
+
+void OpenShowVarDock::showHideRobotView(){
+    if( m_robotView == NULL ){
+        m_robotView = new CKUKARobot( database, 100, this );
+        addDockWidget( Qt::LeftDockWidgetArea, m_robotView );
+        //m_robotView->resize( 400, 300 );
+    }else{
+        m_robotView->setVisible( !m_robotView->isVisible() );
+        m_robotView->updateGeometry();
+    }
 }
 
 void OpenShowVarDock::createMenus()
@@ -231,6 +247,9 @@ void OpenShowVarDock::createToolBars()
     editToolBar->addAction(openVarAct);
     editToolBar->addAction(saveVarAct);
     editToolBar->addAction(logAct);
+
+    m_robotViewToolbar = addToolBar( tr("RobotView"));
+    m_robotViewToolbar->addAction( m_showRobotView );
 }
 
 void OpenShowVarDock::createStatusBar()

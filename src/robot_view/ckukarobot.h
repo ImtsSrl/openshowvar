@@ -3,13 +3,14 @@
 
 #include <QtGui>
 #include "cglscene.h"
+#include "../variabledb.h"
+#include "../kukavar.h"
 
-
-class CKUKARobot : public QWidget{
+class CKUKARobot : public QDockWidget{
     Q_OBJECT
 
 public:
-    CKUKARobot(QWidget *parent = 0);
+    CKUKARobot( VariableDB* databaseVar, int updateInterval = 500, QWidget *parent = 0);
     ~CKUKARobot();
 
     void setRobotPosition( int r1, int r2, int r3, int r4, int r5 );
@@ -21,6 +22,7 @@ private:
     CGLScene*   m_scene;
 
 private://scene interaction
+    QWidget*    mainContainer;
     QWidget*    m_controlsContainer;
     QToolBar    m_toolBar;
     QAction*    m_traslateObject;
@@ -29,6 +31,9 @@ private://scene interaction
     QAction*    m_traslateScene;
     QAction*    m_rotateScene;
 
+    QTimer      m_pulsar;
+
+    VariableDB* m_databaseVar;
     /*QLineEdit  m_ax1pos;
     QLineEdit  m_ax2pos;
     QLineEdit  m_ax3pos;
@@ -43,6 +48,8 @@ public slots:
     void setRotateSceneMode( bool toggle );
 
     //void inputRobotChanged( QString s );
+
+    void updatePulsar();
 
 };
 

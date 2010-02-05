@@ -24,13 +24,15 @@ public:
 
     void    setInteractionMode( int mode );
 
+    void    paintGL();
+
+    void    resizeGL(int width, int height);
+
 private:
     int     m_interactionMode;
 
 protected:
     void initializeGL();
-    void paintGL();
-    void resizeGL(int width, int height);
 
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);

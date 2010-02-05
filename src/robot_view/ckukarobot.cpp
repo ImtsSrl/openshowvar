@@ -1,15 +1,16 @@
 #include "ckukarobot.h"
 
-CKUKARobot::CKUKARobot(QWidget *parent):QWidget(parent){
+CKUKARobot::CKUKARobot( VariableDB* databaseVar, int updateInterval, QWidget *parent ):QDockWidget(parent){
+    m_databaseVar = databaseVar;
     m_scene = new CGLScene();
 
-    QWidget* mainContainer = this;//new QWidget( this );
-    QVBoxLayout* ml = new QVBoxLayout( mainContainer );
-    this->setLayout( ml );
+    this->setAllowedAreas(Qt::AllDockWidgetAreas);
 
-    m_controlsContainer = new QWidget( mainContainer );
-    QHBoxLayout* cl = new QHBoxLayout( m_controlsContainer );
-    m_controlsContainer->setLayout( cl );
+    mainContainer = new QWidget( this );
+    QVBoxLayout* ml = new QVBoxLayout( mainContainer );
+    mainContainer->setLayout( ml );
+    this->setWidget( mainContainer );
+
     /*cl->addWidget( &m_ax1pos );
     cl->addWidget( &m_ax2pos );
     cl->addWidget( &m_ax3pos );
@@ -23,14 +24,18 @@ CKUKARobot::CKUKARobot(QWidget *parent):QWidget(parent){
 
     //m_controlsContainer->layout()->setSizeConstraint(QLayout::SetFixedSize);
 
+    m_controlsContainer = new QWidget( );
+    m_controlsContainer->setFixedHeight( 60 );
+    QHBoxLayout* cl = new QHBoxLayout( m_controlsContainer );
+    m_controlsContainer->setLayout( cl );
+    initSceneInteractionControls();
     mainContainer->layout()->addWidget( m_controlsContainer );
+
     mainContainer->layout()->addWidget( m_scene );
 
-    //this->setCentralWidget( mainContainer );
-    //this->setMinimumSize( 560, 400 );
-    m_scene->setMinimumSize( 500, 400 );
 
-    initSceneInteractionControls();
+    connect( &m_pulsar, SIGNAL(timeout()), this, SLOT(updatePulsar()));
+    m_pulsar.start( updateInterval );
 }
 
 CKUKARobot::~CKUKARobot(){
@@ -40,20 +45,20 @@ CKUKARobot::~CKUKARobot(){
 void CKUKARobot::initSceneInteractionControls(){
     //this->addToolBar( &m_toolBar );
 
-    QActionGroup* actionGroup = new QActionGroup( this );
+    QActionGroup* actionGroup = new QActionGroup( m_controlsContainer );
     actionGroup->setExclusive( true );
 
     //QMenuBar* mnuBar = new QMenuBar( m_controlsContainer );
     QToolBar* mnuBar = new QToolBar( m_controlsContainer );
     m_controlsContainer->layout()->addWidget( mnuBar );
 
-    m_traslateScene = new QAction( QIcon("./icons/traslate.png"),"Traslate scene", mnuBar );
+    m_traslateScene = new QAction( QIcon(":traslate"),"Traslate scene", mnuBar );
     mnuBar->addAction( m_traslateScene );
     m_traslateScene->setCheckable(true);
     m_traslateScene->setActionGroup( actionGroup );
     connect( m_traslateScene, SIGNAL(toggled(bool)), this, SLOT(setTraslateSceneMode(bool)) );
 
-    m_rotateScene = new QAction( QIcon("./icons/rotate.png"),"Rotate scene", mnuBar );
+    m_rotateScene = new QAction( QIcon(":rotate"),"Rotate scene", mnuBar );
     mnuBar->addAction( m_rotateScene );
     m_rotateScene->setCheckable(true);
     m_rotateScene->setActionGroup( actionGroup );
@@ -110,3 +115,35 @@ void CKUKARobot::setRobotPosition( int r1, int r2, int r3, int r4, int r5 ){
     m_scene->repaint();
 }
 
+void CKUKARobot::updatePulsar(){
+    if( this->isVisible() ){
+        //m_scene->setFixedSize( this->width()-20 , this->height() - 110 );
+        m_scene->setMinimumSize( this->width()-20 , this->height() - 110 );
+
+        int readTime = 0;
+        QByteArray value;
+        if( m_databaseVar->readVar( "$AXIS_ACT", QHostAddress("10.0.0.108"), &value, &readTime  ) ){
+            int i = 0;
+            int t = KukaVar::INT;
+            KukaVar var( "$AXIS_ACT", ""+ value );
+            //qDebug() << "__________________________-------------------------" << var.getStructureValue(0, t) << var.getStructureValue(1, t) << value;
+            if( var.getVarType() == KukaVar::STRUCTURE ){
+                if( var.getElementsNumber() > 4 ){
+                    int r1 = var.getStructureValue(0, t).toFloat();
+                    int r2 = var.getStructureValue(1, t).toFloat();
+                    int r3 = var.getStructureValue(2, t).toFloat();
+                    int r4 = var.getStructureValue(3, t).toFloat();
+                    int r5 = var.getStructureValue(4, t).toFloat();
+                    this->setRobotPosition( r1, r2, r3, r4, r5 );
+                }
+            }
+        }else{
+            int r1 = 0;
+            int r2 = -90;
+            int r3 = 90;
+            int r4 = 0;
+            int r5 = 0;
+            this->setRobotPosition( r1, r2, r3, r4, r5 );
+        }
+    }
+}

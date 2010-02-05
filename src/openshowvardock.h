@@ -10,6 +10,7 @@
 #include "robotvaredit.h"
 #include "listvarxml.h"
 #include "CLog.h"
+#include "robot_view/ckukarobot.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -31,6 +32,8 @@ private slots:
     void deleteVar();
     void addGraph();
     void on_editVar();
+
+    void showHideRobotView();
 
     void about();
 
@@ -67,8 +70,9 @@ private:
 
     QDockWidget *dockInsertVar;
 
-    VariableDB* database;
-    InsertVar* insertVar;
+    VariableDB*     database;
+    InsertVar*      insertVar;
+    CKUKARobot*     m_robotView;
 
     QTimer qtimeLettura;
     QTimer timeUpdateGraph;
@@ -104,6 +108,9 @@ private:
     QAction *openVarAct;
     QAction *clearListAct;
     QAction* logAct;
+
+    QToolBar*   m_robotViewToolbar;
+    QAction*    m_showRobotView;
 
     ListVarXml listVar;
 

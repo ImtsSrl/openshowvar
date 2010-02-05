@@ -1,7 +1,8 @@
 #include "cglscene.h"
 
 CGLScene::CGLScene()
-         : CGLRenderable( "", 0.0, -1500.0, -8000.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ){
+        : CGLRenderable( "", 0.0, -1500.0, -8000.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ){
+         //: CGLRenderable( "", 0.0, -1500.0, -8000.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ){
 
     m_robot = new CGLRobot();
     /*m_ucs = new CGLRenderable( "./model/ucs_rot2.3DS", 0,0,1000,0,0,0,0,0,0);
