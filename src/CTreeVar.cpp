@@ -34,8 +34,8 @@ CTreeVar::CTreeVar(QWidget *parent)
 {
     setColumnCount(5);
     setHeaderLabels(QStringList() << tr("Variable name") << tr("Variable value") << tr("") << tr("Read time") << tr("IP Robot"));
-    setColumnWidth(VARNAME,110);
-    setColumnWidth(VARVALUE,350);
+    setColumnWidth(CTreeVar::VARNAME,110);
+    setColumnWidth(CTreeVar::VARVALUE,350);
     setColumnHidden(4,true);
 
     /*

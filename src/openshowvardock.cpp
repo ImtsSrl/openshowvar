@@ -35,8 +35,19 @@ OpenShowVarDock::OpenShowVarDock()
 {
 	insertVar=NULL;
 
+
+        tree=new QTreeView(this);
+        QStringList headers;
+        headers << tr("Variable name") << tr("Variable value") << "" << tr("Read time");
+        model = new TreeModel(headers,"");
+        tree->setModel(model);
+
         treeWidget = new CTreeVar(this);
-	setCentralWidget(treeWidget);
+        //setCentralWidget(treeWidget);
+
+        setCentralWidget(tree);
+        tree->setColumnWidth(CTreeVar::VARNAME,110);
+        tree->setColumnWidth(CTreeVar::VARVALUE,350);
 
 	createActions();
 	createMenus();
@@ -245,20 +256,30 @@ void OpenShowVarDock::on_insertVar(const QString *varName)
 
 void OpenShowVarDock::insertNew(const QString &variabile, const QString &iprobot)
 {
-	QTreeWidgetItem *item;
+    QTreeWidgetItem *item;
 
-	item = new QTreeWidgetItem(treeWidget);
-	item->setText(CTreeVar::VARNAME, variabile.toUpper());
-	item->setText(CTreeVar::ROBOTIP, iprobot);
+    item = new QTreeWidgetItem(treeWidget);
+    item->setText(CTreeVar::VARNAME, variabile.toUpper());
+    item->setText(CTreeVar::ROBOTIP, iprobot);
 
-	//Evita il problema del blocco durante il drag della riga
-	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+    //Evita il problema del blocco durante il drag della riga
+    item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 
-	item->setToolTip(CTreeVar::VARNAME,tr("Robot IP %1").arg(iprobot));
+    item->setToolTip(CTreeVar::VARNAME,tr("Robot IP %1").arg(iprobot));
 
-	item->setTextAlignment(CTreeVar::TIME,(Qt::AlignRight | Qt::AlignVCenter));
+    item->setTextAlignment(CTreeVar::TIME,(Qt::AlignRight | Qt::AlignVCenter));
 
-	database->addVar(variabile.toUpper().toAscii(),QHostAddress(iprobot));
+    database->addVar(variabile.toUpper().toAscii(),QHostAddress(iprobot));
+
+
+    QModelIndex index = tree->selectionModel()->currentIndex();
+    QAbstractItemModel *model = tree->model();
+    if (!model->insertRow(index.row()+1, index.parent()))
+        return;
+
+    //updateActions();
+    QModelIndex child = model->index(index.row()+1, CTreeVar::VARNAME, index.parent());
+    model->setData(child, QVariant(variabile.toUpper()), Qt::EditRole);
 }
 
 void OpenShowVarDock::deleteVar()
@@ -284,48 +305,58 @@ void OpenShowVarDock::insertClose(const bool &visible)
 
 void OpenShowVarDock::lettura()
 {
-	QString qsVariabile, tempo;
-	QByteArray qbVariabile, value;
-	int readtime;
+    QString qsVariabile, tempo;
+    QByteArray qbVariabile, value;
+    int readtime;
 
-	for(int row=0;row<treeWidget->topLevelItemCount();row++)
-	{
-		//qDebug() << treeWidget->topLevelItem(row)->text(0);
+//	for(int row=0;row<treeWidget->topLevelItemCount();row++)
+//	{
+//		//qDebug() << treeWidget->topLevelItem(row)->text(0);
+//
+//		qbVariabile.clear();
+//
+//		qsVariabile=treeWidget->topLevelItem(row)->text(CTreeVar::VARNAME);
+//		qbVariabile.append(qsVariabile);
+//
+//		if(database->readVar(qsVariabile.toAscii(),(QHostAddress)treeWidget->topLevelItem(row)->text(CTreeVar::ROBOTIP), &value, &readtime)){
+//
+//			//qDebug() << "Trovato " << value << " Tempo di lettura: " << readtime << " [ms]";
+//
+//			tempo.setNum(readtime);
+//			tempo.append(" " + tr("[ms]"));
+//
+//			QTreeWidgetItem *item = treeWidget->topLevelItem(row);
+//
+//			item->setText(CTreeVar::VARVALUE,value);
+//
+//			QBrush brush;
+//
+//			if(readtime>=0){
+//				item->setText(CTreeVar::TIME,tempo);
+//				brush.setColor(Qt::black);
+//			}
+//			else{
+//				item->setText(CTreeVar::TIME,tr("TIMEOUT"));
+//				brush.setColor(Qt::red);
+//			}
+//
+//			item->setForeground(CTreeVar::VARVALUE,brush);
+//			this->splitvaluetoview(item, item->text(CTreeVar::VARNAME), item->text(CTreeVar::VARVALUE));
+//		}//if
+//	}//for
+//
+//        if(saveLog)
+//            cLog->writeList(treeWidget);
 
-		qbVariabile.clear();
-
-		qsVariabile=treeWidget->topLevelItem(row)->text(CTreeVar::VARNAME);
-		qbVariabile.append(qsVariabile);
-
-		if(database->readVar(qsVariabile.toAscii(),(QHostAddress)treeWidget->topLevelItem(row)->text(CTreeVar::ROBOTIP), &value, &readtime)){
-
-			//qDebug() << "Trovato " << value << " Tempo di lettura: " << readtime << " [ms]";
-
-			tempo.setNum(readtime);
-			tempo.append(" " + tr("[ms]"));
-
-			QTreeWidgetItem *item = treeWidget->topLevelItem(row);
-
-			item->setText(CTreeVar::VARVALUE,value);
-
-			QBrush brush;
-
-			if(readtime>=0){
-				item->setText(CTreeVar::TIME,tempo);
-				brush.setColor(Qt::black);
-			}
-			else{
-				item->setText(CTreeVar::TIME,tr("TIMEOUT"));
-				brush.setColor(Qt::red);
-			}
-
-			item->setForeground(CTreeVar::VARVALUE,brush);
-			this->splitvaluetoview(item, item->text(CTreeVar::VARNAME), item->text(CTreeVar::VARVALUE));
-		}//if
-	}//for
-
-        if(saveLog)
-            cLog->writeList(treeWidget);
+    qbVariabile.clear();
+    qsVariabile="$OV_PRO";
+    qbVariabile.append(qsVariabile);
+    database->readVar(qsVariabile.toAscii(),(QHostAddress)"192.168.0.38", &value, &readtime);
+    qDebug() << "Trovato " << value << " Tempo di lettura: " << readtime << " [ms]";
+    int riga=0;
+    QModelIndex index;// = view->selectionModel()->currentIndex();
+    QModelIndex child = model->index(riga, CTreeVar::VARVALUE, index.parent());
+    model->setData(child, QVariant(value), Qt::EditRole);
 }
 
 void OpenShowVarDock::splitvaluetoview(QTreeWidgetItem *item, QString varname, QString varvalue)

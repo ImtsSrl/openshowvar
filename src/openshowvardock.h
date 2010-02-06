@@ -10,6 +10,7 @@
 #include "robotvaredit.h"
 #include "listvarxml.h"
 #include "CLog.h"
+#include "treemodel.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -69,6 +70,9 @@ private:
 
     VariableDB* database;
     InsertVar* insertVar;
+
+    QTreeView* tree;
+    TreeModel *model;
 
     QTimer qtimeLettura;
     QTimer timeUpdateGraph;
