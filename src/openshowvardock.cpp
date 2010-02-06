@@ -38,7 +38,7 @@ OpenShowVarDock::OpenShowVarDock()
 
         tree=new QTreeView(this);
         QStringList headers;
-        headers << tr("Variable name") << tr("Variable value") << "" << tr("Read time");
+        headers << tr("Variable name") << tr("Variable value") << "" << tr("Read time") << tr("IP Robot");
         model = new TreeModel(headers,"");
         tree->setModel(model);
 
@@ -48,6 +48,7 @@ OpenShowVarDock::OpenShowVarDock()
         setCentralWidget(tree);
         tree->setColumnWidth(CTreeVar::VARNAME,110);
         tree->setColumnWidth(CTreeVar::VARVALUE,350);
+        tree->setColumnHidden(CTreeVar::ROBOTIP,true);
 
 	createActions();
 	createMenus();
@@ -280,6 +281,8 @@ void OpenShowVarDock::insertNew(const QString &variabile, const QString &iprobot
     //updateActions();
     QModelIndex child = model->index(index.row()+1, CTreeVar::VARNAME, index.parent());
     model->setData(child, QVariant(variabile.toUpper()), Qt::EditRole);
+    child = model->index(index.row()+1, CTreeVar::ROBOTIP, index.parent());
+    model->setData(child, QVariant(iprobot), Qt::EditRole);
 }
 
 void OpenShowVarDock::deleteVar()
@@ -348,15 +351,27 @@ void OpenShowVarDock::lettura()
 //        if(saveLog)
 //            cLog->writeList(treeWidget);
 
-    qbVariabile.clear();
-    qsVariabile="$OV_PRO";
-    qbVariabile.append(qsVariabile);
-    database->readVar(qsVariabile.toAscii(),(QHostAddress)"192.168.0.38", &value, &readtime);
-    qDebug() << "Trovato " << value << " Tempo di lettura: " << readtime << " [ms]";
-    int riga=0;
-    QModelIndex index;// = view->selectionModel()->currentIndex();
-    QModelIndex child = model->index(riga, CTreeVar::VARVALUE, index.parent());
-    model->setData(child, QVariant(value), Qt::EditRole);
+    QModelIndex index;
+
+    for(int row=0;row<model->rowCount(index);row++)
+    {
+
+        QModelIndex varname = model->index(row, CTreeVar::VARNAME, index.parent());
+        QString variabile = varname.data(Qt::DisplayRole).toString();
+        varname = model->index(row, CTreeVar::ROBOTIP, index.parent());
+        QString iprobot = varname.data(Qt::DisplayRole).toString();
+
+        database->readVar(variabile.toAscii(),(QHostAddress)iprobot, &value, &readtime);
+        //qDebug() << "Trovato " << value << " Tempo di lettura: " << readtime << " [ms]" << " ip: " << iprobot;
+
+        QModelIndex child = model->index(row, CTreeVar::VARVALUE, index.parent());
+        model->setData(child, QVariant(value), Qt::EditRole);
+
+        tempo.setNum(readtime);
+        tempo.append(" " + tr("[ms]"));
+        child = model->index(row, CTreeVar::TIME, index.parent());
+        model->setData(child, QVariant(tempo), Qt::EditRole);
+    }
 }
 
 void OpenShowVarDock::splitvaluetoview(QTreeWidgetItem *item, QString varname, QString varvalue)
