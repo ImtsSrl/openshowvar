@@ -118,7 +118,7 @@ void OpenShowVarDock::addGraph()
 void OpenShowVarDock::about()
 {
    QMessageBox::about(this, tr("About OpenShowVar"),
-			tr("<b>OpenShowVar</b> è un editor di variabili "
+                        tr("<b>OpenShowVar</b> e' un editor di variabili "
 			   "per robot KUKA realizzato da: "
 			   "massimiliano.fago@gmail.com "
 			   "dddomodossola@gmail.com "
@@ -371,6 +371,14 @@ void OpenShowVarDock::lettura()
         tempo.append(" " + tr("[ms]"));
         child = model->index(row, CTreeVar::TIME, index.parent());
         model->setData(child, QVariant(tempo), Qt::EditRole);
+
+        //Inserimento e aggiornamento di un sottelemento
+        QModelIndex indiceA = model->index(0,0,QModelIndex());
+        QModelIndex figlio = model->index(0,0,indiceA);
+        if(!figlio.isValid())
+            if (!model->insertRow(0, indiceA))
+                return;
+        model->setData(figlio, QVariant("[No data]"), Qt::EditRole);
     }
 }
 
@@ -438,7 +446,7 @@ void OpenShowVarDock::splitvaluetoview(QTreeWidgetItem *item, QString varname, Q
 						}
 					case KukaVar::STRUCTURE:
 						{
-							//qDebug() << "OK, " << kukavarloc->getStructureMember(i) << " è una nuova struttura. Che faccio?";
+                                                        //qDebug() << "OK, " << kukavarloc->getStructureMember(i) << " e' una nuova struttura. Che faccio?";
 							this->splitvaluetoview(child,kukavarloc->getStructureMember(i),kukavarloc->getStructureValue(i,datatype));
 							break;
 						}
