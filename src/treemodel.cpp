@@ -88,7 +88,10 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return 0;
 
-    //return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    //Se mi trovo sulla colonna dei dati abilito l'edit
+    if(index.column()==TreeModel::VARVALUE)
+        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 

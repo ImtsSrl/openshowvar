@@ -60,7 +60,8 @@ private:
     void createToolBars();
     void createStatusBar();
 
-    void splitvaluetoview(QTreeWidgetItem *item, QString varname, QString varvalue);
+    void splitvaluetoview(QModelIndex index, QString varname, QString varvalue);
+    void oldsplitvaluetoview(QTreeWidgetItem *item, QString varname, QString varvalue);
     void editVar(QTreeWidgetItem * item);
     void addCombo(QTreeWidgetItem *child);
     void toBinary(int value, QString *binary);

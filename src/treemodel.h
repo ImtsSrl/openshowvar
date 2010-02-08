@@ -48,7 +48,6 @@
 
 class TreeItem;
 
-//! [0]
 class TreeModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -57,7 +56,8 @@ public:
     TreeModel(const QStringList &headers, const QString &data,
               QObject *parent = 0);
     ~TreeModel();
-//! [0] //! [1]
+
+    static const char VARNAME=0,VARVALUE=1,OPTIONS=2,TIME=3,ROBOTIP=4;
 
     QVariant data(const QModelIndex &index, int role) const;
     QVariant headerData(int section, Qt::Orientation orientation,
