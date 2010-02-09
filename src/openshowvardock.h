@@ -11,6 +11,7 @@
 #include "listvarxml.h"
 #include "CLog.h"
 #include "treemodel.h"
+#include "formatdelegate.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;

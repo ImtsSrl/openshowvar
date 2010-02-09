@@ -42,6 +42,8 @@ OpenShowVarDock::OpenShowVarDock()
         model = new TreeModel(headers,"");
         tree->setModel(model);
 
+        tree->setItemDelegateForColumn(TreeModel::OPTIONS, new FormatDelegate);
+
         treeWidget = new CTreeVar(this);
         //setCentralWidget(treeWidget);
 

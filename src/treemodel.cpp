@@ -89,7 +89,7 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
         return 0;
 
     //Se mi trovo sulla colonna dei dati abilito l'edit
-    if(index.column()==TreeModel::VARVALUE)
+    if(index.column()==TreeModel::VARVALUE || index.column()==TreeModel::OPTIONS)
         return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
@@ -286,4 +286,8 @@ void TreeModel::setupModelData(const QStringList &lines, TreeItem *parent)
 
         number++;
     }
+}
+
+QWidget* TreeModel::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index){
+
 }

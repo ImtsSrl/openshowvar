@@ -45,6 +45,7 @@
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
+#include <QStyleOptionViewItem>
 
 class TreeItem;
 
@@ -71,7 +72,6 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 //! [1]
 
-//! [2]
     Qt::ItemFlags flags(const QModelIndex &index) const;
     bool setData(const QModelIndex &index, const QVariant &value,
                  int role = Qt::EditRole);
@@ -87,12 +87,13 @@ public:
     bool removeRows(int position, int rows,
                     const QModelIndex &parent = QModelIndex());
 
+    QWidget* createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index);
+
 private:
     void setupModelData(const QStringList &lines, TreeItem *parent);
     TreeItem *getItem(const QModelIndex &index) const;
 
     TreeItem *rootItem;
 };
-//! [2]
 
 #endif
