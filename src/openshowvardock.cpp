@@ -249,7 +249,7 @@ void OpenShowVarDock::createToolBars()
 
 void OpenShowVarDock::createStatusBar()
 {
-	statusBar()->showMessage(tr("Ready"));
+    statusBar()->showMessage(tr("Ready"));
 }
 
 void OpenShowVarDock::on_insertVar(const QString *varName)
@@ -259,22 +259,6 @@ void OpenShowVarDock::on_insertVar(const QString *varName)
 
 void OpenShowVarDock::insertNew(const QString &variabile, const QString &iprobot)
 {
-    QTreeWidgetItem *item;
-
-    item = new QTreeWidgetItem(treeWidget);
-    item->setText(CTreeVar::VARNAME, variabile.toUpper());
-    item->setText(CTreeVar::ROBOTIP, iprobot);
-
-    //Evita il problema del blocco durante il drag della riga
-    item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-
-    item->setToolTip(CTreeVar::VARNAME,tr("Robot IP %1").arg(iprobot));
-
-    item->setTextAlignment(CTreeVar::TIME,(Qt::AlignRight | Qt::AlignVCenter));
-
-    database->addVar(variabile.toUpper().toAscii(),QHostAddress(iprobot));
-
-
     QModelIndex index = tree->selectionModel()->currentIndex();
     QAbstractItemModel *model = tree->model();
     if (!model->insertRow(index.row()+1, index.parent()))
@@ -285,22 +269,21 @@ void OpenShowVarDock::insertNew(const QString &variabile, const QString &iprobot
     model->setData(child, QVariant(variabile.toUpper()), Qt::EditRole);
     child = model->index(index.row()+1, CTreeVar::ROBOTIP, index.parent());
     model->setData(child, QVariant(iprobot), Qt::EditRole);
+
+    database->addVar(variabile.toUpper().toAscii(),QHostAddress(iprobot));
 }
 
 void OpenShowVarDock::deleteVar()
 {
-	QTreeWidgetItem *item;
-	if(treeWidget->currentItem()!=NULL){
-		if(treeWidget->currentItem()->parent()!=NULL)
-			item=treeWidget->currentItem()->parent();
-		else
-			item=treeWidget->currentItem();
-
-		database->deleteVar(item->text(CTreeVar::VARNAME).toAscii(),(QHostAddress)item->text(CTreeVar::ROBOTIP));
-		statusBar()->showMessage(tr("Deleted '%1'").arg(item->text(CTreeVar::VARNAME)), 2000);
-		delete item;
-		item=NULL;
-	}
+    QModelIndex index = tree->selectionModel()->currentIndex();
+    QModelIndex varnameindex = model->index(index.row(), TreeModel::VARNAME, QModelIndex());
+    QModelIndex varipindex = model->index(index.row(), TreeModel::ROBOTIP, QModelIndex());
+    QString varname = varnameindex.data(Qt::DisplayRole).toByteArray();
+    QString varip = varipindex.data(Qt::DisplayRole).toString();
+    if(model->removeRow(index.row(),QModelIndex())){
+        database->deleteVar(varname.toAscii(),(QHostAddress)varip);
+        statusBar()->showMessage(tr("Deleted '%1'").arg(varname), 2000);
+    }
 }
 
 void OpenShowVarDock::insertClose(const bool &visible)
