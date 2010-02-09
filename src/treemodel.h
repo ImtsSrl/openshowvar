@@ -47,6 +47,8 @@
 #include <QVariant>
 #include <QStyleOptionViewItem>
 
+#include "kukavar.h"
+
 class TreeItem;
 
 class TreeModel : public QAbstractItemModel
@@ -88,6 +90,9 @@ public:
                     const QModelIndex &parent = QModelIndex());
 
     QWidget* createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index);
+    Qt::DropActions supportedDropActions() const;
+    QStringList mimeTypes() const;
+    QMimeData *mimeData(const QModelIndexList &indexes) const;
 
 private:
     void setupModelData(const QStringList &lines, TreeItem *parent);

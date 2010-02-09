@@ -90,9 +90,9 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 
     //Se mi trovo sulla colonna dei dati abilito l'edit
     if(index.column()==TreeModel::VARVALUE || index.column()==TreeModel::OPTIONS)
-        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 }
 
 //! [4]
@@ -290,4 +290,72 @@ void TreeModel::setupModelData(const QStringList &lines, TreeItem *parent)
 
 QWidget* TreeModel::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index){
 
+}
+
+Qt::DropActions TreeModel::supportedDropActions() const
+{
+    return Qt::CopyAction | Qt::MoveAction;
+}
+
+QStringList TreeModel::mimeTypes() const
+{
+    QStringList types;
+    types << "application/vnd.text.list";
+    return types;
+}
+
+
+QMimeData *TreeModel::mimeData(const QModelIndexList &indexes) const
+{
+    QByteArray varname,varvalue,robotip;
+
+    foreach (QModelIndex index, indexes) {
+        switch(index.column()){
+        case TreeModel::VARNAME:
+            {
+                varname = data(index, Qt::DisplayRole).toByteArray();
+            break;
+        }
+        case TreeModel::VARVALUE:
+            {
+                varvalue = data(index, Qt::DisplayRole).toByteArray();
+            break;
+        }
+        case TreeModel::ROBOTIP:
+            {
+                robotip = data(index, Qt::DisplayRole).toByteArray();
+            break;
+        }
+        default:
+            break;
+        }
+    }
+
+    //Se la variabile e' una struttura elimino il tipo di dato e passo solo il valore
+    KukaVar *kukavar = new KukaVar(varname,varvalue);
+
+    switch(kukavar->getVarType()){
+    case KukaVar::STRUCTURE:
+        {
+            varvalue=kukavar->getStructureValue();
+            break;
+        }
+    default:
+        {
+            varvalue=kukavar->getValue();
+            break;
+        }
+    }
+
+    QMimeData *mimeData = new QMimeData;
+    mimeData->setText(varvalue);
+
+    // dati per il grafico
+    mimeData->setData( "openshowvar/graphdata" , kukavar->getVarName() );
+    mimeData->setData( "openshowvar/graphdataip" , robotip );
+
+    QPixmap pixmap(":images/AWESOM-O.png");
+    //drag->setPixmap(pixmap);
+
+    return mimeData;
 }

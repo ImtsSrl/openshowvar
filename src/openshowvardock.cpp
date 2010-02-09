@@ -51,6 +51,8 @@ OpenShowVarDock::OpenShowVarDock()
         tree->setColumnWidth(CTreeVar::VARNAME,110);
         tree->setColumnWidth(CTreeVar::VARVALUE,350);
         tree->setColumnHidden(CTreeVar::ROBOTIP,true);
+        //drag&drop
+        tree->setDragEnabled(true);
 
 	createActions();
 	createMenus();
