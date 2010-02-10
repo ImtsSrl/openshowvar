@@ -7,7 +7,8 @@ DEPENDPATH += . \
     lang \
     src
 QT += network \
-    xml
+    xml \
+    opengl
 
 # DESTDIR=./release
 # Input
@@ -27,6 +28,15 @@ HEADERS += src/broadcast.h \
     src/robotvaredit.h \
     src/showvarconst.h \
     src/variabledb.h \
+    src/robot_view/cmodelmanager.h \
+    src/robot_view/ckukarobot.h \
+    src/robot_view/cglscene.h \
+    src/robot_view/cglrobot.h \
+    src/robot_view/cglrobotaxe.h \
+    src/robot_view/cglrenderable.h \
+    src/robot_view/c3dsmodel.h \
+    src/robot_view/lib3ds/lib3ds_impl.h \
+    src/robot_view/lib3ds/lib3ds.h \
     src/cvarsgrid.h \
     src/cvarsgridlinelegend.h \
     src/openshowvardock.h \
@@ -47,6 +57,32 @@ SOURCES += src/broadcast.cpp \
     src/robotvar.cpp \
     src/robotvaredit.cpp \
     src/variabledb.cpp \
+    src/robot_view/cmodelmanager.cpp \
+    src/robot_view/ckukarobot.cpp \
+    src/robot_view/cglscene.cpp \
+    src/robot_view/cglrobot.cpp \
+    src/robot_view/cglrobotaxe.cpp \
+    src/robot_view/cglrenderable.cpp \
+    src/robot_view/c3dsmodel.cpp \
+    src/robot_view/lib3ds/lib3ds_viewport.c \
+    src/robot_view/lib3ds/lib3ds_vector.c \
+    src/robot_view/lib3ds/lib3ds_util.c \
+    src/robot_view/lib3ds/lib3ds_track.c \
+    src/robot_view/lib3ds/lib3ds_shadow.c \
+    src/robot_view/lib3ds/lib3ds_quat.c \
+    src/robot_view/lib3ds/lib3ds_node.c \
+    src/robot_view/lib3ds/lib3ds_mesh.c \
+    src/robot_view/lib3ds/lib3ds_matrix.c \
+    src/robot_view/lib3ds/lib3ds_math.c \
+    src/robot_view/lib3ds/lib3ds_material.c \
+    src/robot_view/lib3ds/lib3ds_light.c \
+    src/robot_view/lib3ds/lib3ds_io.c \
+    src/robot_view/lib3ds/lib3ds_file.c \
+    src/robot_view/lib3ds/lib3ds_chunktable.c \
+    src/robot_view/lib3ds/lib3ds_chunk.c \
+    src/robot_view/lib3ds/lib3ds_camera.c \
+    src/robot_view/lib3ds/lib3ds_background.c \
+    src/robot_view/lib3ds/lib3ds_atmosphere.c \
     src/cvarsgrid.cpp \
     src/cvarsgridlinelegend.cpp \
     src/openshowvardock.cpp \
