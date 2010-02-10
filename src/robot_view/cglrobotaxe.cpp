@@ -1,7 +1,7 @@
 #include "cglrobotaxe.h"
 
-CGLRobotAxe::CGLRobotAxe( int rotationAxis, QString modelFile, float x, float y, float z, float mount_rx, float mount_ry, float mount_rz, CGLRobotAxe* child, float rx, float ry, float rz )
-         : CGLRenderable( modelFile, x, y, z, mount_rx, mount_ry, mount_rz, rx, ry, rz ){
+CGLRobotAxe::CGLRobotAxe( int rotationAxis, QString modelFile, float x, float y, float z, float mount_rx, float mount_ry, float mount_rz, CGLRobotAxe* child, float rx, float ry, float rz, float mount_x, float mount_y, float mount_z )
+         : CGLRenderable( modelFile, x, y, z, mount_rx, mount_ry, mount_rz, rx, ry, rz, mount_x, mount_y, mount_z ){
 
     m_rotationAxis = rotationAxis;
     m_child = child;
@@ -52,7 +52,7 @@ void CGLRobotAxe::render( ){
         glRotatef( m_mountry + m_ry, 0.0, 1.0, 0.0 );
         glRotatef( m_mountrz + m_rz, 0.0, 0.0, 1.0 );
 
-        glMaterialfv( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, m_color );
+        //glMaterialfv( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, m_color );
 
         m_3dsModel->renderModel();
 

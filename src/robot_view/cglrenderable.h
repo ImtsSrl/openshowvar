@@ -7,7 +7,7 @@
 
 class CGLRenderable{
 public:
-    CGLRenderable(QString modelFile, float x, float y, float z, float mount_rx, float mount_ry, float mount_rz, float rx, float ry, float rz );
+    CGLRenderable(QString modelFile, float x, float y, float z, float mount_rx, float mount_ry, float mount_rz, float rx, float ry, float rz, float mount_x=0, float mount_y=0, float mount_z=0 );
 
     void setSelectIndex( int index );
 
@@ -51,6 +51,10 @@ protected:
     float   m_mountrx;
     float   m_mountry;
     float   m_mountrz;
+
+    float   m_mountx;
+    float   m_mounty;
+    float   m_mountz;
 
     float   m_rx;
     float   m_ry;

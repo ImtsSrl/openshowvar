@@ -1,6 +1,6 @@
 #include "cglrenderable.h"
 
-CGLRenderable::CGLRenderable(QString modelFile, float x, float y, float z, float mount_rx, float mount_ry, float mount_rz, float rx, float ry, float rz ){
+CGLRenderable::CGLRenderable(QString modelFile, float x, float y, float z, float mount_rx, float mount_ry, float mount_rz, float rx, float ry, float rz, float mount_x, float mount_y, float mount_z ){
     m_x = x;
     m_y = y;
     m_z = z;
@@ -13,7 +13,11 @@ CGLRenderable::CGLRenderable(QString modelFile, float x, float y, float z, float
     m_ry = ry;
     m_rz = rz;
 
-    m_3dsModel = new C3DSModel( modelFile.toAscii().data() );
+    m_mountx = mount_x;
+    m_mounty = mount_y;
+    m_mountz = mount_z;
+
+    m_3dsModel = new C3DSModel( modelFile.toAscii().data(), m_mountx, m_mounty, m_mountz );
 
     m_selected = false;
 

@@ -59,6 +59,7 @@ private:
     QPoint      m_lastPos;  //per i controlli del mouse
 
     CModelManager*  m_modelManager;
+    CGLRenderable*  m_world;
 
 };
 

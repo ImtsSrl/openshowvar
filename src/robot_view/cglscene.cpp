@@ -1,7 +1,7 @@
 #include "cglscene.h"
 
 CGLScene::CGLScene()
-        : CGLRenderable( "", 0.0, -1500.0, -8000.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ){
+        : CGLRenderable( "", 0.0, -500.0, -4000.0, 0.0, 90.0, 0.0, 0.0, 0.0, 0.0 ){
          //: CGLRenderable( "", 0.0, -1500.0, -8000.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ){
 
     m_robot = new CGLRobot();
@@ -9,6 +9,16 @@ CGLScene::CGLScene()
     m_ucs->model()->scaleTo( m_robot->getRobotAxe(0)->model()->absoluteSize() );
     m_ucs->model()->setSelfIlluminate();*/
 
+    m_world = new CGLRenderable( "./model/world.3ds",
+                                 0.0,
+                                 0.0,
+                                 0.0,
+                                 -90.0,
+                                 0.0,
+                                 270.0,
+                                 0.0,
+                                 0.0,
+                                 0.0);
 
     m_modelManager = new CModelManager();
     m_modelManager->addModel( m_robot->getRobotAxe(0) );
@@ -45,49 +55,21 @@ void CGLScene::initializeGL(){
     glEnable(GL_LIGHT0);
     static GLfloat lightPosition[4] = { -2000.0, -2000.0, 3000.0, 1.0 }; //{ -0.5, 5.0, 7.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
-
-    glDepthFunc(GL_LEQUAL);							// The Type Of Depth Testing To Do
+    glDepthFunc(GL_LESS);							// The Type Of Depth Testing To Do
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 }
 
 
 void CGLScene::renderScene(){
-    float params[3];
+    GLfloat ambient[4] = { 0.1, 0.1, 0.1, 1.0 };
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, ambient );
 
-    params[0]= 0.5;
-    params[1]= 0.5;
-    params[2]= 0.5;
-    glMaterialfv( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, params );
+    m_world->render();
 
-    glBegin( GL_QUADS );
-
-        float plateWidth = 5000.0;
-        float h = 0.0;
-        int nx = 30;
-        int ny = 30;
-
-        float xstep = plateWidth/nx;
-        float ystep = plateWidth/ny;
-        for( float x = -plateWidth/2; x < plateWidth/2; x += xstep ){
-            for( float y = -plateWidth/2; y < plateWidth/2; y += ystep ){
-                glNormal3f( 0.0f, 1.0f, 0.0f);
-                glVertex3f( x, h, y );
-                glNormal3f( 0.0f, 1.0f, 0.0f);
-                glVertex3f( x+xstep, h, y );
-                glNormal3f( 0.0f, 1.0f, 0.0f);
-                glVertex3f( x+xstep, h, y+ystep );
-                glNormal3f( 0.0f, 1.0f, 0.0f);
-                glVertex3f( x, h, y+ystep );
-            }
-        }
-
-    glEnd();
-
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, ambient );
     m_robot->render();
-    //m_ucs->render();
-
-    glFinish();
-
+    glFlush();
+    //glFinish();
 }
 
 void CGLScene::processHits (GLint hits, GLuint buffer[]){
@@ -249,9 +231,9 @@ void CGLScene::mouseMoveEvent(QMouseEvent *event){
 }
 
 void CGLScene::mouseReleaseEvent(QMouseEvent *event){
-    renderSceneToSelect( event->x(), event->y() );
+    /*renderSceneToSelect( event->x(), event->y() );
     resetRenderingViewParameters();
-    repaint();
+    repaint();*/
 }
 
 void CGLScene::keyPressEvent ( QKeyEvent * event ){

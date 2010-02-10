@@ -106,19 +106,20 @@ void CKUKARobot::setRotateSceneMode( bool toggle ){
     setRobotPosition( r1, r2, r3, r4, r5 );
 }*/
 
-void CKUKARobot::setRobotPosition( int r1, int r2, int r3, int r4, int r5 ){
+void CKUKARobot::setRobotPosition( float r1, float r2, float r3, float r4, float r5, float r6 ){
     m_scene->getRobot()->getRobotAxe(0)->setRotationRZ( -r1 );
-    m_scene->getRobot()->getRobotAxe(1)->setRotationRX( r2 );
-    m_scene->getRobot()->getRobotAxe(2)->setRotationRX( r3 );
-    m_scene->getRobot()->getRobotAxe(3)->setRotationRZ( r4 );
-    m_scene->getRobot()->getRobotAxe(4)->setRotationRX( r5 );
+    m_scene->getRobot()->getRobotAxe(1)->setRotationRY( r2 );
+    m_scene->getRobot()->getRobotAxe(2)->setRotationRY( r3 );
+    m_scene->getRobot()->getRobotAxe(3)->setRotationRX( -r4 );
+    m_scene->getRobot()->getRobotAxe(4)->setRotationRY( r5 );
+    m_scene->getRobot()->getRobotAxe(5)->setRotationRX ( -r6 );
     m_scene->repaint();
 }
 
 void CKUKARobot::updatePulsar(){
     if( this->isVisible() ){
         //m_scene->setFixedSize( this->width()-20 , this->height() - 110 );
-        m_scene->setMinimumSize( this->width()-20 , this->height() - 110 );
+        //m_scene->setMinimumSize( this->width()-20 , this->height() - 110 );
 
         int readTime = 0;
         QByteArray value;
@@ -129,21 +130,23 @@ void CKUKARobot::updatePulsar(){
             //qDebug() << "__________________________-------------------------" << var.getStructureValue(0, t) << var.getStructureValue(1, t) << value;
             if( var.getVarType() == KukaVar::STRUCTURE ){
                 if( var.getElementsNumber() > 4 ){
-                    int r1 = var.getStructureValue(0, t).toFloat();
-                    int r2 = var.getStructureValue(1, t).toFloat();
-                    int r3 = var.getStructureValue(2, t).toFloat();
-                    int r4 = var.getStructureValue(3, t).toFloat();
-                    int r5 = var.getStructureValue(4, t).toFloat();
-                    this->setRobotPosition( r1, r2, r3, r4, r5 );
+                    float r1 = var.getStructureValue(0, t).toFloat();
+                    float r2 = var.getStructureValue(1, t).toFloat();
+                    float r3 = var.getStructureValue(2, t).toFloat();
+                    float r4 = var.getStructureValue(3, t).toFloat();
+                    float r5 = var.getStructureValue(4, t).toFloat();
+                    float r6 = var.getStructureValue(5, t).toFloat();
+                    this->setRobotPosition( r1, r2, r3, r4, r5, r6 );
                 }
             }
         }else{
-            int r1 = 0;
-            int r2 = -90;
-            int r3 = 90;
-            int r4 = 0;
-            int r5 = 0;
-            this->setRobotPosition( r1, r2, r3, r4, r5 );
+            float r1 = 0;
+            float r2 = 0;
+            float r3 = 0;
+            float r4 = 0;
+            float r5 = 0;
+            float r6 = 0;
+            this->setRobotPosition( r1, r2, r3, r4, r5, r6 );
         }
     }
 }

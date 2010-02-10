@@ -13,7 +13,7 @@ public:
     CKUKARobot( VariableDB* databaseVar, int updateInterval = 500, QWidget *parent = 0);
     ~CKUKARobot();
 
-    void setRobotPosition( int r1, int r2, int r3, int r4, int r5 );
+    void setRobotPosition( float r1, float r2, float r3, float r4, float r5, float r6 );
 
 private:
     void initSceneInteractionControls();

@@ -20,7 +20,7 @@ public:
     typedef struct str_boundedBox boundedBox;
 
 public:
-    C3DSModel(const char* file3ds);
+    C3DSModel(const char* file3ds, float mount_x=0, float mount_y=0, float mount_z=0);
     ~C3DSModel();
 
     void renderModel();
@@ -33,6 +33,8 @@ public:
     float scaleFactor( );
 
     void setSelfIlluminate();
+
+    void buildDisplayList();
 
 private:
     bool            m_loaded;
@@ -47,6 +49,11 @@ private:
 
     bool            m_selfIlluminate;
 
+    float   m_mountx;
+    float   m_mounty;
+    float   m_mountz;
+
+    GLuint  m_displayList;
 };
 
 #endif // CKUKAMODEL_H

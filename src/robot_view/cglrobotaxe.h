@@ -10,7 +10,7 @@
 
 class CGLRobotAxe:public CGLRenderable{
 public:
-    CGLRobotAxe( int rotationAxis, QString modelFile, float x, float y, float z, float mount_rx, float mount_ry, float mount_rz, CGLRobotAxe* child, float rx, float ry, float rz );
+    CGLRobotAxe( int rotationAxis, QString modelFile, float x, float y, float z, float mount_rx, float mount_ry, float mount_rz, CGLRobotAxe* child, float rx, float ry, float rz, float mount_x=0, float mount_y=0, float mount_z=0 );
 
     void render( );
 
