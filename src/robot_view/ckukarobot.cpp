@@ -30,6 +30,8 @@ CKUKARobot::CKUKARobot( VariableDB* databaseVar, int updateInterval, QWidget *pa
     m_controlsContainer->setLayout( cl );
     initSceneInteractionControls();
     mainContainer->layout()->addWidget( m_controlsContainer );
+    cl->addWidget( &m_robotList );
+    connect( &m_robotList, SIGNAL(currentIndexChanged(QString)), this, SLOT(robotListSelection(QString)) );
 
     mainContainer->layout()->addWidget( m_scene );
 
@@ -40,6 +42,10 @@ CKUKARobot::CKUKARobot( VariableDB* databaseVar, int updateInterval, QWidget *pa
 
 CKUKARobot::~CKUKARobot(){
     delete m_scene;
+}
+
+void CKUKARobot::robotListSelection( QString ip ){
+    m_robotIP = ip;
 }
 
 void CKUKARobot::initSceneInteractionControls(){
@@ -121,9 +127,15 @@ void CKUKARobot::updatePulsar(){
         //m_scene->setFixedSize( this->width()-20 , this->height() - 110 );
         //m_scene->setMinimumSize( this->width()-20 , this->height() - 110 );
 
+        QStringList ipRobotList = m_databaseVar->getRobotIPList();
+        if( ipRobotList.count() != m_robotList.count() ){
+            m_robotList.clear();
+            m_robotList.addItems( ipRobotList );
+        }
+
         int readTime = 0;
         QByteArray value;
-        if( m_databaseVar->readVar( "$AXIS_ACT", QHostAddress("10.0.0.108"), &value, &readTime  ) ){
+        if( m_databaseVar->readVar( "$AXIS_ACT", QHostAddress( m_robotIP ), &value, &readTime  ) ){
             int i = 0;
             int t = KukaVar::INT;
             KukaVar var( "$AXIS_ACT", ""+ value );

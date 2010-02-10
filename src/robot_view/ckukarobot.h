@@ -34,11 +34,9 @@ private://scene interaction
     QTimer      m_pulsar;
 
     VariableDB* m_databaseVar;
-    /*QLineEdit  m_ax1pos;
-    QLineEdit  m_ax2pos;
-    QLineEdit  m_ax3pos;
-    QLineEdit  m_ax4pos;
-    QLineEdit  m_ax5pos;*/
+
+    QString     m_robotIP; //ip address del robot da cui si vuole leggere la posizione
+    QComboBox   m_robotList;
 
 public slots:
     void setTraslateObjMode( bool toggle );
@@ -50,6 +48,8 @@ public slots:
     //void inputRobotChanged( QString s );
 
     void updatePulsar();
+
+    void robotListSelection( QString ip );
 
 };
 

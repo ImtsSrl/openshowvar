@@ -23,6 +23,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QStringList>
 
 #include "showvarconst.h"
 #include "clientcross.h"
@@ -45,7 +46,8 @@ class VariableDB : public QObject
 		void setReadTime(QHostAddress robotip, int* readtime);
                 int  getRobotNumber();
                 void setAllReadTime(int* readtime);
-		
+                QStringList getRobotIPList();
+
 	private:
 		QList<RobotVar *> listvar;
 		ClientCross* robotServer[MAXROBOTSERVER];

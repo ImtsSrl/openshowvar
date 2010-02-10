@@ -87,6 +87,15 @@ bool VariableDB::readVar(QByteArray varname, QHostAddress robotip, QByteArray* v
     return false;
 }
 
+QStringList VariableDB::getRobotIPList( ){
+    QStringList robotList;
+    for(int i=0;i<listvar.count();i++){
+        if( !robotList.contains( listvar[i]->getRobotIP().toString() ) )
+            robotList.append( listvar[i]->getRobotIP().toString() );
+    }
+    return robotList;
+}
+
 /*!	\brief Scrittura di una variabile
  *
  *	Restituisce il valore attuale della variabile.
