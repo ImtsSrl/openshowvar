@@ -326,11 +326,14 @@ void OpenShowVarDock::lettura()
 
         QModelIndex index = model->index(row,TreeModel::VARVALUE,QModelIndex());
         model->setData(index, QVariant(value), Qt::EditRole);
+        index = model->index(row,TreeModel::VARNAME,QModelIndex());
+        model->setData(index, QVariant(variabile), Qt::EditRole);
 
-        tempo.setNum(readtime);
-        tempo.append(" " + tr("[ms]"));
+        qDebug() << "Tempo di lettura: " << readtime;
+        //tempo.setNum(readtime);
+        //tempo.append(" " + tr("[ms]"));
         QModelIndex indiceA = model->index(row,TreeModel::TIME,QModelIndex());
-        model->setData(indiceA, QVariant(tempo), Qt::EditRole);
+        model->setData(indiceA, QVariant(readtime), Qt::EditRole);
 
         this->splitvaluetoview(model->index(row, TreeModel::VARNAME, QModelIndex()), variabile, value);
     }

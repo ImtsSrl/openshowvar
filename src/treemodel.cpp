@@ -75,10 +75,20 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
+    TreeItem *item = getItem(index);
+
+    if (role == Qt::BackgroundRole) {
+
+    } else if (role == Qt::ForegroundRole ) {
+
+        if (item->data(TreeModel::TIME).toInt()==-1)
+            return QColor(Qt::red);
+        else
+            return QColor(Qt::black);
+    }
+
     if (role != Qt::DisplayRole && role != Qt::EditRole)
         return QVariant();
-
-    TreeItem *item = getItem(index);
 
     return item->data(index.column());
 }
@@ -310,7 +320,8 @@ QMimeData *TreeModel::mimeData(const QModelIndexList &indexes) const
     QByteArray varname,varvalue,robotip;
 
     foreach (QModelIndex index, indexes) {
-        switch(index.column()){
+        qDebug() <<  data(index, Qt::DisplayRole);
+        switch(index.column()){  
         case TreeModel::VARNAME:
             {
                 varname = data(index, Qt::DisplayRole).toByteArray();
@@ -350,8 +361,10 @@ QMimeData *TreeModel::mimeData(const QModelIndexList &indexes) const
     QMimeData *mimeData = new QMimeData;
     mimeData->setText(varvalue);
 
+    qDebug() << "Nome variabile: " << varname << " ip robot: " << robotip;
+
     // dati per il grafico
-    mimeData->setData( "openshowvar/graphdata" , kukavar->getVarName() );
+    mimeData->setData( "openshowvar/graphdata" , varname );
     mimeData->setData( "openshowvar/graphdataip" , robotip );
 
     QPixmap pixmap(":images/AWESOM-O.png");
