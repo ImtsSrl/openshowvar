@@ -112,6 +112,12 @@ QAbstractItemModel *InsertVarComp::modelFromFile(const QString& fileName)
     if (!file.open(QFile::ReadOnly))
         return new QStringListModel(completer);
 
+    QFile userfile("uservar.txt");
+    if (!userfile.open(QFile::ReadOnly)){
+        userfile.open(QIODevice::Append);
+        userfile.close();
+    }
+
 #ifndef QT_NO_CURSOR
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 #endif
@@ -119,6 +125,12 @@ QAbstractItemModel *InsertVarComp::modelFromFile(const QString& fileName)
 
     while (!file.atEnd()) {
         QByteArray line = file.readLine();
+        if (!line.isEmpty())
+            words << line.trimmed();
+    }
+
+    while (!userfile.atEnd()) {
+        QByteArray line = userfile.readLine();
         if (!line.isEmpty())
             words << line.trimmed();
     }
