@@ -240,7 +240,7 @@ void KukaVar::setValue(QByteArray varvalue)
             Se la variabile non e' impostata nel config del robot, ritorna una struttura
             con i campi vuoti, tipo questa:
             {E6POS: }
-            con uno o più spazi dopo il carattere ":" prima della parentesi graffa di chiusura
+            con uno o piu' spazi dopo il carattere ":" prima della parentesi graffa di chiusura
             */
 
             test=test.trimmed();
@@ -323,7 +323,7 @@ void KukaVar::setValue(QByteArray varvalue)
             }
             else{
                 elementsnumber=0;
-                qDebug() << "Struttura vuota";
+                //qDebug() << "Struttura vuota";
             }
 
             newarrayvalue=arrayvalue;

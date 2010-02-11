@@ -261,16 +261,40 @@ void OpenShowVarDock::on_insertVar(const QString *varName)
 
 void OpenShowVarDock::insertNew(const QString &variabile, const QString &iprobot)
 {
-    QModelIndex index = tree->selectionModel()->currentIndex();
+    QModelIndex index,root,robotip,varname;
     QAbstractItemModel *model = tree->model();
-    if (!model->insertRow(index.row()+1, index.parent()))
-        return;
+    bool robotpresent=false;
 
-    //updateActions();
-    QModelIndex child = model->index(index.row()+1, CTreeVar::VARNAME, index.parent());
-    model->setData(child, QVariant(variabile.toUpper()), Qt::EditRole);
-    child = model->index(index.row()+1, CTreeVar::ROBOTIP, index.parent());
-    model->setData(child, QVariant(iprobot), Qt::EditRole);
+    //Robot
+    root = model->index(0,TreeModel::VARNAME,QModelIndex());
+    for(int row=0;row<=model->rowCount(root);row++){
+        qDebug() << "Indice: " << row << " ip: " << iprobot;
+        index = model->index(row,TreeModel::VARNAME,QModelIndex());
+        if(model->data(index,Qt::DisplayRole)==iprobot){
+            qDebug() << "Trovato robot";
+            root = model->index(row,TreeModel::VARNAME,QModelIndex());
+            robotpresent=true;
+            break;
+        }
+    }
+
+    if(!robotpresent){
+        model->insertRow(0, root);
+        robotip = model->index(0,TreeModel::VARNAME,root);
+        model->setData(robotip, QVariant(iprobot), Qt::EditRole);
+        qDebug() << "Aggiunto robot";
+    }
+    else{
+        qDebug() << "Aggiunto solo elemento";
+        robotip = model->index(0,TreeModel::VARNAME,QModelIndex());
+        robotip=root;
+    }
+
+    //Nome variabile
+    model->insertRow(0, robotip);
+    varname = model->index(0,TreeModel::VARNAME,robotip);
+    model->setData(varname,QVariant(variabile.toUpper()),Qt::EditRole);
+
 
     database->addVar(variabile.toUpper().toAscii(),QHostAddress(iprobot));
 }
@@ -312,31 +336,31 @@ void OpenShowVarDock::lettura()
 //
 //    item->setForeground(CTreeVar::VARVALUE,brush);
 
-    QModelIndex index;
-
-    for(int row=0;row<model->rowCount(index);row++)
-    {
-        QModelIndex varname = model->index(row, TreeModel::VARNAME, QModelIndex());
-        QString variabile = varname.data(Qt::DisplayRole).toString();
-        varname = model->index(row, TreeModel::ROBOTIP, index.parent());
-        QString iprobot = varname.data(Qt::DisplayRole).toString();
-
-        database->readVar(variabile.toAscii(),(QHostAddress)iprobot, &value, &readtime);
-        //qDebug() << "Trovato " << value << " Tempo di lettura: " << readtime << " [ms]" << " ip: " << iprobot;
-
-        QModelIndex index = model->index(row,TreeModel::VARVALUE,QModelIndex());
-        model->setData(index, QVariant(value), Qt::EditRole);
-        index = model->index(row,TreeModel::VARNAME,QModelIndex());
-        model->setData(index, QVariant(variabile), Qt::EditRole);
-
-        qDebug() << "Tempo di lettura: " << readtime;
-        //tempo.setNum(readtime);
-        //tempo.append(" " + tr("[ms]"));
-        QModelIndex indiceA = model->index(row,TreeModel::TIME,QModelIndex());
-        model->setData(indiceA, QVariant(readtime), Qt::EditRole);
-
-        this->splitvaluetoview(model->index(row, TreeModel::VARNAME, QModelIndex()), variabile, value);
-    }
+//    QModelIndex index;
+//
+//    for(int row=0;row<model->rowCount(index);row++)
+//    {
+//        QModelIndex varname = model->index(row, TreeModel::VARNAME, QModelIndex());
+//        QString variabile = varname.data(Qt::DisplayRole).toString();
+//        varname = model->index(row, TreeModel::ROBOTIP, index.parent());
+//        QString iprobot = varname.data(Qt::DisplayRole).toString();
+//
+//        database->readVar(variabile.toAscii(),(QHostAddress)iprobot, &value, &readtime);
+//        //qDebug() << "Trovato " << value << " Tempo di lettura: " << readtime << " [ms]" << " ip: " << iprobot;
+//
+//        QModelIndex index = model->index(row,TreeModel::VARVALUE,QModelIndex());
+//        model->setData(index, QVariant(value), Qt::EditRole);
+//        index = model->index(row,TreeModel::VARNAME,QModelIndex());
+//        model->setData(index, QVariant(variabile), Qt::EditRole);
+//
+//        qDebug() << "Tempo di lettura: " << readtime;
+//        //tempo.setNum(readtime);
+//        //tempo.append(" " + tr("[ms]"));
+//        QModelIndex indiceA = model->index(row,TreeModel::TIME,QModelIndex());
+//        model->setData(indiceA, QVariant(readtime), Qt::EditRole);
+//
+//        this->splitvaluetoview(model->index(row, TreeModel::VARNAME, QModelIndex()), variabile, value);
+//    }
 
 //    if(saveLog)
 //        cLog->writeList(treeWidget);
