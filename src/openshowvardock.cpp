@@ -241,6 +241,7 @@ void OpenShowVarDock::createStatusBar()
 void OpenShowVarDock::on_insertVar(const QString *varName)
 {
     dockInsertVar->setVisible(true);
+    dockInsertVar->widget()->setFocus();
 }
 
 void OpenShowVarDock::insertNew(const QString &variabile, const QString &iprobot)

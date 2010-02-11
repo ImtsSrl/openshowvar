@@ -94,6 +94,7 @@ InsertVar::InsertVar(){
     connect(broadcast, SIGNAL(newMsg(QString &)), this, SLOT(newMsg(QString &)));
 
     setWindowIcon(QIcon("openshowvar.png"));
+    setFocusProxy(lineEdit);
 
     broadcast->send();
 
@@ -168,3 +169,8 @@ void InsertVar::on_Broadcast()
 {
     broadcast->send();
 }
+
+void InsertVar::focusInEvent(QFocusEvent *){
+    //lineEdit->setFocus();
+}
+

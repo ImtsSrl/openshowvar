@@ -51,6 +51,8 @@ private:
 
         QTimer qtimeBroadcast;
 
+        void focusInEvent(QFocusEvent *);
+
 private slots:
 	void on_insertButton_clicked();
 	void on_lineEdit_textChanged();
