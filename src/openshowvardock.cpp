@@ -38,7 +38,7 @@ OpenShowVarDock::OpenShowVarDock()
 
         tree=new QTreeView(this);
         QStringList headers;
-        headers << tr("Variable name") << tr("Variable value") << "" << tr("Read time") << tr("IP Robot");
+        headers << tr("Variable name") << tr("Variable value") << "" << tr("Read time");
         model = new TreeModel(headers,"");
         tree->setModel(model);
 
@@ -50,7 +50,6 @@ OpenShowVarDock::OpenShowVarDock()
         setCentralWidget(tree);
         tree->setColumnWidth(CTreeVar::VARNAME,110);
         tree->setColumnWidth(CTreeVar::VARVALUE,350);
-        tree->setColumnHidden(CTreeVar::ROBOTIP,true);
         //drag&drop
         tree->setDragEnabled(true);
 
@@ -303,14 +302,23 @@ void OpenShowVarDock::insertNew(const QString &variabile, const QString &iprobot
 void OpenShowVarDock::deleteVar()
 {
     QModelIndex index = tree->selectionModel()->currentIndex();
-    QModelIndex varnameindex = model->index(index.row(), TreeModel::VARNAME, QModelIndex());
-    QModelIndex varipindex = model->index(index.row(), TreeModel::ROBOTIP, QModelIndex());
-    QString varname = varnameindex.data(Qt::DisplayRole).toByteArray();
-    QString varip = varipindex.data(Qt::DisplayRole).toString();
+    if(!index.parent().isValid())
+        return;
+
+    if(index.parent().parent().isValid())
+        return;
+
+    QString varname = index.data(Qt::DisplayRole).toByteArray();
+    QString varip = index.parent().data(Qt::DisplayRole).toByteArray();
+
+    //qDebug() << "Nome variabile: " << varname << " indirizzo ip: " << varip;
+
     if(model->removeRow(index.row(),QModelIndex())){
         database->deleteVar(varname.toAscii(),(QHostAddress)varip);
         statusBar()->showMessage(tr("Deleted '%1'").arg(varname), 2000);
     }
+
+#warning "Eliminare robot senza variabili"
 }
 
 void OpenShowVarDock::insertClose(const bool &visible)

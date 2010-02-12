@@ -60,7 +60,7 @@ public:
               QObject *parent = 0);
     ~TreeModel();
 
-    static const char VARNAME=0,VARVALUE=1,OPTIONS=2,TIME=3,ROBOTIP=4;
+    static const char VARNAME=0,VARVALUE=1,OPTIONS=2,TIME=3;
 
     QVariant data(const QModelIndex &index, int role) const;
     QVariant headerData(int section, Qt::Orientation orientation,

@@ -81,8 +81,10 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 
     } else if (role == Qt::ForegroundRole ) {
 
-        if (item->data(TreeModel::TIME).toInt()==-1)
+        if (item->data(TreeModel::TIME).toInt()==-1 || item->data(TreeModel::TIME)==tr("TIMEOUT")){
+            item->setData(TreeModel::TIME,tr("TIMEOUT"));
             return QColor(Qt::red);
+        }
         else
             return QColor(Qt::black);
     }
@@ -330,11 +332,6 @@ QMimeData *TreeModel::mimeData(const QModelIndexList &indexes) const
         case TreeModel::VARVALUE:
             {
                 varvalue = data(index, Qt::DisplayRole).toByteArray();
-            break;
-        }
-        case TreeModel::ROBOTIP:
-            {
-                robotip = data(index, Qt::DisplayRole).toByteArray();
             break;
         }
         default:
