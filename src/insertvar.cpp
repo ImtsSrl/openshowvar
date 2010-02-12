@@ -146,7 +146,7 @@ void InsertVar::on_abortButton_clicked(){
 
 void InsertVar::Robot(QList<QByteArray> &datirobot){
     QString robot=datirobot[2] + "@" + datirobot[3];
-    if(comboRobotList->findText(robot))
+    if(comboRobotList->findText(robot)==-1)
         comboRobotList->addItem(robot);
 
     //comboRobotList->setEditable(true);
