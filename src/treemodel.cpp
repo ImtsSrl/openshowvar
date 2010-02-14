@@ -90,6 +90,15 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
         }
     }
 
+    if(role==Qt::FontRole){
+        if(index.column()==TreeModel::VARNAME && index.parent() == QModelIndex()){
+            QFont f;
+            f.setPixelSize(15);
+            f.setBold(true);
+            return f;
+        }
+    }
+
     if (role != Qt::DisplayRole && role != Qt::EditRole)
         return QVariant();
 
@@ -361,7 +370,7 @@ QMimeData *TreeModel::mimeData(const QModelIndexList &indexes) const
     QMimeData *mimeData = new QMimeData;
     mimeData->setText(varvalue);
 
-    qDebug() << "Nome variabile: " << varname << " ip robot: " << robotip;
+    //qDebug() << "Nome variabile: " << varname << " ip robot: " << robotip;
 
     // dati per il grafico
     mimeData->setData( "openshowvar/graphdata" , varname );

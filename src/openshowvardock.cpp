@@ -267,7 +267,7 @@ void OpenShowVarDock::insertNew(const QString &variabile, const QString &iprobot
         //qDebug() << "Indice: " << row << " ip: " << iprobot;
         index = model->index(row,TreeModel::VARNAME,QModelIndex());
         if(model->data(index,Qt::DisplayRole)==iprobot){
-            qDebug() << "Trovato robot";
+            //qDebug() << "Trovato robot";
             root = model->index(row,TreeModel::VARNAME,QModelIndex());
             robotpresent=true;
             break;
