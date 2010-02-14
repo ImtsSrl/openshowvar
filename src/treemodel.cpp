@@ -322,6 +322,8 @@ QMimeData *TreeModel::mimeData(const QModelIndexList &indexes) const
 {
     QByteArray varname,varvalue,robotip;
 
+    robotip = indexes.at(0).parent().data(Qt::DisplayRole).toByteArray();
+
     foreach (QModelIndex index, indexes) {
         qDebug() <<  data(index, Qt::DisplayRole);
         switch(index.column()){  
