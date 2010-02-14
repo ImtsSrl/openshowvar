@@ -169,7 +169,8 @@ void OpenShowVarDock::createActions()
 
     editVarAct = new QAction(QIcon(":editvar"), tr("&Edit Var..."), this);
     editVarAct->setStatusTip(tr("Edit variable value"));
-    editVarAct->setEnabled(false);
+#warning rimuovere il commento dopo aver messo a posto l'evento di selezione variabile'
+    //editVarAct->setEnabled(false);
     connect(editVarAct, SIGNAL(triggered()), this, SLOT(on_editVar()));
 
     saveVarAct = new QAction(QIcon(":saveVar"), tr("&Save var list"), this);
@@ -412,13 +413,9 @@ void OpenShowVarDock::splitvaluetoview(QModelIndex index, QString varname, QStri
     kukavarloc=NULL;
 }
 
-void OpenShowVarDock::editVar(QTreeWidgetItem * item)
+void OpenShowVarDock::editVar(QString varname, QString varvalue, QHostAddress varip)
 {
-    QByteArray varname=item->text(CTreeVar::VARNAME).toAscii();
-    QByteArray varvalue=item->text(CTreeVar::VARVALUE).toAscii();
-    QHostAddress varip=(QHostAddress)item->text(CTreeVar::ROBOTIP);
-
-    RobotVarEdit *roboteditvar=new RobotVarEdit(varvalue, varname, varip, this);
+    RobotVarEdit *roboteditvar=new RobotVarEdit(varvalue.toAscii(), varname.toAscii(), varip, this);
     connect(roboteditvar,SIGNAL(writevalue(const QByteArray &, const QByteArray &, const QHostAddress &)),this,SLOT(on_writeVariable(const QByteArray &, const QByteArray &, const QHostAddress &)));
 
     QDockWidget *dock = new QDockWidget(tr("New robot variable"), this);
@@ -472,24 +469,30 @@ void OpenShowVarDock::updateGraph()
 	}
 }
 
-void OpenShowVarDock::on_editVar()
-{
-	QTreeWidgetItem *item;
-	if(treeWidget->currentItem()!=NULL){
-		if(treeWidget->currentItem()->parent()!=NULL)
-			item=treeWidget->currentItem()->parent();
-		else
-			item=treeWidget->currentItem();
+void OpenShowVarDock::on_editVar(){
+    QModelIndex index = tree->selectionModel()->currentIndex();
+    if(!index.parent().isValid())
+        return;
 
-		editVar(item);
-		statusBar()->showMessage(tr("Edit '%1'").arg(item->text(CTreeVar::VARNAME)), 2000);
-	}
-	item=NULL;
+    if(index.parent().parent().isValid())
+        return;
+
+    QModelIndex varnameindex = model->index(index.row(),0,index.parent());
+    QModelIndex varvalueindex = model->index(index.row(),TreeModel::VARVALUE,index.parent());
+
+    QString varname = varnameindex.data(Qt::DisplayRole).toByteArray();
+    QString varip = index.parent().data(Qt::DisplayRole).toByteArray();
+    QString varvalue = varvalueindex.data(Qt::DisplayRole).toByteArray();
+
+    //qDebug() << "Nome variabile: " << varname << " ip: " << varip << " valore: " << varvalue;
+
+    editVar(varname,varvalue,(QHostAddress)varip);
+    statusBar()->showMessage(tr("Edit '%1'").arg(varname), 2000);
 }
 
 void OpenShowVarDock::on_writeVariable(const QByteArray &varname, const QByteArray &value, const QHostAddress &varip){
-	int writetime;
-	database->writeVar(varname, varip, value, &writetime);
+    int writetime;
+    database->writeVar(varname, varip, value, &writetime);
 }
 
 void OpenShowVarDock::on_editVarClose(const bool &visible)
@@ -508,8 +511,8 @@ void OpenShowVarDock::on_saveVar()
 
 void OpenShowVarDock::on_openVar()
 {
-	QString files = QFileDialog::getOpenFileName(this,tr("Select files to open"),"./","Var list (*.xml)");
-	listVar.readList(files);
+    QString files = QFileDialog::getOpenFileName(this,tr("Select files to open"),"./","Var list (*.xml)");
+    listVar.readList(files);
 }
 
 void OpenShowVarDock::on_clearList()
@@ -594,8 +597,9 @@ void OpenShowVarDock::on_itemDoubleClicked(QTreeWidgetItem *item, int column)
 {
     if(treeWidget->currentItem()!=NULL){
         if(item->text(CTreeVar::TIME)!=tr("TIMEOUT")){
+#warning modificare questa funzione
             editVarAct->setEnabled(true);
-            editVar(item);
+            //editVar(item);
         }
     }
     else

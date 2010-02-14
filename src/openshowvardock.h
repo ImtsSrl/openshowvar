@@ -62,7 +62,7 @@ private:
     void createStatusBar();
 
     void splitvaluetoview(QModelIndex index, QString varname, QString varvalue);
-    void editVar(QTreeWidgetItem * item);
+    void editVar(QString varname, QString varvalue, QHostAddress varip);
     void addCombo(QTreeWidgetItem *child);
     void toBinary(int value, QString *binary);
     void toHex(int value, QString *binary);
