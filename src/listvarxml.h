@@ -25,7 +25,8 @@
 #include <QXmlDefaultHandler>
 #include <QDomDocument>
 #include <QDebug>
-#include <QTreeWidget>
+
+#include "treemodel.h"
 
 class ListVarXml : public QObject
 {
@@ -35,7 +36,7 @@ class ListVarXml : public QObject
 		ListVarXml();
 		~ListVarXml();
 		
-                void writeList(QTreeWidget *tree, const QString variable);
+                void writeList(TreeModel *model, const QString variable);
                 void readList(const QString filename);
 		
 	private:

@@ -501,9 +501,9 @@ void OpenShowVarDock::on_editVarClose(const bool &visible)
 
 void OpenShowVarDock::on_saveVar()
 {
-	QString fileName = QFileDialog::getSaveFileName(this,tr("Save file as"),"./","Var list (*.xml)");
-	if (!fileName.isEmpty())
-		listVar.writeList(treeWidget,fileName);
+    QString fileName = QFileDialog::getSaveFileName(this,tr("Save file as"),"./","Var list (*.xml)");
+    if (!fileName.isEmpty())
+        listVar.writeList(model,fileName);
 }
 
 void OpenShowVarDock::on_openVar()
@@ -575,7 +575,7 @@ void OpenShowVarDock::closeEvent ( QCloseEvent * event )
 {
     timeUpdateGraph.stop();
     qtimeLettura.stop();
-    listVar.writeList(treeWidget,"varlist.xml");
+    listVar.writeList(model,"varlist.xml");
     delete cLog;
     delete database;
 }

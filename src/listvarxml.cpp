@@ -60,24 +60,28 @@ ListVarXml::~ListVarXml(){
  *	\param tree Lista delle variabili
  */
 
-void ListVarXml::writeList(QTreeWidget *tree, const QString filename){
+void ListVarXml::writeList(TreeModel *model, const QString filename){
     QDomDocument doc;
 
     QDomElement variablelist = doc.createElement("VARLIST");
     doc.appendChild(variablelist);
 
-    for(int row=0;row<tree->topLevelItemCount();row++)
-    {
-        QDomElement variable = doc.createElement("VARIABLE");
-        QDomElement varname = doc.createElement("NAME");
-        QDomElement robotip = doc.createElement("ROBOT");
-        QDomText var = doc.createTextNode(tree->topLevelItem(row)->text(0));
-        QDomText ip = doc.createTextNode(tree->topLevelItem(row)->text(4));
-        variablelist.appendChild(variable);
-        variable.appendChild(varname);
-        variable.appendChild(robotip);
-        varname.appendChild(var);
-        robotip.appendChild(ip);
+    QModelIndex robotipindex=model->index(0,0,QModelIndex());
+
+    for(int row=0;row<model->rowCount(robotipindex);row++){
+        QModelIndex varindex = model->index(row,TreeModel::VARNAME,robotipindex);
+        for(int var=0;var<model->rowCount();var++){
+            QDomElement variable = doc.createElement("VARIABLE");
+            QDomElement varname = doc.createElement("NAME");
+            QDomElement robotip = doc.createElement("ROBOT");
+            QDomText var = doc.createTextNode(model->data(varindex,Qt::DisplayRole).toString());
+            QDomText ip = doc.createTextNode(model->data(robotipindex,Qt::DisplayRole).toString());
+            variablelist.appendChild(variable);
+            variable.appendChild(varname);
+            variable.appendChild(robotip);
+            varname.appendChild(var);
+            robotip.appendChild(ip);
+        }
     }
 
     QFile file(filename);
