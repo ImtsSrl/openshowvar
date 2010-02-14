@@ -25,8 +25,9 @@
 #include <QXmlDefaultHandler>
 #include <QDomDocument>
 #include <QDebug>
-#include <QTreeWidget>
 #include <QDateTime>
+
+#include "treemodel.h"
 
 const QString FILENAMELOG = "log.xml";
 
@@ -38,7 +39,7 @@ public:
     CLog(const QString filename);
     ~CLog();
 
-    void writeList(QTreeWidget *tree);
+    void writeList(TreeModel *model);
 
 private:
     QString logfile;

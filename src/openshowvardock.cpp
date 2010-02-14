@@ -368,8 +368,8 @@ void OpenShowVarDock::lettura()
         }
     }
 
-//    if(saveLog)
-//        cLog->writeList(treeWidget);
+    if(saveLog)
+        cLog->writeList(model);
 
 }
 
