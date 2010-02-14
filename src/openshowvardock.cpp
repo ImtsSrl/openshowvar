@@ -264,7 +264,7 @@ void OpenShowVarDock::insertNew(const QString &variabile, const QString &iprobot
     //Robot
     root = model->index(0,TreeModel::VARNAME,QModelIndex());
     for(int row=0;row<=model->rowCount(root);row++){
-        qDebug() << "Indice: " << row << " ip: " << iprobot;
+        //qDebug() << "Indice: " << row << " ip: " << iprobot;
         index = model->index(row,TreeModel::VARNAME,QModelIndex());
         if(model->data(index,Qt::DisplayRole)==iprobot){
             qDebug() << "Trovato robot";
@@ -279,18 +279,22 @@ void OpenShowVarDock::insertNew(const QString &variabile, const QString &iprobot
         model->insertRow(0, root);
         robotip = model->index(0,TreeModel::VARNAME,root);
         model->setData(robotip, QVariant(iprobot), Qt::EditRole);
-        qDebug() << "Aggiunto robot";
+        //qDebug() << "Aggiunto robot";
     }
     else{
-        qDebug() << "Aggiunto solo elemento";
+        //qDebug() << "Aggiunto solo elemento";
         robotip = model->index(0,TreeModel::VARNAME,QModelIndex());
         robotip=root;
     }
+
+    tree->expand(robotip);
 
     //Nome variabile
     model->insertRow(0, robotip);
     varname = model->index(0,TreeModel::VARNAME,robotip);
     model->setData(varname,QVariant(variabile.toUpper()),Qt::EditRole);
+
+    tree->resizeColumnToContents(TreeModel::VARNAME);
 
 
     database->addVar(variabile.toUpper().toAscii(),QHostAddress(iprobot));
@@ -330,7 +334,6 @@ void OpenShowVarDock::insertClose(const bool &visible)
 
 void OpenShowVarDock::lettura()
 {
-    QString tempo;
     QByteArray value;
     int readtime;
 
@@ -364,8 +367,6 @@ void OpenShowVarDock::lettura()
             this->splitvaluetoview(index, variabile, value);
         }
     }
-
-    tree->resizeColumnToContents(TreeModel::VARNAME);
 
 //    if(saveLog)
 //        cLog->writeList(treeWidget);
