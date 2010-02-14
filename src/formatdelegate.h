@@ -2,10 +2,10 @@
 #ifndef FORMATDELEGATE_H
 #define FORMATDELEGATE_H
 
-#include <QAbstractItemDelegate>
+#include <QStyledItemDelegate>
 #include <QDebug>
 
-class FormatDelegate : public QAbstractItemDelegate
+class FormatDelegate : public QStyledItemDelegate
 {
 public:
   FormatDelegate( QObject *parent = 0 );

@@ -85,8 +85,9 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
             item->setData(TreeModel::TIME,tr("TIMEOUT"));
             return QColor(Qt::red);
         }
-        else
+        else{
             return QColor(Qt::black);
+        }
     }
 
     if (role != Qt::DisplayRole && role != Qt::EditRole)

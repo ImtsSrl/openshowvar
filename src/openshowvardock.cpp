@@ -313,12 +313,17 @@ void OpenShowVarDock::deleteVar()
 
     //qDebug() << "Nome variabile: " << varname << " indirizzo ip: " << varip;
 
-    if(model->removeRow(index.row(),QModelIndex())){
+    if(model->rowCount(index.parent())==1){
+        model->removeRow(index.parent().row(),index.parent().parent());
+        statusBar()->showMessage(tr("Deleted '%1'").arg(varname), 2000);
+        return;
+    }
+
+    if(model->removeRow(index.row(),index.parent())){
         database->deleteVar(varname.toAscii(),(QHostAddress)varip);
         statusBar()->showMessage(tr("Deleted '%1'").arg(varname), 2000);
     }
 
-#warning "Eliminare robot senza variabili"
 }
 
 void OpenShowVarDock::insertClose(const bool &visible)
@@ -509,11 +514,16 @@ void OpenShowVarDock::on_openVar()
 
 void OpenShowVarDock::on_clearList()
 {
-	for(int row=0;row<treeWidget->topLevelItemCount();row++)
-	{
-		database->deleteVar(treeWidget->topLevelItem(row)->text(CTreeVar::VARNAME).toAscii(),(QHostAddress)treeWidget->topLevelItem(row)->text(CTreeVar::ROBOTIP));
-	}
-	treeWidget->clear();
+    QModelIndex index = QModelIndex();
+
+    for(int row=0;row<model->rowCount(index);row++){
+        QModelIndex robotip = model->index(row,TreeModel::VARNAME,index);
+        for(int var=0;var<model->rowCount(robotip);var++){
+            QModelIndex varname = model->index(var,TreeModel::VARNAME,robotip);
+            database->deleteVar(model->data(varname,Qt::DisplayRole).toByteArray(),(QHostAddress)model->data(robotip,Qt::DisplayRole).toString());
+        }
+        model->removeRow(row,index);
+    }
 }
 
 void OpenShowVarDock::on_log(bool checked)

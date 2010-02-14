@@ -6,11 +6,11 @@
 
 #include "formatdelegate.h"
 
-FormatDelegate::FormatDelegate( QObject *parent ) : QAbstractItemDelegate( parent ) { }
+FormatDelegate::FormatDelegate( QObject *parent ) : QStyledItemDelegate( parent ) { }
 
 void FormatDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-
+    QStyledItemDelegate::paint(painter, option, index);
 }
 
 QSize FormatDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
