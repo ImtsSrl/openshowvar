@@ -33,64 +33,60 @@
 
 OpenShowVarDock::OpenShowVarDock()
 {
-	insertVar=NULL;
+    insertVar=NULL;
 
 
-        tree=new QTreeView(this);
-        QStringList headers;
-        headers << tr("Variable name") << tr("Variable value") << "" << tr("Read time");
-        model = new TreeModel(headers,"");
-        tree->setModel(model);
+    tree=new QTreeView(this);
+    QStringList headers;
+    headers << tr("Variable name") << tr("Variable value") << "" << tr("Read time");
+    model = new TreeModel(headers,"");
+    tree->setModel(model);
 
-        tree->setItemDelegateForColumn(TreeModel::OPTIONS, new FormatDelegate);
+    tree->setItemDelegateForColumn(TreeModel::OPTIONS, new FormatDelegate);
 
-        treeWidget = new CTreeVar(this);
-        //setCentralWidget(treeWidget);
+    setCentralWidget(tree);
+    tree->setColumnWidth(CTreeVar::VARNAME,110);
+    tree->setColumnWidth(CTreeVar::VARVALUE,350);
+    //drag&drop
+    tree->setDragEnabled(true);
 
-        setCentralWidget(tree);
-        tree->setColumnWidth(CTreeVar::VARNAME,110);
-        tree->setColumnWidth(CTreeVar::VARVALUE,350);
-        //drag&drop
-        tree->setDragEnabled(true);
+    createActions();
+    createMenus();
+    createToolBars();
+    createStatusBar();
 
-	createActions();
-	createMenus();
-	createToolBars();
-	createStatusBar();
+    setUnifiedTitleAndToolBarOnMac(true);
 
-	setUnifiedTitleAndToolBarOnMac(true);
+    database = new VariableDB();
 
-	database = new VariableDB();
+    connect(&qtimeLettura, SIGNAL(timeout()), this, SLOT(lettura()));
+    qtimeLettura.start(REFRESHTIME);
 
-	connect(&qtimeLettura, SIGNAL(timeout()), this, SLOT(lettura()));
-	qtimeLettura.start(REFRESHTIME);
+    connect(&timeUpdateGraph, SIGNAL(timeout()), this, SLOT(updateGraph()));
+    timeUpdateGraph.start(500);
+    //m_gridList.append(CVarsGrid::loadAllFromXml("graph.xml",database));
 
-	connect(&timeUpdateGraph, SIGNAL(timeout()), this, SLOT(updateGraph()));
-	timeUpdateGraph.start(500);
-	//m_gridList.append(CVarsGrid::loadAllFromXml("graph.xml",database));
+    connect(&listVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
 
-	connect(&listVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
+    dockInsertVar = new QDockWidget(tr("New robot variable"), this);
+    dockInsertVar->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    insertVar = new InsertVar();
+    dockInsertVar->setWidget(insertVar);
+    addDockWidget(Qt::BottomDockWidgetArea, dockInsertVar);
+    connect(insertVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
+    connect(dockInsertVar,SIGNAL(visibilityChanged(const bool &)),this,SLOT(insertClose(const bool &)));
+    //insertVar->DropVar(*varName);
+    dockInsertVar->setVisible(false);
 
-        dockInsertVar = new QDockWidget(tr("New robot variable"), this);
-        dockInsertVar->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-        insertVar = new InsertVar();
-        dockInsertVar->setWidget(insertVar);
-        addDockWidget(Qt::BottomDockWidgetArea, dockInsertVar);
-        connect(insertVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
-        connect(dockInsertVar,SIGNAL(visibilityChanged(const bool &)),this,SLOT(insertClose(const bool &)));
-        //insertVar->DropVar(*varName);
-        dockInsertVar->setVisible(false);
+    connect(tree,SIGNAL(doubleClicked(const QModelIndex &)),this,SLOT(on_itemDoubleClicked(const QModelIndex &)));
 
-        connect(treeWidget,SIGNAL(itemClicked(QTreeWidgetItem*,int)),this,SLOT(on_itemClicked(QTreeWidgetItem*,int)));
-        connect(treeWidget,SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),this,SLOT(on_itemDoubleClicked(QTreeWidgetItem*,int)));
+    listVar.readList("varlist.xml");
 
-        listVar.readList("varlist.xml");
+    cLog = new CLog("log.xml");
+    saveLog=false;
 
-        cLog = new CLog("log.xml");
-        saveLog=false;
-
-	setWindowIcon(QIcon(":openshowvar"));
-	resize(700,500);
+    setWindowIcon(QIcon(":openshowvar"));
+    resize(700,500);
 }
 
 OpenShowVarDock::~OpenShowVarDock()
@@ -430,7 +426,7 @@ void OpenShowVarDock::addCombo(QTreeWidgetItem *child){
 	combo->addItem(tr("Int code"));
 	combo->addItem(tr("Binary code"));
 	combo->addItem(tr("Hex code"));
-	treeWidget->setItemWidget(child,2,combo);
+        //treeWidget->setItemWidget(child,2,combo);
 }
 
 void OpenShowVarDock::toBinary(int value, QString *binary){
@@ -497,9 +493,9 @@ void OpenShowVarDock::on_writeVariable(const QByteArray &varname, const QByteArr
 
 void OpenShowVarDock::on_editVarClose(const bool &visible)
 {
-	if(!visible){
-		qDebug() << "Edit chiuso";
-	}
+    if(!visible){
+        qDebug() << "Edit chiuso";
+    }
 }
 
 void OpenShowVarDock::on_saveVar()
@@ -583,25 +579,21 @@ void OpenShowVarDock::closeEvent ( QCloseEvent * event )
     delete database;
 }
 
-void OpenShowVarDock::on_itemClicked(QTreeWidgetItem *item, int column)
+void OpenShowVarDock::on_itemDoubleClicked(const QModelIndex &index)
 {
-    if(treeWidget->currentItem()!=NULL){
-        if(item->text(CTreeVar::TIME)!=tr("TIMEOUT"))
-            editVarAct->setEnabled(true);
-    }
-    else
-        editVarAct->setEnabled(false);
-}
+    if(!index.parent().isValid())
+        return;
 
-void OpenShowVarDock::on_itemDoubleClicked(QTreeWidgetItem *item, int column)
-{
-    if(treeWidget->currentItem()!=NULL){
-        if(item->text(CTreeVar::TIME)!=tr("TIMEOUT")){
-#warning modificare questa funzione
-            editVarAct->setEnabled(true);
-            //editVar(item);
-        }
-    }
-    else
-        editVarAct->setEnabled(false);
+    if(index.parent().parent().isValid())
+        return;
+
+    QModelIndex varnameindex = model->index(index.row(),0,index.parent());
+    QModelIndex varvalueindex = model->index(index.row(),TreeModel::VARVALUE,index.parent());
+
+    QString varname = varnameindex.data(Qt::DisplayRole).toByteArray();
+    QString varip = index.parent().data(Qt::DisplayRole).toByteArray();
+    QString varvalue = varvalueindex.data(Qt::DisplayRole).toByteArray();
+
+    editVar(varname,varvalue,(QHostAddress)varip);
+    statusBar()->showMessage(tr("Edit '%1'").arg(varname), 2000);
 }

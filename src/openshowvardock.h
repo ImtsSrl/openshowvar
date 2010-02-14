@@ -46,8 +46,7 @@ private slots:
     void on_saveVar();
     void on_openVar();
     void on_clearList();
-    void on_itemClicked(QTreeWidgetItem *item, int column);
-    void on_itemDoubleClicked(QTreeWidgetItem *item, int column);
+    void on_itemDoubleClicked(const QModelIndex &index);
     void closeEvent(QCloseEvent * event);
     void insertNew(const QString &variabile, const QString &robotip);
     void insertClose(const bool &visible);
@@ -77,7 +76,6 @@ private:
 
     QTimer qtimeLettura;
     QTimer timeUpdateGraph;
-    QTreeWidget *treeWidget;
 
     QTextEdit *textEdit;
     QListWidget *customerList;
