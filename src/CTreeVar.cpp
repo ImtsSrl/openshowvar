@@ -35,6 +35,7 @@ CTreeVar::~CTreeVar() { }
 
 void CTreeVar::dropEvent(QDropEvent *event)
 {
+    //QTreeView::dropEvent(event);
     event->acceptProposedAction();
     if(event->source()!=this){
         emit dropVar(event->mimeData()->text());
@@ -43,14 +44,16 @@ void CTreeVar::dropEvent(QDropEvent *event)
 
 void CTreeVar::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (event->mimeData()->hasText()){
+    QTreeView::dragEnterEvent(event);
+    if (event->mimeData()->hasText() && !event->isAccepted()){
         event->acceptProposedAction();
     }
 }
 
 void CTreeVar::dragMoveEvent(QDragMoveEvent *event)
 {
-    if (event->mimeData()->hasText()){
+    QTreeView::dragMoveEvent(event);
+    if (event->mimeData()->hasText() && !event->isAccepted()){
         event->acceptProposedAction();
     }
 }

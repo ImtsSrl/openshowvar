@@ -480,7 +480,7 @@ void OpenShowVarDock::on_editVar(){
     if(index.parent().parent().isValid())
         return;
 
-    QModelIndex varnameindex = model->index(index.row(),0,index.parent());
+    QModelIndex varnameindex = model->index(index.row(),TreeModel::VARNAME,index.parent());
     QModelIndex varvalueindex = model->index(index.row(),TreeModel::VARVALUE,index.parent());
 
     QString varname = varnameindex.data(Qt::DisplayRole).toByteArray();
@@ -594,7 +594,7 @@ void OpenShowVarDock::on_itemDoubleClicked(const QModelIndex &index)
     if(index.parent().parent().isValid())
         return;
 
-    QModelIndex varnameindex = model->index(index.row(),0,index.parent());
+    QModelIndex varnameindex = model->index(index.row(),TreeModel::VARNAME,index.parent());
     QModelIndex varvalueindex = model->index(index.row(),TreeModel::VARVALUE,index.parent());
 
     QString varname = varnameindex.data(Qt::DisplayRole).toByteArray();
