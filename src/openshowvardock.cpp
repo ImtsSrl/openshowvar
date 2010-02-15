@@ -258,6 +258,7 @@ void OpenShowVarDock::on_insertVar(const QString &varName)
 {
     dockInsertVar->setVisible(true);
     insertVar->lineEdit->setText(varName);
+    dockInsertVar->widget()->setFocus();
 }
 
 void OpenShowVarDock::insertNew(const QString &variabile, const QString &iprobot)
@@ -350,7 +351,7 @@ void OpenShowVarDock::lettura()
         //qDebug() << "IP robot: " << iprobot;
 
         //qDebug() << "Robot " << model->rowCount(root);
-        
+
         for(int var=0;var<model->rowCount(robotip);var++){
             QModelIndex varname = model->index(var, TreeModel::VARNAME, robotip);
             QString variabile = varname.data(Qt::DisplayRole).toString();
@@ -366,7 +367,7 @@ void OpenShowVarDock::lettura()
             model->setData(index, QVariant(variabile), Qt::EditRole);
             index = model->index(var,TreeModel::TIME,robotip);
             model->setData(index, QVariant(readtime), Qt::EditRole);
-            
+
             index = model->index(var,TreeModel::VARNAME,robotip);
             //qDebug() << "Nome variabile: " << model->data(index,Qt::DisplayRole);
             this->splitvaluetoview(index, variabile, value);
@@ -395,7 +396,7 @@ void OpenShowVarDock::splitvaluetoview(QModelIndex index, QString varname, QStri
                 QModelIndex child = model->index(i,TreeModel::VARNAME,index);
                 if(!child.isValid())
                     if (!model->insertRow(i, index))
-                        return;             
+                        return;
 
                 model->setData(child, QVariant(kukavarloc->getStructureMember(i)), Qt::EditRole);
                 child = model->index(i,TreeModel::VARVALUE,index);
