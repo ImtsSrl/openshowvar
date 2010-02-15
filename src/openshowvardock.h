@@ -36,7 +36,7 @@ private slots:
 
     void about();
 
-    void on_insertVar(const QString *varName);
+    void on_insertVar(const QString &varName);
     void on_refVarAct(const QString &text);
     void on_refVarDatabaseAct(int i);
     void on_readVarAct(bool checked);
@@ -71,7 +71,7 @@ private:
     VariableDB* database;
     InsertVar* insertVar;
 
-    QTreeView* tree;
+    CTreeVar* tree;
     TreeModel *model;
 
     QTimer qtimeLettura;

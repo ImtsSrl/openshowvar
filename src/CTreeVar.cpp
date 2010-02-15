@@ -29,110 +29,33 @@
 
 #include "CTreeVar.h"
 
-CTreeVar::CTreeVar(QWidget *parent)
-	: QTreeWidget(parent)
-{
-    setColumnCount(5);
-    setHeaderLabels(QStringList() << tr("Variable name") << tr("Variable value") << tr("") << tr("Read time") << tr("IP Robot"));
-    setColumnWidth(CTreeVar::VARNAME,110);
-    setColumnWidth(CTreeVar::VARVALUE,350);
-    setColumnHidden(4,true);
+CTreeVar::CTreeVar(QWidget *parent) : QTreeView(parent) { }
 
-    /*
-    abilitazione Drop
-    */
-    setAcceptDrops(true);
-    setDragEnabled(true);
-}
-
-CTreeVar::~CTreeVar()
-{
-
-}
+CTreeVar::~CTreeVar() { }
 
 void CTreeVar::dropEvent(QDropEvent *event)
 {
-	event->acceptProposedAction();
-		if(event->source()!=this)
-                        emit dropVar(event->mimeData()->text());
+    event->acceptProposedAction();
+    if(event->source()!=this){
+        emit dropVar(event->mimeData()->text());
+    }
 }
 
 void CTreeVar::dragEnterEvent(QDragEnterEvent *event)
 {
-	if (event->mimeData()->hasText()){
-		event->acceptProposedAction();
-	}
+    if (event->mimeData()->hasText()){
+        event->acceptProposedAction();
+    }
 }
 
 void CTreeVar::dragMoveEvent(QDragMoveEvent *event)
 {
-	if (event->mimeData()->hasText()){
-		event->acceptProposedAction();
-	}
-}
-
-
-void CTreeVar::mousePressEvent(QMouseEvent *event)
-{
-	if (event->button() == Qt::LeftButton)
-		startPos=event->pos();
-	QTreeWidget::mousePressEvent(event);
-}
-
-void CTreeVar::mouseMoveEvent(QMouseEvent *event)
-{
-	if(event->buttons() & Qt::LeftButton){
-		int distance=(event->pos() - startPos).manhattanLength();
-		if(distance >= QApplication::startDragDistance())
-			startDrag();
-	}
-	QTreeWidget::mouseMoveEvent(event);
+    if (event->mimeData()->hasText()){
+        event->acceptProposedAction();
+    }
 }
 
 void CTreeVar::startDrag()
 {
-    QByteArray varvalue;
-    QTreeWidgetItem *item;
-    if(this->currentItem()!=NULL){
-        if(this->currentItem()->parent()!=NULL)
-            item=this->currentItem()->parent();
-        else
-            item=this->currentItem();
-    }
 
-    //Se la variabile e' una struttura elimino il tipo di dato e passo solo il valore
-    KukaVar *kukavar = new KukaVar(item->text(VARNAME).toAscii(),item->text(VARVALUE).toAscii());
-
-    switch(kukavar->getVarType()){
-    case KukaVar::STRUCTURE:
-        {
-            varvalue=kukavar->getStructureValue();
-            break;
-        }
-    default:
-        {
-            varvalue=kukavar->getValue();
-            break;
-        }
-    }
-
-	QMimeData *mimeData = new QMimeData;
-	mimeData->setText(varvalue);
-
-	// dati per il grafico
-	mimeData->setData( "openshowvar/graphdata" , kukavar->getVarName() );
-	mimeData->setData( "openshowvar/graphdataip" , item->text(ROBOTIP).toAscii() );
-
-	QDrag *drag = new QDrag(this);
-	drag->setMimeData(mimeData);
-
-	//QPixmap pixmap("AWESOM-O.png");
-	QPixmap pixmap(":images/AWESOM-O.png");
-	//QPixmap alphaChannel(pixmap.width(), pixmap.height());
-	//alphaChannel.fill(QColor(128,128,128));
-	//pixmap.setAlphaChannel(alphaChannel);
-	drag->setPixmap(pixmap);
-
-        drag->exec();
 }
-

@@ -112,7 +112,7 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 
     //Se mi trovo sulla colonna dei dati abilito l'edit
     if(index.column()==TreeModel::VARVALUE || index.column()==TreeModel::OPTIONS)
-        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 }
@@ -322,7 +322,7 @@ Qt::DropActions TreeModel::supportedDropActions() const
 QStringList TreeModel::mimeTypes() const
 {
     QStringList types;
-    types << "application/vnd.text.list";
+    types << "text/plain";
     return types;
 }
 
@@ -380,4 +380,8 @@ QMimeData *TreeModel::mimeData(const QModelIndexList &indexes) const
     //drag->setPixmap(pixmap);
 
     return mimeData;
+}
+
+bool TreeModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ){
+    qDebug() << "DROPMIMEDATA";
 }

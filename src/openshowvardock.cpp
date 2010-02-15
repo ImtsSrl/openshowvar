@@ -36,7 +36,7 @@ OpenShowVarDock::OpenShowVarDock()
     insertVar=NULL;
 
 
-    tree=new QTreeView(this);
+    tree=new CTreeVar(this);
     QStringList headers;
     headers << tr("Variable name") << tr("Variable value") << "" << tr("Read time");
     model = new TreeModel(headers,"");
@@ -45,10 +45,13 @@ OpenShowVarDock::OpenShowVarDock()
     tree->setItemDelegateForColumn(TreeModel::OPTIONS, new FormatDelegate);
 
     setCentralWidget(tree);
-    tree->setColumnWidth(CTreeVar::VARNAME,110);
-    tree->setColumnWidth(CTreeVar::VARVALUE,350);
+    tree->setColumnWidth(TreeModel::VARNAME,110);
+    tree->setColumnWidth(TreeModel::VARVALUE,350);
     //drag&drop
     tree->setDragEnabled(true);
+    tree->setAcceptDrops(true);
+    tree->setDropIndicatorShown(true);
+    //tree->setDragDropMode(QAbstractItemView::DragDrop);
 
     createActions();
     createMenus();
@@ -75,10 +78,11 @@ OpenShowVarDock::OpenShowVarDock()
     addDockWidget(Qt::BottomDockWidgetArea, dockInsertVar);
     connect(insertVar,SIGNAL(insertNewVar(const QString &, const QString &)),this,SLOT(insertNew(const QString &, const QString &)));
     connect(dockInsertVar,SIGNAL(visibilityChanged(const bool &)),this,SLOT(insertClose(const bool &)));
-    //insertVar->DropVar(*varName);
+
     dockInsertVar->setVisible(false);
 
     connect(tree,SIGNAL(doubleClicked(const QModelIndex &)),this,SLOT(on_itemDoubleClicked(const QModelIndex &)));
+    connect(tree,SIGNAL(dropVar(const QString &)),this,SLOT(on_insertVar(const QString &)));
 
     listVar.readList("varlist.xml");
 
@@ -97,7 +101,7 @@ OpenShowVarDock::~OpenShowVarDock()
 void OpenShowVarDock::newVar()
 {
 	QString varName="";
-	on_insertVar(&varName);
+        on_insertVar(varName);
 }
 
 void OpenShowVarDock::addGraph()
@@ -250,9 +254,10 @@ void OpenShowVarDock::createStatusBar()
     statusBar()->showMessage(tr("Ready"));
 }
 
-void OpenShowVarDock::on_insertVar(const QString *varName)
+void OpenShowVarDock::on_insertVar(const QString &varName)
 {
     dockInsertVar->setVisible(true);
+    insertVar->lineEdit->setText(varName);
 }
 
 void OpenShowVarDock::insertNew(const QString &variabile, const QString &iprobot)
