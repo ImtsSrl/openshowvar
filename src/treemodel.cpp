@@ -56,19 +56,15 @@ TreeModel::TreeModel(const QStringList &headers, const QString &data,
     setupModelData(data.split(QString("\n")), rootItem);
 }
 
-//! [1]
 TreeModel::~TreeModel()
 {
     delete rootItem;
 }
-//! [1]
 
-//! [2]
 int TreeModel::columnCount(const QModelIndex & /* parent */) const
 {
     return rootItem->columnCount();
 }
-//! [2]
 
 QVariant TreeModel::data(const QModelIndex &index, int role) const
 {
@@ -110,12 +106,13 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return 0;
 
-    //Se mi trovo sulla colonna dei dati abilito l'edit
-    if(index.column()==TreeModel::VARVALUE || index.column()==TreeModel::OPTIONS)
+    if(index.column()==2 && !index.parent().isValid())
         return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 
-    //return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
-    return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+//    if(index.column()==0)
+//        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 }
 
 //! [4]
@@ -385,4 +382,15 @@ QMimeData *TreeModel::mimeData(const QModelIndexList &indexes) const
 
 bool TreeModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ){
     qDebug() << "DROPMIMEDATA";
+}
+
+ShowModelIndex::ShowModelIndex() : QModelIndex() {}
+
+ShowModelIndex::ShowModelIndex(const QModelIndex & other) {}
+
+bool ShowModelIndex::isRobot() {
+    if(this->parent().isValid())
+        return false;
+
+    return true;
 }

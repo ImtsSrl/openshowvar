@@ -72,7 +72,6 @@ public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
-//! [1]
 
     Qt::ItemFlags flags(const QModelIndex &index) const;
     bool setData(const QModelIndex &index, const QVariant &value,
@@ -100,6 +99,15 @@ private:
     TreeItem *getItem(const QModelIndex &index) const;
 
     TreeItem *rootItem;
+};
+
+class ShowModelIndex : public QModelIndex
+{
+
+public:
+    ShowModelIndex();
+    ShowModelIndex(const QModelIndex & other);
+    bool isRobot();
 };
 
 #endif

@@ -35,7 +35,7 @@ CTreeVar::~CTreeVar() { }
 
 void CTreeVar::dropEvent(QDropEvent *event)
 {
-    //QTreeView::dropEvent(event);
+    QTreeView::dropEvent(event);
     event->acceptProposedAction();
     if(event->source()!=this){
         emit dropVar(event->mimeData()->text());

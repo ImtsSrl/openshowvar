@@ -50,7 +50,7 @@ OpenShowVarDock::OpenShowVarDock()
     //drag&drop
     tree->setDragEnabled(true);
     tree->setAcceptDrops(true);
-    tree->setDropIndicatorShown(true);
+    //tree->setDropIndicatorShown(true);
     //tree->setDragDropMode(QAbstractItemView::DragDrop);
 
     createActions();
@@ -474,6 +474,8 @@ void OpenShowVarDock::updateGraph()
 
 void OpenShowVarDock::on_editVar(){
     QModelIndex index = tree->selectionModel()->currentIndex();
+    ShowModelIndex index1 = tree->selectionModel()->currentIndex();
+    qDebug() << index1.isRobot();
     if(!index.parent().isValid())
         return;
 
