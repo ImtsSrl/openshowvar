@@ -109,6 +109,9 @@ public:
     ShowModelIndex(const QModelIndex & other);
     bool isRobot();
     bool isVar();
+    bool isInt();
+    QString robotIP();
+    QString varNAME();
 };
 
 #endif

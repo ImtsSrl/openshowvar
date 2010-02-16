@@ -586,7 +586,7 @@ void OpenShowVarDock::on_itemDoubleClicked(const QModelIndex &index)
 {
     ShowModelIndex locindex=index;
 
-    if(!locindex.isVar())
+    if(!locindex.isVar() || locindex.column()==TreeModel::OPTIONS)
         return;
 
     QModelIndex varnameindex = model->index(locindex.row(),TreeModel::VARNAME,locindex.parent());

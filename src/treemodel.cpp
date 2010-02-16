@@ -103,10 +103,11 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 
 Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 {
+    ShowModelIndex locindex = index;
     if (!index.isValid())
         return 0;
 
-    if(index.column()==2 && !index.parent().isValid())
+    if(index.column()==2 && locindex.isVar())
         return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 
 //    if(index.column()==0)
@@ -377,6 +378,7 @@ QMimeData *TreeModel::mimeData(const QModelIndexList &indexes) const
     QPixmap pixmap(":images/AWESOM-O.png");
     //drag->setPixmap(pixmap);
 
+    delete kukavar;
     return mimeData;
 }
 
@@ -405,4 +407,38 @@ bool ShowModelIndex::isVar() {
         return false;
 
     return true;
+}
+
+bool ShowModelIndex::isInt() {
+
+//    KukaVar *kukavar = new KukaVar(this->data(Qt::DisplayRole,varvalue);
+//
+//    switch(kukavar->getVarType()){
+//    case KukaVar::STRUCTURE:
+//        {
+//            varvalue=kukavar->getStructureValue();
+//            break;
+//        }
+//    default:
+//        {
+//            varvalue=kukavar->getValue();
+//            break;
+//        }
+//    }
+//
+//    delete kukavar;
+}
+
+QString ShowModelIndex::robotIP(){
+    if(this->isRobot())
+        return this->data(Qt::DisplayRole).toString();
+
+    return "";
+}
+
+QString ShowModelIndex::varNAME(){
+    if(this->isVar())
+        return this->data(Qt::DisplayRole).toString();
+
+    return "";
 }
