@@ -108,6 +108,7 @@ public:
     ShowModelIndex();
     ShowModelIndex(const QModelIndex & other);
     bool isRobot();
+    bool isVar();
 };
 
 #endif

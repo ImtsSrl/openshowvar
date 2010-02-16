@@ -308,11 +308,9 @@ void OpenShowVarDock::insertNew(const QString &variabile, const QString &iprobot
 
 void OpenShowVarDock::deleteVar()
 {
-    QModelIndex index = tree->selectionModel()->currentIndex();
-    if(!index.parent().isValid())
-        return;
+    ShowModelIndex index = tree->selectionModel()->currentIndex();
 
-    if(index.parent().parent().isValid())
+    if(!index.isVar())
         return;
 
     QString varname = index.data(Qt::DisplayRole).toByteArray();
@@ -473,13 +471,9 @@ void OpenShowVarDock::updateGraph()
 }
 
 void OpenShowVarDock::on_editVar(){
-    QModelIndex index = tree->selectionModel()->currentIndex();
-    ShowModelIndex index1 = tree->selectionModel()->currentIndex();
-    qDebug() << index1.isRobot();
-    if(!index.parent().isValid())
-        return;
-
-    if(index.parent().parent().isValid())
+    ShowModelIndex index = tree->selectionModel()->currentIndex();
+    
+    if(!index.isVar())
         return;
 
     QModelIndex varnameindex = model->index(index.row(),TreeModel::VARNAME,index.parent());
@@ -590,17 +584,16 @@ void OpenShowVarDock::closeEvent ( QCloseEvent * event )
 
 void OpenShowVarDock::on_itemDoubleClicked(const QModelIndex &index)
 {
-    if(!index.parent().isValid())
+    ShowModelIndex locindex=index;
+
+    if(!locindex.isVar())
         return;
 
-    if(index.parent().parent().isValid())
-        return;
-
-    QModelIndex varnameindex = model->index(index.row(),TreeModel::VARNAME,index.parent());
-    QModelIndex varvalueindex = model->index(index.row(),TreeModel::VARVALUE,index.parent());
+    QModelIndex varnameindex = model->index(locindex.row(),TreeModel::VARNAME,locindex.parent());
+    QModelIndex varvalueindex = model->index(locindex.row(),TreeModel::VARVALUE,locindex.parent());
 
     QString varname = varnameindex.data(Qt::DisplayRole).toByteArray();
-    QString varip = index.parent().data(Qt::DisplayRole).toByteArray();
+    QString varip = locindex.parent().data(Qt::DisplayRole).toByteArray();
     QString varvalue = varvalueindex.data(Qt::DisplayRole).toByteArray();
 
     editVar(varname,varvalue,(QHostAddress)varip);

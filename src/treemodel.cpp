@@ -386,10 +386,22 @@ bool TreeModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, in
 
 ShowModelIndex::ShowModelIndex() : QModelIndex() {}
 
-ShowModelIndex::ShowModelIndex(const QModelIndex & other) {}
+ShowModelIndex::ShowModelIndex(const QModelIndex & other) : QModelIndex(other) {}
 
 bool ShowModelIndex::isRobot() {
-    if(this->parent().isValid())
+    QModelIndex root = QModelIndex();
+    if(this->parent()==root)
+        return true;
+
+    return false;
+}
+
+bool ShowModelIndex::isVar() {
+    QModelIndex root = QModelIndex();
+    if(this->parent()==root)
+        return false;
+
+    if(this->parent().parent()!=root)
         return false;
 
     return true;
