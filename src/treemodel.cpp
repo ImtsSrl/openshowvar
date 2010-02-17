@@ -95,6 +95,9 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
         }
     }
 
+//    if (role==Qt::DisplayRole && item->data(TreeModel::OPTIONS)==tr("Int code"))
+//        item->setData(TreeModel::VARVALUE,"CIAO");
+
     if (role != Qt::DisplayRole && role != Qt::EditRole)
         return QVariant();
 

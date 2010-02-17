@@ -55,7 +55,7 @@ InsertVar::InsertVar(){
     insertButton->setEnabled(false);
     abortButton = new QPushButton(tr("Abort"));
 
-    /*la finestra è strutturata su tre righe:
+    /*la finestra e' strutturata su tre righe:
 	la prima descrizione e inserimento
 	la seconda lista dei robot
 	la terza comandi
