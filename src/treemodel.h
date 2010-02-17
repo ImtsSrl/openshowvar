@@ -99,6 +99,8 @@ private:
     TreeItem *getItem(const QModelIndex &index) const;
 
     TreeItem *rootItem;
+
+    QString toHex(int value);
 };
 
 class ShowModelIndex : public QModelIndex

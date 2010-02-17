@@ -63,8 +63,8 @@ private:
     void splitvaluetoview(QModelIndex index, QString varname, QString varvalue);
     void editVar(QString varname, QString varvalue, QHostAddress varip);
     void addCombo(QTreeWidgetItem *child);
-    void toBinary(int value, QString *binary);
-    void toHex(int value, QString *binary);
+    QString toBinary(int value);
+    QString toHex(int value);
 
     QDockWidget *dockInsertVar;
 

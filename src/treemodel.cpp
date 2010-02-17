@@ -95,8 +95,10 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
         }
     }
 
-//    if (role==Qt::DisplayRole && item->data(TreeModel::OPTIONS)==tr("Int code"))
-//        item->setData(TreeModel::VARVALUE,"CIAO");
+//    if (role==Qt::DisplayRole && item->data(TreeModel::OPTIONS)==tr("Int code")){
+//        int value=item->data(TreeModel::VARVALUE).toInt();
+//        item->setData(TreeModel::VARVALUE,toHex(value));
+//    }
 
     if (role != Qt::DisplayRole && role != Qt::EditRole)
         return QVariant();
@@ -387,6 +389,12 @@ QMimeData *TreeModel::mimeData(const QModelIndexList &indexes) const
 
 bool TreeModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ){
     qDebug() << "DROPMIMEDATA";
+}
+
+QString TreeModel::toHex(int value){
+    QString hex;
+    hex.append(QString("0x%1").arg(value, 0, 16));
+    return hex.toUpper();
 }
 
 ShowModelIndex::ShowModelIndex() : QModelIndex() {}

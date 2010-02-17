@@ -359,8 +359,15 @@ void OpenShowVarDock::lettura()
             database->readVar(variabile.toAscii(),(QHostAddress)iprobot, &value, &readtime);
             //qDebug() << "Trovato " << value << " Tempo di lettura: " << readtime << " [ms]" << " ip: " << iprobot;
 
+            QModelIndex optionindex = model->index(var,TreeModel::OPTIONS,robotip);
             index = model->index(var,TreeModel::VARVALUE,robotip);
-            model->setData(index, QVariant(value), Qt::EditRole);
+            if(model->data(optionindex,Qt::DisplayRole)==tr("Hex code"))
+                model->setData(index, QVariant(toHex(value.toInt())), Qt::EditRole);
+            else if(model->data(optionindex,Qt::DisplayRole)==tr("Binary code"))
+                model->setData(index, QVariant(toBinary(value.toInt())), Qt::EditRole);
+            else
+                model->setData(index, QVariant(value), Qt::EditRole);
+
             index = model->index(var,TreeModel::VARNAME,robotip);
             model->setData(index, QVariant(variabile), Qt::EditRole);
             index = model->index(var,TreeModel::TIME,robotip);
@@ -434,18 +441,20 @@ void OpenShowVarDock::addCombo(QTreeWidgetItem *child){
         //treeWidget->setItemWidget(child,2,combo);
 }
 
-void OpenShowVarDock::toBinary(int value, QString *binary){
+QString OpenShowVarDock::toBinary(int value){
     int mask;
+    QString binary;
     for(int i=0;i<32;i++){
         mask = 1 << i;
         if(i==4 || i==8 || i==12 || i==16 || i==20 || i==24 || i==28)
-            binary->prepend(" ");
+            binary.prepend(" ");
         if(value & mask)
-            binary->prepend("1");
+            binary.prepend("1");
         else
-            binary->prepend("0");
+            binary.prepend("0");
     }
     //binary->append(QString("%1").arg(value, 0, 2));
+    return binary;
 }
 
 /*!	\brief Restituisce il valore esadecimale di una variabile
@@ -457,9 +466,10 @@ void OpenShowVarDock::toBinary(int value, QString *binary){
  *	\param binary Stringa contenente il valore esadecimale
  */
 
-void OpenShowVarDock::toHex(int value, QString *hex){
-    hex->append(QString("0x%1").arg(value, 0, 16));
-    hex->toUpper();
+QString OpenShowVarDock::toHex(int value){
+    QString hex;
+    hex.append(QString("0x%1").arg(value, 0, 16));
+    return hex.toUpper();
 }
 
 void OpenShowVarDock::updateGraph()
