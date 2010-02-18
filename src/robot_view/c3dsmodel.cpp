@@ -36,7 +36,6 @@ void C3DSModel::renderModel(){
         glNewList( m_displayList, GL_COMPILE );
         buildDisplayList();
         glEndList();
-        qDebug() << "NEW DISPLAY LIST: " << m_displayList;
     }else{
         glCallList(m_displayList);
     }
@@ -55,8 +54,8 @@ void C3DSModel::buildDisplayList(){
     GLfloat sambient[4] = { 1.0, 0.4, 0.0, 1.0 };
     GLfloat sdiffuse[4] = { 1.0, 0.4, 0.0, 1.0 };
     GLfloat sspecular[4] = { 0.0, 0.0, 0.0, 0.0 };
-    /*
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, sambient ); // Ambient color
+
+    /*glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, sambient ); // Ambient color
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, sspecular ); //specular color
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.0);*/
 
@@ -87,10 +86,10 @@ void C3DSModel::buildDisplayList(){
                     sdiffuse[0] = m_fileModel->materials[material]->diffuse[0];
                     sdiffuse[1] = m_fileModel->materials[material]->diffuse[1];
                     sdiffuse[2] = m_fileModel->materials[material]->diffuse[2];
-                    glMaterialfv(GL_FRONT, GL_AMBIENT, m_fileModel->materials[material]->ambient); // Ambient color
-                    glMaterialfv(GL_FRONT, GL_DIFFUSE, m_fileModel->materials[material]->diffuse); //diffuse color
-                    /*glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m_fileModel->materials[material]->specular); //specular color
-                    float shine;
+                    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, m_fileModel->materials[material]->ambient); // Ambient color
+                    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, m_fileModel->materials[material]->diffuse); //diffuse color
+                    //glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m_fileModel->materials[material]->specular); //specular color
+                    /*float shine;
                     shine = pow(2, 10.0 * m_fileModel->materials[material]->shininess);
                     if(shine > 128.0)
                         shine = 128.0;
