@@ -389,7 +389,7 @@ void OpenShowVarDock::splitvaluetoview(QModelIndex index, QString varname, QStri
     int datatype;
     varvalue=varvalue.trimmed();
 
-    qDebug() << "nome variabile: " << varname << " valore variabile: " << varvalue;
+    //qDebug() << "nome variabile: " << varname << " valore variabile: " << varvalue;
 
     KukaVar *kukavarloc  = new KukaVar(varname.toAscii(),varvalue.toAscii());
 
@@ -410,15 +410,15 @@ void OpenShowVarDock::splitvaluetoview(QModelIndex index, QString varname, QStri
                 switch(datatype){
                 case KukaVar::STRUCTURE:
                     {
-                        qDebug() << "Nome variabile: " << kukavarloc->getStructureMember(i);
-                        qDebug() << "Valore variabile: " << kukavarloc->getStructureValue(i,datatype);
+                        //qDebug() << "Nome variabile: " << kukavarloc->getStructureMember(i);
+                        //qDebug() << "Valore variabile: " << kukavarloc->getStructureValue(i,datatype);
                         QModelIndex structindex = model->index(i,TreeModel::VARNAME,index);
                         this->splitvaluetoview(structindex,kukavarloc->getStructureMember(i),kukavarloc->getStructureValue(i,datatype));
                         break;
                     }
                 default:
                     {
-                        qDebug() << "Default";
+                        //qDebug() << "Default";
                     }
                 }//seconda struttura
             }//for
@@ -426,7 +426,7 @@ void OpenShowVarDock::splitvaluetoview(QModelIndex index, QString varname, QStri
         }//prima struttura
     default:
         {
-            qDebug() << "Default 1";
+            //qDebug() << "Default 1";
         }
     }
 

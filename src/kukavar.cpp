@@ -134,7 +134,8 @@ QByteArray KukaVar::getStructureName()
 QByteArray KukaVar::getStructureValue(const int &fieldposition, int &datatype)
 {
         QByteArray *fieldelement = new QByteArray(arrayvalue[fieldposition].right(arrayvalue[fieldposition].length()-arrayvalue[fieldposition].indexOf(' ')));
-	//qDebug() << "Vartype: " << VarType(fieldelement->trimmed());
+        //qDebug() << "Vartype: " << fieldelement->trimmed();
+        //qDebug() << "Vartype: " << VarType(fieldelement->trimmed());
         datatype = VarType(fieldelement->trimmed());
         return *fieldelement;
 }
@@ -282,7 +283,7 @@ void KukaVar::setValue(QByteArray varvalue)
                     case '{':
                         {
                             intstruct++;
-                            //qDebug() << "Trovata nuova struttura";
+                            qDebug() << "Trovata nuova struttura";
                             break;
                         }
                     case '}':
@@ -298,11 +299,11 @@ void KukaVar::setValue(QByteArray varvalue)
 
                                 arrayvalue.append(varnameandvalue);
                                 finestruttura=true;
-                                //qDebug() << "Variabile: " << field[0] << " valore " << field[1];
-                                //qDebug() << "Chiusura struttura aperta";
+                                qDebug() << "Variabile: " << field[0] << " valore " << field[1];
+                                qDebug() << "Chiusura struttura aperta";
                             }
                             else
-                                //qDebug() << "Chiusura struttura non aperta";
+                                qDebug() << "Chiusura struttura non aperta";
                                 intstruct--;
                             break;
                         }
@@ -317,7 +318,7 @@ void KukaVar::setValue(QByteArray varvalue)
                     elements.insert(field[0], field[1]);
 
                     arrayvalue.append(varnameandvalue);
-                    //qDebug() << "Variabile: " << field[0] << " valore " << field[1];
+                    qDebug() << "Variabile: " << field[0] << " valore " << field[1];
                 }
 
             }
