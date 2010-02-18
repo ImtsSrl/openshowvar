@@ -85,24 +85,24 @@ KukaVar::~KukaVar()
 int KukaVar::VarType(const QByteArray variabile)
 {
     //qDebug() << "Variabile " << variabile;
-	if(variabile.startsWith("{") && variabile.endsWith("}"))
-		return STRUCTURE;
-	
-	if((variabile.toLong()) || (variabile.data()==QByteArray("0")))
-		return INT;
-	
-        if((variabile.toFloat()) || (variabile.data()==QByteArray("0.0")))
-                return REAL;
-	
-	if((variabile.data()==QByteArray("TRUE")) || (variabile.data()==QByteArray("FALSE")))
-		return BOOL;
-	
-        if((!variabile.toLong() && variabile.size()>=1)){
-        //if(variabile.endsWith("]"))
-		return CHAR;
-            }
+    if(variabile.startsWith("{") && variabile.endsWith("}"))
+        return STRUCTURE;
 
-	return ERRTYPE;
+    if((variabile.toLong()) || (variabile.data()==QByteArray("0")))
+        return INT;
+
+    if((variabile.toFloat()) || (variabile.data()==QByteArray("0.0")))
+        return REAL;
+
+    if((variabile.data()==QByteArray("TRUE")) || (variabile.data()==QByteArray("FALSE")))
+        return BOOL;
+
+    if((!variabile.toLong() && variabile.size()>=1)){
+        //if(variabile.endsWith("]"))
+        return CHAR;
+    }
+
+    return ERRTYPE;
 }
 
 int KukaVar::getVarType()

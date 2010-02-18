@@ -389,7 +389,7 @@ void OpenShowVarDock::splitvaluetoview(QModelIndex index, QString varname, QStri
     int datatype;
     varvalue=varvalue.trimmed();
 
-    //qDebug() << "nome variabile: " << varname << " valore variabile: " << varvalue;
+    qDebug() << "nome variabile: " << varname << " valore variabile: " << varvalue;
 
     KukaVar *kukavarloc  = new KukaVar(varname.toAscii(),varvalue.toAscii());
 
@@ -404,18 +404,31 @@ void OpenShowVarDock::splitvaluetoview(QModelIndex index, QString varname, QStri
                         return;
 
                 model->setData(child, QVariant(kukavarloc->getStructureMember(i)), Qt::EditRole);
-                child = model->index(i,TreeModel::VARVALUE,index);
-                model->setData(child, QVariant(kukavarloc->getStructureValue(i,datatype)), Qt::EditRole);
+                QModelIndex valueindex = model->index(i,TreeModel::VARVALUE,index);
+                model->setData(valueindex, QVariant(kukavarloc->getStructureValue(i,datatype)), Qt::EditRole);
 
-                }
-            }
+                switch(datatype){
+                case KukaVar::STRUCTURE:
+                    {
+                        qDebug() << "Nome variabile: " << kukavarloc->getStructureMember(i);
+                        qDebug() << "Valore variabile: " << kukavarloc->getStructureValue(i,datatype);
+                        QModelIndex structindex = model->index(i,TreeModel::VARNAME,index);
+                        this->splitvaluetoview(structindex,kukavarloc->getStructureMember(i),kukavarloc->getStructureValue(i,datatype));
+                        break;
+                    }
+                default:
+                    {
+                        qDebug() << "Default";
+                    }
+                }//seconda struttura
+            }//for
             break;
-    case KukaVar::INT:
-            {
-
-                break;
-            }
+        }//prima struttura
+    default:
+        {
+            qDebug() << "Default 1";
         }
+    }
 
     delete kukavarloc;
     kukavarloc=NULL;
