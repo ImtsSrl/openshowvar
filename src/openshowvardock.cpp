@@ -86,7 +86,6 @@ OpenShowVarDock::OpenShowVarDock()
 
     listVar.readList("varlist.xml");
 
-    cLog = new CLog("log.xml");
     saveLog=false;
 
     setWindowIcon(QIcon(":openshowvar"));
@@ -553,7 +552,18 @@ void OpenShowVarDock::on_clearList()
 
 void OpenShowVarDock::on_log(bool checked)
 {
-    saveLog=checked;
+    if(checked){
+        QString fileName = QFileDialog::getSaveFileName(this,tr("Save file as"),"./","Log (*.xml)");
+        if (!fileName.isEmpty()){
+            cLog = new CLog(fileName);
+            saveLog=checked;
+        }
+    }
+    else{
+        delete cLog;
+        cLog=NULL;
+        saveLog=checked;
+    }
 }
 
 void OpenShowVarDock::on_refVarAct(const QString &text)
@@ -601,7 +611,8 @@ void OpenShowVarDock::closeEvent ( QCloseEvent * event )
     timeUpdateGraph.stop();
     qtimeLettura.stop();
     listVar.writeList(model,"varlist.xml");
-    delete cLog;
+    if(cLog!=NULL)
+        delete cLog;
     delete database;
 }
 
