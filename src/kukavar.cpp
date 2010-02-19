@@ -216,7 +216,7 @@ void KukaVar::setValue(QByteArray varvalue)
 {
     QByteArray test;
 
-    this->varvalue=varvalue;
+    this->varvalue=varvalue.trimmed();
 	
     intvartype=VarType(varvalue.data());
 
@@ -233,9 +233,12 @@ void KukaVar::setValue(QByteArray varvalue)
             int lenvartype=stoptype-starttype-1;
             structurename=varvalue.mid(starttype+1,lenvartype);
 
+            //qDebug() << "Nome struttura: " << structurename;
             //Pulizia stringa da parte iniziale e finale, comprese le parentesi graffe
             int lenstructure=varvalue.size()-(stoptype+2)-1;
             test=varvalue.mid(stoptype+2,lenstructure);
+
+            //qDebug() << "Lunghezza struttura: " << lenstructure << " struttura pulita: " << test;
 
             /*
             Se la variabile non e' impostata nel config del robot, ritorna una struttura
@@ -246,6 +249,7 @@ void KukaVar::setValue(QByteArray varvalue)
 
             test=test.trimmed();
             structurevalue=structurevalue.append('{').append(test).append('}');
+            //qDebug() << "Struttura richiusa: " << structurevalue;
 
             if(!test.isEmpty()){
                 //separazione dei campi e valori in una lista
@@ -283,7 +287,7 @@ void KukaVar::setValue(QByteArray varvalue)
                     case '{':
                         {
                             intstruct++;
-                            qDebug() << "Trovata nuova struttura";
+                            //qDebug() << "Trovata nuova struttura";
                             break;
                         }
                     case '}':
@@ -299,12 +303,14 @@ void KukaVar::setValue(QByteArray varvalue)
 
                                 arrayvalue.append(varnameandvalue);
                                 finestruttura=true;
-                                qDebug() << "Variabile: " << field[0] << " valore " << field[1];
-                                qDebug() << "Chiusura struttura aperta";
-                            }
-                            else
-                                qDebug() << "Chiusura struttura non aperta";
                                 intstruct--;
+                                //qDebug() << "Variabile: " << field[0] << " valore " << field[1];
+                                //qDebug() << "Chiusura struttura aperta";
+                            }
+                            else{
+                                //qDebug() << "Chiusura struttura non aperta";
+                                intstruct--;
+                            }
                             break;
                         }
                     default:
@@ -318,7 +324,7 @@ void KukaVar::setValue(QByteArray varvalue)
                     elements.insert(field[0], field[1]);
 
                     arrayvalue.append(varnameandvalue);
-                    qDebug() << "Variabile: " << field[0] << " valore " << field[1];
+                    //qDebug() << "Variabile: " << field[0] << " valore " << field[1];
                 }
 
             }

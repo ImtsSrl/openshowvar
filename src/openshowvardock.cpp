@@ -373,7 +373,7 @@ void OpenShowVarDock::lettura()
             model->setData(index, QVariant(readtime), Qt::EditRole);
 
             index = model->index(var,TreeModel::VARNAME,robotip);
-            //qDebug() << "Nome variabile: " << model->data(index,Qt::DisplayRole);
+            //qDebug() << "Var: " << var << " Nome variabile: " << model->data(index,Qt::DisplayRole);
             this->splitvaluetoview(index, variabile, value);
         }
     }
