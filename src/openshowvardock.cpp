@@ -404,7 +404,15 @@ void OpenShowVarDock::splitvaluetoview(QModelIndex index, QString varname, QStri
 
                 model->setData(child, QVariant(kukavarloc->getStructureMember(i)), Qt::EditRole);
                 QModelIndex valueindex = model->index(i,TreeModel::VARVALUE,index);
-                model->setData(valueindex, QVariant(kukavarloc->getStructureValue(i,datatype)), Qt::EditRole);
+
+                QByteArray value = kukavarloc->getStructureValue(i,datatype);
+                QModelIndex optionindex = model->index(i,TreeModel::OPTIONS,index);
+                if(model->data(optionindex,Qt::DisplayRole)==tr("Hex code"))
+                    model->setData(valueindex, QVariant(toHex(value.toInt())), Qt::EditRole);
+                else if(model->data(optionindex,Qt::DisplayRole)==tr("Binary code"))
+                    model->setData(valueindex, QVariant(toBinary(value.toInt())), Qt::EditRole);
+                else
+                    model->setData(valueindex, QVariant(value), Qt::EditRole);
 
                 switch(datatype){
                 case KukaVar::STRUCTURE:
