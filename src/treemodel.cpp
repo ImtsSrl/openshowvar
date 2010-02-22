@@ -77,8 +77,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 
     } else if (role == Qt::ForegroundRole ) {
 
-        if (item->data(TreeModel::TIME).toInt()==-1 || item->data(TreeModel::TIME)==tr("TIMEOUT")){
-            item->setData(TreeModel::TIME,tr("TIMEOUT"));
+        if (item->data(TreeModel::TIME)==tr("TIMEOUT")){
             return QColor(Qt::red);
         }
         else{
@@ -111,7 +110,6 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return 0;
 
-    //if(index.column()==2 && data(this->index(index.row(),TreeModel::VARVALUE,index.parent()),Qt::DisplayRole).toInt()>=20)
     if(index.column()==2 && this->isInt(index))
         return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 
@@ -393,6 +391,10 @@ bool TreeModel::isInt(const QModelIndex &index) const{
         {
             isint=true;
             break;
+        }
+    case KukaVar::ERRTYPE:
+        {
+            //qDebug() << "Tipo in errore";
         }
     default:
         {

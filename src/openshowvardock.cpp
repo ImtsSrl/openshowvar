@@ -338,6 +338,7 @@ void OpenShowVarDock::insertClose(const bool &visible)
 void OpenShowVarDock::lettura()
 {
     QByteArray value;
+    QString tempo;
     int readtime;
 
     QModelIndex index,root;
@@ -370,7 +371,10 @@ void OpenShowVarDock::lettura()
             index = model->index(var,TreeModel::VARNAME,robotip);
             model->setData(index, QVariant(variabile), Qt::EditRole);
             index = model->index(var,TreeModel::TIME,robotip);
-            model->setData(index, QVariant(readtime), Qt::EditRole);
+            if(readtime==-1)
+                model->setData(index, QVariant(tr("TIMEOUT")), Qt::EditRole);
+            else
+                model->setData(index, tempo.setNum(readtime).append(" [ms]"), Qt::EditRole);
 
             index = model->index(var,TreeModel::VARNAME,robotip);
             //qDebug() << "Var: " << var << " Nome variabile: " << model->data(index,Qt::DisplayRole);
