@@ -1,4 +1,3 @@
-
 #include <QPainter>
 #include <QSlider>
 #include <QModelIndex>
@@ -25,7 +24,9 @@ QWidget *FormatDelegate::createEditor( QWidget *parent, const QStyleOptionViewIt
     combo->addItem(tr("Binary code"));
     combo->addItem(tr("Hex code"));
 
-    combo->installEventFilter( const_cast<FormatDelegate*>(this) );
+    connect(combo,SIGNAL(currentIndexChanged(const QString &)),this,SLOT(commitAndCloseEditor(const QString &)));
+
+//    combo->installEventFilter( const_cast<FormatDelegate*>(this) );
 
     return combo;
 }
@@ -47,3 +48,8 @@ void FormatDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, c
   model->setData(index, static_cast<QComboBox*>( editor )->currentText());
 }
 
+void FormatDelegate::commitAndCloseEditor(const QString &text){
+    QComboBox* combo = qobject_cast<QComboBox *>(sender());
+    emit commitData(combo);
+    emit closeEditor(combo);
+}

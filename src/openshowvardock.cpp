@@ -630,6 +630,9 @@ void OpenShowVarDock::closeEvent ( QCloseEvent * event )
 
 void OpenShowVarDock::on_itemDoubleClicked(const QModelIndex &index)
 {
+    if(!index.isValid())
+        return;
+
     ShowModelIndex locindex=index;
 
     if(!locindex.isVar() || locindex.column()==TreeModel::OPTIONS)
@@ -642,6 +645,8 @@ void OpenShowVarDock::on_itemDoubleClicked(const QModelIndex &index)
     QString varip = locindex.parent().data(Qt::DisplayRole).toByteArray();
     QString varvalue = varvalueindex.data(Qt::DisplayRole).toByteArray();
 
-    editVar(varname,varvalue,(QHostAddress)varip);
+    //qDebug() << "Edit: " << varname << " valore: " << varvalue << " varip " << varip;
+
+    //editVar(varname,varvalue,(QHostAddress)varip);
     statusBar()->showMessage(tr("Edit '%1'").arg(varname), 2000);
 }
