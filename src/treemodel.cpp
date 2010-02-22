@@ -108,20 +108,16 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 
 Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 {
-    ShowModelIndex locindex = index;
     if (!index.isValid())
         return 0;
 
-    if(index.column()==2 && locindex.isVar())
+    //if(index.column()==2 && data(this->index(index.row(),TreeModel::VARVALUE,index.parent()),Qt::DisplayRole).toInt()>=20)
+    if(index.column()==2 && this->isInt(index))
         return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
-
-//    if(index.column()==0)
-//        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 }
 
-//! [4]
 TreeItem *TreeModel::getItem(const QModelIndex &index) const
 {
     if (index.isValid()) {
@@ -130,7 +126,6 @@ TreeItem *TreeModel::getItem(const QModelIndex &index) const
     }
     return rootItem;
 }
-//! [4]
 
 QVariant TreeModel::headerData(int section, Qt::Orientation orientation,
                                int role) const
@@ -141,14 +136,11 @@ QVariant TreeModel::headerData(int section, Qt::Orientation orientation,
     return QVariant();
 }
 
-//! [5]
 QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (parent.isValid() && parent.column() != 0)
         return QModelIndex();
-//! [5]
 
-//! [6]
     TreeItem *parentItem = getItem(parent);
 
     TreeItem *childItem = parentItem->child(row);
@@ -157,7 +149,6 @@ QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent) con
     else
         return QModelIndex();
 }
-//! [6]
 
 bool TreeModel::insertColumns(int position, int columns, const QModelIndex &parent)
 {
@@ -391,10 +382,29 @@ bool TreeModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, in
     qDebug() << "DROPMIMEDATA";
 }
 
-QString TreeModel::toHex(int value){
-    QString hex;
-    hex.append(QString("0x%1").arg(value, 0, 16));
-    return hex.toUpper();
+bool TreeModel::isInt(const QModelIndex &index) const{
+    bool isint=false;
+
+    QByteArray varvalue = data(this->index(index.row(),TreeModel::VARVALUE,index.parent()),Qt::DisplayRole).toByteArray();
+
+    KukaVar *kukavar = new KukaVar(QByteArray("TEST"),varvalue);
+    switch(kukavar->getVarType()){
+    case KukaVar::INT:
+        {
+            isint=true;
+            break;
+        }
+    default:
+        {
+            break;
+        }
+    }
+
+    delete kukavar;
+    if(isint)
+        return true;
+    else
+        return false;
 }
 
 ShowModelIndex::ShowModelIndex() : QModelIndex() {}
@@ -418,26 +428,6 @@ bool ShowModelIndex::isVar() {
         return false;
 
     return true;
-}
-
-bool ShowModelIndex::isInt() {
-
-//    KukaVar *kukavar = new KukaVar(this->data(Qt::DisplayRole,varvalue);
-//
-//    switch(kukavar->getVarType()){
-//    case KukaVar::STRUCTURE:
-//        {
-//            varvalue=kukavar->getStructureValue();
-//            break;
-//        }
-//    default:
-//        {
-//            varvalue=kukavar->getValue();
-//            break;
-//        }
-//    }
-//
-//    delete kukavar;
 }
 
 QString ShowModelIndex::robotIP(){

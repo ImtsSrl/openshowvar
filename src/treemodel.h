@@ -100,7 +100,7 @@ private:
 
     TreeItem *rootItem;
 
-    QString toHex(int value);
+    bool isInt(const QModelIndex &index) const;
 };
 
 class ShowModelIndex : public QModelIndex
@@ -111,7 +111,6 @@ public:
     ShowModelIndex(const QModelIndex & other);
     bool isRobot();
     bool isVar();
-    bool isInt();
     QString robotIP();
     QString varNAME();
 };
