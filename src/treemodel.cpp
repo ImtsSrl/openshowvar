@@ -71,6 +71,8 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
+    ShowModelIndex indice = index;
+
     TreeItem *item = getItem(index);
 
     if (role == Qt::BackgroundRole) {
@@ -94,9 +96,15 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
         }
     }
 
-//    if (role==Qt::DisplayRole && item->data(TreeModel::OPTIONS)==tr("Int code")){
+    if (role == Qt::DecorationRole) {
+        if (index.column() == 0 && indice.isRobot())
+            return QIcon(":openshowvar");
+    }
+
+
+//    if (role==Qt::DisplayRole && item->data(TreeModel::OPTIONS)==tr("Binary code")){
 //        int value=item->data(TreeModel::VARVALUE).toInt();
-//        item->setData(TreeModel::VARVALUE,toHex(value));
+//        item->setData(TreeModel::VARVALUE,toBinary(value));
 //    }
 
     if (role != Qt::DisplayRole && role != Qt::EditRole)
@@ -408,6 +416,26 @@ bool TreeModel::isInt(const QModelIndex &index) const{
     else
         return false;
 }
+
+QString TreeModel::toBinary(int value) const
+{
+    int mask;
+    QString binary;
+    for(int i=0;i<32;i++){
+        mask = 1 << i;
+        if(i==4 || i==8 || i==12 || i==16 || i==20 || i==24 || i==28)
+            binary.prepend(" ");
+        if(value & mask)
+            binary.prepend("1");
+        else
+            binary.prepend("0");
+    }
+    //binary->append(QString("%1").arg(value, 0, 2));
+    return binary;
+}
+
+
+
 
 ShowModelIndex::ShowModelIndex() : QModelIndex() {}
 

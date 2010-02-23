@@ -101,6 +101,7 @@ private:
     TreeItem *rootItem;
 
     bool isInt(const QModelIndex &index) const;
+    QString toBinary(int value) const;
 };
 
 class ShowModelIndex : public QModelIndex
