@@ -118,7 +118,7 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return 0;
 
-    if(index.column()==2 && this->isInt(index))
+    if(index.column()==2 && (this->isInt(index) || data(index,Qt::DisplayRole) == tr("Binary code") || data(index,Qt::DisplayRole) == tr("Hex code")))
         return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
