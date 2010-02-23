@@ -10,6 +10,8 @@ FormatDelegate::FormatDelegate( QObject *parent ) : QStyledItemDelegate( parent 
 void FormatDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
     QStyledItemDelegate::paint(painter, option, index);
+//    QComboBox c;
+//    c.style()->drawComplexControl(&c.style()->CC_ComboBox,c.style()->&option,painter,(const QWidget*)&c);
 }
 
 QSize FormatDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const

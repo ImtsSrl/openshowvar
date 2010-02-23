@@ -623,7 +623,7 @@ void OpenShowVarDock::closeEvent ( QCloseEvent * event )
     timeUpdateGraph.stop();
     qtimeLettura.stop();
     listVar.writeList(model,"varlist.xml");
-    if(cLog!=NULL)
+    if(saveLog && cLog!=NULL)
         delete cLog;
     delete database;
 }
