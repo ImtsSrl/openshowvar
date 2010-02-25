@@ -58,7 +58,7 @@ CLog::~CLog(){
  *	\param tree Lista delle variabili
  */
 
-void CLog::writeList(QTreeWidget *tree){
+void CLog::writeList(TreeModel *model){
     QDomDocument doc;
 
     QDateTime tempolettura;
@@ -67,29 +67,34 @@ void CLog::writeList(QTreeWidget *tree){
     variablelist.setAttribute("DATA", tempolettura.currentDateTime().toString());
     doc.appendChild(variablelist);
 
-    for(int row=0;row<tree->topLevelItemCount();row++)
-    {
-        QDomElement variable = doc.createElement("VAR");
-        variable.setAttribute("NAME",tree->topLevelItem(row)->text(0));
-        QDomElement varvalue = doc.createElement("VALUE");
-        QDomElement readtime = doc.createElement("READTIME");
-        QDomElement robotip = doc.createElement("ROBOT");
-        QDomText var = doc.createTextNode(tree->topLevelItem(row)->text(1));
-        QDomText time = doc.createTextNode(tree->topLevelItem(row)->text(3));
-        QDomText ip = doc.createTextNode(tree->topLevelItem(row)->text(4));
-        variablelist.appendChild(variable);
-        variable.appendChild(varvalue);
-        variable.appendChild(readtime);
-        variable.appendChild(robotip);
-        varvalue.appendChild(var);
-        readtime.appendChild(time);
-        robotip.appendChild(ip);
+    QModelIndex robotipindex=model->index(0,0,QModelIndex());
+
+    for(int row=0;row<model->rowCount(robotipindex);row++){
+        QModelIndex varindex = model->index(row,TreeModel::VARNAME,robotipindex);
+        QModelIndex timeindex = model->index(row,TreeModel::TIME,robotipindex);
+        QModelIndex valueindex = model->index(row,TreeModel::VARVALUE,robotipindex);
+        for(int var=0;var<model->rowCount();var++){
+            QDomElement variable = doc.createElement("VAR");
+            variable.setAttribute("NAME",model->data(varindex,Qt::DisplayRole).toString());
+            QDomElement varvalue = doc.createElement("VALUE");
+            QDomElement readtime = doc.createElement("READTIME");
+            QDomElement robotip = doc.createElement("ROBOT");
+            QDomText var = doc.createTextNode(model->data(valueindex,Qt::DisplayRole).toString());
+            QDomText time = doc.createTextNode(model->data(timeindex,Qt::DisplayRole).toString());
+            QDomText ip = doc.createTextNode(model->data(robotipindex,Qt::DisplayRole).toString());
+            variablelist.appendChild(variable);
+            variable.appendChild(varvalue);
+            variable.appendChild(readtime);
+            variable.appendChild(robotip);
+            varvalue.appendChild(var);
+            readtime.appendChild(time);
+            robotip.appendChild(ip);
+        }
     }
 
     QFile file(logfile);
     QTextStream out(&file);
     file.open(QIODevice::Append);
-    //file.open(QIODevice::WriteOnly);
     const int Indent=4;
     doc.save(out, Indent);
     file.close();

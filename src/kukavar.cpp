@@ -85,24 +85,24 @@ KukaVar::~KukaVar()
 int KukaVar::VarType(const QByteArray variabile)
 {
     //qDebug() << "Variabile " << variabile;
-	if(variabile.startsWith("{") && variabile.endsWith("}"))
-		return STRUCTURE;
-	
-	if((variabile.toLong()) || (variabile.data()==QByteArray("0")))
-		return INT;
-	
-        if((variabile.toFloat()) || (variabile.data()==QByteArray("0.0")))
-                return REAL;
-	
-	if((variabile.data()==QByteArray("TRUE")) || (variabile.data()==QByteArray("FALSE")))
-		return BOOL;
-	
-        if((!variabile.toLong() && variabile.size()>=1)){
-        //if(variabile.endsWith("]"))
-		return CHAR;
-            }
+    if(variabile.startsWith("{") && variabile.endsWith("}"))
+        return STRUCTURE;
 
-	return ERRTYPE;
+    if((variabile.toLong()) || (variabile.data()==QByteArray("0")))
+        return INT;
+
+    if((variabile.toFloat()) || (variabile.data()==QByteArray("0.0")))
+        return REAL;
+
+    if((variabile.data()==QByteArray("TRUE")) || (variabile.data()==QByteArray("FALSE")))
+        return BOOL;
+
+    if((!variabile.toLong() && variabile.size()>=1)){
+        //if(variabile.endsWith("]"))
+        return CHAR;
+    }
+
+    return ERRTYPE;
 }
 
 int KukaVar::getVarType()
@@ -134,7 +134,8 @@ QByteArray KukaVar::getStructureName()
 QByteArray KukaVar::getStructureValue(const int &fieldposition, int &datatype)
 {
         QByteArray *fieldelement = new QByteArray(arrayvalue[fieldposition].right(arrayvalue[fieldposition].length()-arrayvalue[fieldposition].indexOf(' ')));
-	//qDebug() << "Vartype: " << VarType(fieldelement->trimmed());
+        //qDebug() << "Vartype: " << fieldelement->trimmed();
+        //qDebug() << "Vartype: " << VarType(fieldelement->trimmed());
         datatype = VarType(fieldelement->trimmed());
         return *fieldelement;
 }
@@ -215,7 +216,7 @@ void KukaVar::setValue(QByteArray varvalue)
 {
     QByteArray test;
 
-    this->varvalue=varvalue;
+    this->varvalue=varvalue.trimmed();
 	
     intvartype=VarType(varvalue.data());
 
@@ -232,19 +233,23 @@ void KukaVar::setValue(QByteArray varvalue)
             int lenvartype=stoptype-starttype-1;
             structurename=varvalue.mid(starttype+1,lenvartype);
 
+            //qDebug() << "Nome struttura: " << structurename;
             //Pulizia stringa da parte iniziale e finale, comprese le parentesi graffe
             int lenstructure=varvalue.size()-(stoptype+2)-1;
             test=varvalue.mid(stoptype+2,lenstructure);
+
+            //qDebug() << "Lunghezza struttura: " << lenstructure << " struttura pulita: " << test;
 
             /*
             Se la variabile non e' impostata nel config del robot, ritorna una struttura
             con i campi vuoti, tipo questa:
             {E6POS: }
-            con uno o più spazi dopo il carattere ":" prima della parentesi graffa di chiusura
+            con uno o piu' spazi dopo il carattere ":" prima della parentesi graffa di chiusura
             */
 
             test=test.trimmed();
             structurevalue=structurevalue.append('{').append(test).append('}');
+            //qDebug() << "Struttura richiusa: " << structurevalue;
 
             if(!test.isEmpty()){
                 //separazione dei campi e valori in una lista
@@ -298,12 +303,14 @@ void KukaVar::setValue(QByteArray varvalue)
 
                                 arrayvalue.append(varnameandvalue);
                                 finestruttura=true;
+                                intstruct--;
                                 //qDebug() << "Variabile: " << field[0] << " valore " << field[1];
                                 //qDebug() << "Chiusura struttura aperta";
                             }
-                            else
+                            else{
                                 //qDebug() << "Chiusura struttura non aperta";
                                 intstruct--;
+                            }
                             break;
                         }
                     default:
@@ -323,7 +330,7 @@ void KukaVar::setValue(QByteArray varvalue)
             }
             else{
                 elementsnumber=0;
-                qDebug() << "Struttura vuota";
+                //qDebug() << "Struttura vuota";
             }
 
             newarrayvalue=arrayvalue;

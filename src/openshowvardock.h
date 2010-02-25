@@ -11,6 +11,8 @@
 #include "listvarxml.h"
 #include "CLog.h"
 #include "robot_view/ckukarobot.h"
+#include "treemodel.h"
+#include "formatdelegate.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -37,7 +39,7 @@ private slots:
 
     void about();
 
-    void on_insertVar(const QString *varName);
+    void on_insertVar(const QString &varName);
     void on_refVarAct(const QString &text);
     void on_refVarDatabaseAct(int i);
     void on_readVarAct(bool checked);
@@ -47,8 +49,7 @@ private slots:
     void on_saveVar();
     void on_openVar();
     void on_clearList();
-    void on_itemClicked(QTreeWidgetItem *item, int column);
-    void on_itemDoubleClicked(QTreeWidgetItem *item, int column);
+    void on_itemDoubleClicked(const QModelIndex &index);
     void closeEvent(QCloseEvent * event);
     void insertNew(const QString &variabile, const QString &robotip);
     void insertClose(const bool &visible);
@@ -62,11 +63,11 @@ private:
     void createToolBars();
     void createStatusBar();
 
-    void splitvaluetoview(QTreeWidgetItem *item, QString varname, QString varvalue);
-    void editVar(QTreeWidgetItem * item);
+    void splitvaluetoview(QModelIndex index, QString varname, QString varvalue);
+    void editVar(QString varname, QString varvalue, QHostAddress varip);
     void addCombo(QTreeWidgetItem *child);
-    void toBinary(int value, QString *binary);
-    void toHex(int value, QString *binary);
+    QString toBinary(int value);
+    QString toHex(int value);
 
     QDockWidget *dockInsertVar;
 
@@ -74,9 +75,11 @@ private:
     InsertVar*      insertVar;
     CKUKARobot*     m_robotView;
 
+    CTreeVar* tree;
+    TreeModel *model;
+
     QTimer qtimeLettura;
     QTimer timeUpdateGraph;
-    QTreeWidget *treeWidget;
 
     QTextEdit *textEdit;
     QListWidget *customerList;

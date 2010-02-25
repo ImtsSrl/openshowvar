@@ -55,7 +55,7 @@ InsertVar::InsertVar(){
     insertButton->setEnabled(false);
     abortButton = new QPushButton(tr("Abort"));
 
-    /*la finestra è strutturata su tre righe:
+    /*la finestra e' strutturata su tre righe:
 	la prima descrizione e inserimento
 	la seconda lista dei robot
 	la terza comandi
@@ -94,6 +94,7 @@ InsertVar::InsertVar(){
     connect(broadcast, SIGNAL(newMsg(QString &)), this, SLOT(newMsg(QString &)));
 
     setWindowIcon(QIcon("openshowvar.png"));
+    setFocusProxy(lineEdit);
 
     broadcast->send();
 
@@ -145,7 +146,7 @@ void InsertVar::on_abortButton_clicked(){
 
 void InsertVar::Robot(QList<QByteArray> &datirobot){
     QString robot=datirobot[2] + "@" + datirobot[3];
-    if(comboRobotList->findText(robot))
+    if(comboRobotList->findText(robot)==-1)
         comboRobotList->addItem(robot);
 
     //comboRobotList->setEditable(true);
@@ -168,3 +169,8 @@ void InsertVar::on_Broadcast()
 {
     broadcast->send();
 }
+
+void InsertVar::focusInEvent(QFocusEvent *){
+    //lineEdit->setFocus();
+}
+
