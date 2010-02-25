@@ -53,7 +53,8 @@ void CGLScene::initializeGL(){
     glShadeModel(GL_SMOOTH);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    static GLfloat lightPosition[4] = { -2000.0, -2000.0, 3000.0, 1.0 }; //{ -0.5, 5.0, 7.0, 1.0 };
+    //static GLfloat lightPosition[4] = { -2000.0, -2000.0, 3000.0, 1.0 }; //{ -0.5, 5.0, 7.0, 1.0 };
+    static GLfloat lightPosition[4] = { 0.0, 0.0, 1000.0, 1.0 }; //{ -0.5, 5.0, 7.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
     glDepthFunc(GL_LESS);							// The Type Of Depth Testing To Do
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
@@ -194,6 +195,11 @@ void CGLScene::mousePressEvent(QMouseEvent *event){
     m_lastPos = event->pos();
 }
 
+void CGLScene::wheelEvent( QWheelEvent * event ){
+    CGLRenderable* obj = this;
+    obj->setPositionZ( obj->positionZ() - event->delta() );
+}
+
 void CGLScene::mouseMoveEvent(QMouseEvent *event){
     int dx = event->x() - m_lastPos.x();
     int dy = event->y() - m_lastPos.y();
@@ -218,10 +224,10 @@ void CGLScene::mouseMoveEvent(QMouseEvent *event){
         float mul = 3.0; //moltiplicatore
         if (event->buttons() & Qt::LeftButton) {
             obj->setPositionX( obj->positionX() + mul * dx );
-            obj->setPositionZ( obj->positionZ() + mul * dy );
+            obj->setPositionY( obj->positionY() - mul * dy );
         } else if (event->buttons() & Qt::RightButton) {
             obj->setPositionX( obj->positionX() + mul * dx );
-            obj->setPositionY( obj->positionY() + mul * dy * -1 );
+            obj->setPositionZ( obj->positionZ() + mul * dy );
         }
     }
 
