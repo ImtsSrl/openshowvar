@@ -48,6 +48,7 @@
 #include <QStyleOptionViewItem>
 
 #include "kukavar.h"
+#include "CShowModelIndex.h"
 
 class TreeItem;
 
@@ -100,20 +101,7 @@ private:
 
     TreeItem *rootItem;
 
-    bool isInt(const QModelIndex &index) const;
     QString toBinary(int value) const;
-};
-
-class ShowModelIndex : public QModelIndex
-{
-
-public:
-    ShowModelIndex();
-    ShowModelIndex(const QModelIndex & other);
-    bool isRobot();
-    bool isVar();
-    QString robotIP();
-    QString varNAME();
 };
 
 #endif

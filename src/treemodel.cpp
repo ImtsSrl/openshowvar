@@ -121,7 +121,9 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return 0;
 
-    if(index.column()==2 && (this->isInt(index) || data(index,Qt::DisplayRole) == tr("Binary code") || data(index,Qt::DisplayRole) == tr("Hex code")))
+    ShowModelIndex indice=index;
+
+    if(index.column()==2 && (indice.isInt(TreeModel::VARVALUE) || data(index,Qt::DisplayRole) == tr("Binary code") || data(index,Qt::DisplayRole) == tr("Hex code")))
         return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
@@ -391,35 +393,6 @@ bool TreeModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, in
     qDebug() << "DROPMIMEDATA";
 }
 
-bool TreeModel::isInt(const QModelIndex &index) const{
-    bool isint=false;
-
-    QByteArray varvalue = data(this->index(index.row(),TreeModel::VARVALUE,index.parent()),Qt::DisplayRole).toByteArray();
-
-    KukaVar *kukavar = new KukaVar(QByteArray("TEST"),varvalue);
-    switch(kukavar->getVarType()){
-    case KukaVar::INT:
-        {
-            isint=true;
-            break;
-        }
-    case KukaVar::ERRTYPE:
-        {
-            //qDebug() << "Tipo in errore";
-        }
-    default:
-        {
-            break;
-        }
-    }
-
-    delete kukavar;
-    if(isint)
-        return true;
-    else
-        return false;
-}
-
 QString TreeModel::toBinary(int value) const
 {
     int mask;
@@ -435,44 +408,4 @@ QString TreeModel::toBinary(int value) const
     }
     //binary->append(QString("%1").arg(value, 0, 2));
     return binary;
-}
-
-
-
-
-ShowModelIndex::ShowModelIndex() : QModelIndex() {}
-
-ShowModelIndex::ShowModelIndex(const QModelIndex & other) : QModelIndex(other) {}
-
-bool ShowModelIndex::isRobot() {
-    QModelIndex root = QModelIndex();
-    if(this->parent()==root)
-        return true;
-
-    return false;
-}
-
-bool ShowModelIndex::isVar() {
-    QModelIndex root = QModelIndex();
-    if(this->parent()==root)
-        return false;
-
-    if(this->parent().parent()!=root)
-        return false;
-
-    return true;
-}
-
-QString ShowModelIndex::robotIP(){
-    if(this->isRobot())
-        return this->data(Qt::DisplayRole).toString();
-
-    return "";
-}
-
-QString ShowModelIndex::varNAME(){
-    if(this->isVar())
-        return this->data(Qt::DisplayRole).toString();
-
-    return "";
 }

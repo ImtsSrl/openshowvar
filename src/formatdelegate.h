@@ -5,6 +5,8 @@
 #include <QStyledItemDelegate>
 #include <QDebug>
 
+#include "CShowModelIndex.h"
+
 class FormatDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
