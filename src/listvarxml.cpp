@@ -66,16 +66,15 @@ void ListVarXml::writeList(TreeModel *model, const QString filename){
     QDomElement variablelist = doc.createElement("VARLIST");
     doc.appendChild(variablelist);
 
-    QModelIndex robotipindex=model->index(0,0,QModelIndex());
-
-    for(int row=0;row<model->rowCount(robotipindex);row++){
-        QModelIndex varindex = model->index(row,TreeModel::VARNAME,robotipindex);
-        for(int var=0;var<model->rowCount();var++){
+    for(int row=0;row<model->rowCount(QModelIndex());row++){
+        QModelIndex root=model->index(row,0,QModelIndex());
+        for(int var=0;var<model->rowCount(root);var++){
+            QModelIndex varindex = model->index(var,TreeModel::VARNAME,root);
             QDomElement variable = doc.createElement("VARIABLE");
             QDomElement varname = doc.createElement("NAME");
             QDomElement robotip = doc.createElement("ROBOT");
             QDomText var = doc.createTextNode(model->data(varindex,Qt::DisplayRole).toString());
-            QDomText ip = doc.createTextNode(model->data(robotipindex,Qt::DisplayRole).toString());
+            QDomText ip = doc.createTextNode(model->data(root,Qt::DisplayRole).toString());
             variablelist.appendChild(variable);
             variable.appendChild(varname);
             variable.appendChild(robotip);
