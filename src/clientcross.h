@@ -45,6 +45,7 @@ class ClientCross : public QThread
 		QByteArray read(QByteArray varname);
 		void add(RobotVar* newvar);
 		void delVar(int index);
+                void delVar(QByteArray varname);
 		QHostAddress getSocketIP();
 		
 		void setReadFreq(int* readfreq);

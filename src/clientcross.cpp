@@ -222,11 +222,33 @@ void ClientCross::add(RobotVar* newvar)
 
 void ClientCross::delVar(int index)
 {
-	mutex.lock();
-	delete listvar[index];
-	listvar[index]=NULL;
-	listvar.removeAt(index);
-	mutex.unlock();
+    qDebug() << "Indice var " << index;
+    qDebug() << "Numero di variabili nella lista: " << listvar.count();
+//    mutex.lock();
+//    delete listvar[index];
+//    listvar[index]=NULL;
+//    listvar.removeAt(index);
+//    mutex.unlock();
+}
+
+/*!	\brief Rimuove una variabile
+ *
+ *
+ */
+
+void ClientCross::delVar(QByteArray varname)
+{
+    //qDebug() << "Numero di variabili nella lista: " << listvar.count();
+    mutex.lock();
+    for(int i=0;i<listvar.count();i++){
+        if(listvar[i]->getVarName()==varname)
+            //qDebug() << "Nome: " << listvar[i]->getVarName();
+            delete listvar[i];
+            listvar[i]=NULL;
+            listvar.removeAt(i);
+    }
+
+    mutex.unlock();
 }
 
 /*!	\brief Formattazione messaggio per lettura variabile

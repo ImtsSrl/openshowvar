@@ -341,6 +341,7 @@ void OpenShowVarDock::deleteVar()
 
     if(model->rowCount(index.parent())==1){
         model->removeRow(index.parent().row(),index.parent().parent());
+        database->deleteVar(varname.toAscii(),(QHostAddress)varip);
         statusBar()->showMessage(tr("Deleted '%1'").arg(varname), 2000);
         return;
     }

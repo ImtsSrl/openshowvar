@@ -163,7 +163,7 @@ void VariableDB::addVar(QByteArray varname, QHostAddress robotip){
 		}
 	}
 	else{
-		//non è presente alcun elemento
+                //non e' presente alcun elemento
 		azione=ROBOTNONPRESENTE;
 	}
 	
@@ -213,22 +213,25 @@ void VariableDB::deleteVar(QByteArray varname, QHostAddress robotip){
 			*/
             qDebug() << "Rimozione variabile: " << varname << " " << robotip;
 
+            listvar.removeAt(varindex);
+            //robotServer[getThreadIndex(robotip)]->delVar(varindex);
+            robotServer[getThreadIndex(robotip)]->delVar(varname);
+
             //Verifico se il thread gestisce altre variabili
             bool ippresent=false;
             for(int i=0;i<listvar.count();i++){
                 if(listvar[i]->getRobotIP() == robotip){
+                    qDebug() << "Variabili ancora nel thread " << listvar[i]->getVarName();
                     ippresent=true;
                 }
-            }
+            }          
+
             if(!ippresent){
                 int threadid = getThreadIndex(robotip);
                 robotServer[threadid]->stop();
-                delete robotServer[threadid];
-                robotServer[threadid]=NULL;
+//                delete robotServer[threadid];
+//                robotServer[threadid]=NULL;
             }
-
-            listvar.removeAt(varindex);
-            robotServer[getThreadIndex(robotip)]->delVar(varindex);
 
         }
     }
