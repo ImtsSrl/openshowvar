@@ -26,7 +26,6 @@
 #include <QThread>
 #include <QTcpSocket>
 #include <QMutex>
-//#include <QWaitCondition>
 #include <QTime>
 
 #include "robotvar.h"
@@ -65,10 +64,9 @@ class ClientCross : public QThread
 		QTime readtime;
 		
 		QList<RobotVar *> listvar;
-		QByteArray formatMsg(QByteArray msg);
-		QByteArray formatMsg(QByteArray msg, QByteArray value);
+                QByteArray formatMsg(QByteArray msg, unsigned short idmsg);
+                QByteArray formatMsg(QByteArray msg, QByteArray value, unsigned short idmsg);
 		QByteArray clearMsg(QByteArray msg);
-		
-		bool readConsistency(const QByteArray request, const QByteArray earn);
+                unsigned short clearMsg(QByteArray msg, QByteArray &value);
 };
 #endif

@@ -85,6 +85,7 @@ void ClientCross::run()
 	QTcpSocket socket;
 	
 	const int Timeout = 5 * 1000;
+        idmsgtosend=0;
 	
 	qDebug() << "Thread lettura partito";
 	while (!stopped) {
@@ -106,18 +107,18 @@ void ClientCross::run()
 				for(int index=0;index<listvar.count();index++){
 					readtime.start();
 					
+                                        idmsgtosend++;
                                         if(listvar[index]->getNewValue(&vartowrite))
-                                                socket.write(formatMsg(listvar[index]->getVarName(),vartowrite));
+                                                socket.write(formatMsg(listvar[index]->getVarName(),vartowrite,idmsgtosend));
                                         else
-                                                socket.write(formatMsg(listvar[index]->getVarName()));
+                                                socket.write(formatMsg(listvar[index]->getVarName(),idmsgtosend));
 
                                         if(!socket.waitForBytesWritten(Timeout))
                                         {
                                                 qDebug() << "Timeout invio";
                                                 err=true;
                                         }
-                                        else
-                                            idmsgtosend++;
+
 					
 					while (socket.bytesAvailable() == 0) {
 						if (!socket.waitForReadyRead(Timeout)) {
@@ -131,10 +132,15 @@ void ClientCross::run()
 					if(!err){
                                                 QByteArray result = socket.read(socket.bytesAvailable());
                                                 unsigned char ok = result.right(1).at(0);
-                                                if (ok) {
-                                                    //listvar[index]->setValue(clearMsg(socket.read(socket.bytesAvailable())));
-                                                    listvar[index]->setValue(clearMsg(result));
+                                                QByteArray value;
+                                                unsigned short idmsg = clearMsg(result,value);
+                                                qDebug() << "id msg inviato: " << idmsgtosend << " id msg ricevuto: " << idmsg;
+                                                if (ok && clearMsg(result,value)==idmsgtosend) {
+                                                    listvar[index]->setValue(value);
                                                     listvar[index]->setReadTime(readtime.elapsed());
+                                                } else {
+                                                    qDebug() << "Errore sincronizzazione messaggio";
+                                                    listvar[index]->setReadTime(-1);
                                                 }
 					}
 					else{
@@ -278,31 +284,31 @@ void ClientCross::delVar(QByteArray varname)
  *	\return Messaggio formattato
  */
 
-QByteArray ClientCross::formatMsg(QByteArray msg){
+QByteArray ClientCross::formatMsg(QByteArray msg, unsigned short idmsg){
 	
-        QByteArray header, block;
-        int lunghezza,varnamelen;
-        unsigned char hbyte, lbyte;
-        unsigned char hbytemsg,lbytemsg;
-	
-        varnamelen=msg.size();
-        hbyte=(varnamelen & 0xff00) >> 8;
-        lbyte=(varnamelen & 0x00ff);
+    QByteArray header, block;
+    int lunghezza,varnamelen;
+    unsigned char hbyte, lbyte;
+    unsigned char hbytemsg,lbytemsg;
 
-        block.append(READVARIABLE).append(hbyte).append(lbyte).append(msg);
-        lunghezza=block.size();
+    varnamelen=msg.size();
+    hbyte=(varnamelen & 0xff00) >> 8;
+    lbyte=(varnamelen & 0x00ff);
 
-        hbyte=(lunghezza & 0xff00) >> 8;
-        lbyte=(lunghezza & 0x00ff);
+    block.append(READVARIABLE).append(hbyte).append(lbyte).append(msg);
+    lunghezza=block.size();
 
-        hbytemsg=(idmsgtosend & 0xff00) >> 8;
-        lbytemsg=(idmsgtosend & 0x00ff);
+    hbyte=(lunghezza & 0xff00) >> 8;
+    lbyte=(lunghezza & 0x00ff);
 
-        header.append(hbytemsg).append(lbytemsg).append(hbyte).append(lbyte);
-        block.prepend(header);
-        //qDebug() << block.toHex();
+    hbytemsg=(idmsg & 0xff00) >> 8;
+    lbytemsg=(idmsg & 0x00ff);
 
-        return block;
+    header.append(hbytemsg).append(lbytemsg).append(hbyte).append(lbyte);
+    block.prepend(header);
+    //qDebug() << block.toHex();
+
+    return block;
 }
 
 /*!	\brief Formattazione messaggio per scrittura variabile
@@ -328,11 +334,12 @@ QByteArray ClientCross::formatMsg(QByteArray msg){
  *	\return Messaggio formattato
  */
 
-QByteArray ClientCross::formatMsg(QByteArray msg, QByteArray value){
+QByteArray ClientCross::formatMsg(QByteArray msg, QByteArray value, unsigned short idmsg){
 
     QByteArray header, block;
     short lunghezza,varnamelen,varvaluelen;
     unsigned char hbyte, lbyte;
+    unsigned char hbytemsg,lbytemsg;
 
     varnamelen=msg.size();
     hbyte=(varnamelen & 0xff00) >> 8;
@@ -351,12 +358,14 @@ QByteArray ClientCross::formatMsg(QByteArray msg, QByteArray value){
     hbyte=(lunghezza & 0xff00) >> 8;
     lbyte=(lunghezza & 0x00ff);
 
-    header.append((char)0).append((char)0).append(hbyte).append(lbyte);
+    hbytemsg=(idmsg & 0xff00) >> 8;
+    lbytemsg=(idmsg & 0x00ff);
+
+    header.append(hbytemsg).append(lbytemsg).append(hbyte).append(lbyte);
     block.prepend(header);
     //qDebug() << "Scrittura: " << block.toHex();
 
     return block;
-
 }
 
 /*!	\brief Pulizia messaggio
@@ -397,6 +406,48 @@ QByteArray ClientCross::clearMsg(QByteArray msg){
 	}
 }
 
+/*!	\brief Pulizia messaggio
+ *
+ *	Riceve un messaggio da OPENCROSSCOMM formattato secondo la specifica del protocollo
+ *	e si occupa di controllarne l'esattezza e di pulirlo dalle informazioni necessarie
+ *	alla trasmissione/ricezione.
+ *
+ *	\param msg Variabile da pulire
+ *      \param value Valore variabile pulito
+ *	\return id messaggio
+ */
+
+unsigned short ClientCross::clearMsg(QByteArray msg, QByteArray &value){
+    short lenmsg,func,lenmsg1;
+    unsigned short idreadmsg;
+    if(msg.length() > 0){
+        //ID Messaggio
+        idreadmsg=((int)msg[0])<<8 | ((int)msg[1]);
+        //qDebug() << "ID Messaggio: " << idreadmsg;
+
+        //Lunghezza messaggio
+        lenmsg=((int)msg[2])<<8 | ((int)msg[3]);
+        //qDebug() << "Lunghezza messaggio: " << lenmsg;
+
+        //Funzione
+        func=((int)msg[4]);
+        //qDebug() << "Funzione: " << func;
+
+        //Lunghezza messaggio 1
+        lenmsg1=((int)msg[5])<<8 | ((int)msg[6]);
+        //qDebug() << "Lunghezza messaggio 1: " << lenmsg1;
+
+        //qDebug() << "Valore ricevuto " << msg.toHex();
+
+        value = msg.mid(7,lenmsg1);
+        return idreadmsg;
+    }
+    else{
+        value = QByteArray("");
+        return 0;
+    }
+}
+
 /*!	\brief IP su cui e' attivo il socket
  *
  *	Restituisce l'ip su cui e' attivo il socket
@@ -406,28 +457,6 @@ QByteArray ClientCross::clearMsg(QByteArray msg){
 
 QHostAddress ClientCross::getSocketIP(){
 	return robotip;
-}
-
-/*!	\brief controllo coerenza
- *	
- *	A volte puo' capitare che a seguito di un ritardo in lettura, la stessa
- *	funzione di lettura vada in timeout. Questo provoca uno sfasamento
- *	con il valore della variabile successiva e cosi' via, causando una serie
- *	di letture errate a catena.
- *	
- *	Lo scopo di questa funzione e' di verificare che la risposta ottenuta dal
- *	socket sia coerente con la richiesta.
- *	Dato che la risposta di lettura porta con se anche il nome della variabile
- *	letta, sara' facile effettuare questa verifica.
- *
- *	\param request nome della variabile da scrivere
- *	\param earn valore da scrivere
- *	\return true se la variabile e' coerente con la richiesta
- */
-
-bool ClientCross::readConsistency(const QByteArray request, const QByteArray earn)
-{
-	return false;
 }
 
 /*!	\brief Tempo aggiornamento variabili da robot
