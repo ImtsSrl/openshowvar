@@ -382,11 +382,11 @@ QByteArray ClientCross::clearMsg(QByteArray msg){
     short lenmsg,func,lenmsg1;
 	if(msg.length() > 0){
             //ID Messaggio
-            idreadmsg=((int)msg[0])<<8 | ((int)msg[1]);
+            idreadmsg=((unsigned char)msg[0])<<8 | ((unsigned char)msg[1]);
             //qDebug() << "ID Messaggio: " << idreadmsg;
 
             //Lunghezza messaggio
-            lenmsg=((int)msg[2])<<8 | ((int)msg[3]);
+            lenmsg=((unsigned char)msg[2])<<8 | ((unsigned char)msg[3]);
             //qDebug() << "Lunghezza messaggio: " << lenmsg;
 
             //Funzione
@@ -394,7 +394,7 @@ QByteArray ClientCross::clearMsg(QByteArray msg){
             //qDebug() << "Funzione: " << func;
 
             //Lunghezza messaggio 1
-            lenmsg1=((int)msg[5])<<8 | ((int)msg[6]);
+            lenmsg1=((unsigned char)msg[5])<<8 | ((unsigned char)msg[6]);
             //qDebug() << "Lunghezza messaggio 1: " << lenmsg1;
 		
             //qDebug() << "Valore ricevuto " << msg.toHex();
@@ -422,11 +422,11 @@ unsigned short ClientCross::clearMsg(QByteArray msg, QByteArray &value){
     unsigned short idreadmsg;
     if(msg.length() > 0){
         //ID Messaggio
-        idreadmsg=((int)msg[0])<<8 | ((int)msg[1]);
+        idreadmsg=((unsigned char)msg[0])<<8 | ((unsigned char)msg[1]);
         //qDebug() << "ID Messaggio: " << idreadmsg;
 
         //Lunghezza messaggio
-        lenmsg=((int)msg[2])<<8 | ((int)msg[3]);
+        lenmsg=((unsigned char)msg[2])<<8 | ((unsigned char)msg[3]);
         //qDebug() << "Lunghezza messaggio: " << lenmsg;
 
         //Funzione
@@ -434,7 +434,7 @@ unsigned short ClientCross::clearMsg(QByteArray msg, QByteArray &value){
         //qDebug() << "Funzione: " << func;
 
         //Lunghezza messaggio 1
-        lenmsg1=((int)msg[5])<<8 | ((int)msg[6]);
+        lenmsg1=((unsigned char)msg[5])<<8 | ((unsigned char)msg[6]);
         //qDebug() << "Lunghezza messaggio 1: " << lenmsg1;
 
         //qDebug() << "Valore ricevuto " << msg.toHex();
