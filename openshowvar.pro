@@ -44,7 +44,8 @@ HEADERS += src/broadcast.h \
     src/treemodel.h \
     src/treeitem.h \
     src/formatdelegate.h \
-    src/CShowModelIndex.h
+    src/CShowModelIndex.h \
+    src/vareditdelegate.h
 SOURCES += src/broadcast.cpp \
     src/CDebug.cpp \
     src/CGridField.cpp \
@@ -94,7 +95,8 @@ SOURCES += src/broadcast.cpp \
     src/treemodel.cpp \
     src/treeitem.cpp \
     src/formatdelegate.cpp \
-    src/CShowModelIndex.cpp
+    src/CShowModelIndex.cpp \
+    src/vareditdelegate.cpp
 TRANSLATIONS += lang/openshowvar_de.ts \
     lang/openshowvar_en.ts \
     lang/openshowvar_it.ts

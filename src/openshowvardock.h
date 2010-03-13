@@ -13,6 +13,7 @@
 #include "robot_view/ckukarobot.h"
 #include "treemodel.h"
 #include "formatdelegate.h"
+#include "vareditdelegate.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -56,6 +57,7 @@ private slots:
     void on_editVarClose(const bool &visible);
     void lettura();
     void updateGraph();
+    void on_dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight);
 
 private:
     void createActions();

@@ -43,6 +43,7 @@ OpenShowVarDock::OpenShowVarDock()
     tree->setModel(model);
 
     tree->setItemDelegateForColumn(TreeModel::OPTIONS, new FormatDelegate);
+    tree->setItemDelegateForColumn(TreeModel::VARVALUE, new VarEditDelegate);
 
     setCentralWidget(tree);
     tree->setColumnWidth(TreeModel::VARNAME,110);
@@ -88,6 +89,8 @@ OpenShowVarDock::OpenShowVarDock()
 
     connect(tree,SIGNAL(doubleClicked(const QModelIndex &)),this,SLOT(on_itemDoubleClicked(const QModelIndex &)));
     connect(tree,SIGNAL(dropVar(const QString &)),this,SLOT(on_insertVar(const QString &)));
+
+    connect(model,SIGNAL(dataChanged(const QModelIndex &,const QModelIndex &)),this,SLOT(on_dataChanged(const QModelIndex &,const QModelIndex &)));
 
     listVar.readList("varlist.xml");
 
@@ -383,13 +386,18 @@ void OpenShowVarDock::lettura()
             //qDebug() << "Trovato " << value << " Tempo di lettura: " << readtime << " [ms]" << " ip: " << iprobot;
 
             QModelIndex optionindex = model->index(var,TreeModel::OPTIONS,robotip);
+
             index = model->index(var,TreeModel::VARVALUE,robotip);
-            if(model->data(optionindex,Qt::DisplayRole)==tr("Hex code"))
-                model->setData(index, QVariant(toHex(value.toInt())), Qt::EditRole);
-            else if(model->data(optionindex,Qt::DisplayRole)==tr("Binary code"))
-                model->setData(index, QVariant(toBinary(value.toInt())), Qt::EditRole);
-            else
-                model->setData(index, QVariant(value), Qt::EditRole);
+
+            if(model->data(index,Qt::DisplayRole)!=QVariant(value)){
+
+                if(model->data(optionindex,Qt::DisplayRole)==tr("Hex code"))
+                    model->setData(index, QVariant(toHex(value.toInt())), Qt::EditRole);
+                else if(model->data(optionindex,Qt::DisplayRole)==tr("Binary code"))
+                    model->setData(index, QVariant(toBinary(value.toInt())), Qt::EditRole);
+                else
+                    model->setData(index, QVariant(value), Qt::EditRole);
+            }
 
             index = model->index(var,TreeModel::VARNAME,robotip);
             model->setData(index, QVariant(variabile), Qt::EditRole);
@@ -672,4 +680,8 @@ void OpenShowVarDock::on_itemDoubleClicked(const QModelIndex &index)
 
     //editVar(varname,varvalue,(QHostAddress)varip);
     statusBar()->showMessage(tr("Edit '%1'").arg(varname), 2000);
+}
+
+void OpenShowVarDock::on_dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight){
+
 }

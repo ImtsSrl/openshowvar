@@ -134,7 +134,7 @@ void ClientCross::run()
                                                 unsigned char ok = result.right(1).at(0);
                                                 QByteArray value;
                                                 unsigned short idmsg = clearMsg(result,value);
-                                                qDebug() << "id msg inviato: " << idmsgtosend << " id msg ricevuto: " << idmsg;
+                                                //qDebug() << "id msg inviato: " << idmsgtosend << " id msg ricevuto: " << idmsg;
                                                 if (ok && clearMsg(result,value)==idmsgtosend) {
                                                     listvar[index]->setValue(value);
                                                     listvar[index]->setReadTime(readtime.elapsed());
