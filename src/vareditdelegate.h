@@ -3,6 +3,7 @@
 
 #include <QStyledItemDelegate>
 #include <QDebug>
+#include <QHostAddress>
 
 #include "CShowModelIndex.h"
 
@@ -21,11 +22,11 @@ public:
   void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
   void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const;  
 
-private:
-  //QVariant valueatedit;
-
 private slots:
   void commitAndCloseEditor(const QString &text);
+
+signals:
+  void writevalue(const QByteArray &, const QByteArray &, const QHostAddress &) const;
 
 };
 

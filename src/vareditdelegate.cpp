@@ -44,8 +44,15 @@ void VarEditDelegate::setEditorData( QWidget *editor, const QModelIndex &index )
 
 void VarEditDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
+    ShowModelIndex indice=index;
+
     //model->setData(index, static_cast<QSpinBox*>(editor)->value());
-    qDebug() << "Qui bisogna impostare la scrittura sul robot!";
+    QByteArray varname = indice.varNAME().toAscii();
+    QByteArray varvalue;
+    varvalue.setNum(static_cast<QSpinBox*>(editor)->value());
+    QHostAddress varip = QHostAddress(indice.robotIP());
+    qDebug() << "Scrittura variabile " << varname << " valore " << varvalue << " ip " << varip;
+    emit writevalue(varname,varvalue,varip);
 }
 
 void VarEditDelegate::commitAndCloseEditor(const QString &text){

@@ -24,15 +24,16 @@ bool ShowModelIndex::isVar() {
 }
 
 QString ShowModelIndex::robotIP(){
-    if(this->isRobot())
-        return this->data(Qt::DisplayRole).toString();
+    if(this->isVar())
+        return this->parent().data(Qt::DisplayRole).toString();
 
     return "";
 }
 
 QString ShowModelIndex::varNAME(){
     if(this->isVar())
-        return this->data(Qt::DisplayRole).toString();
+        return model()->data(model()->index(row(),0,parent()),Qt::DisplayRole).toString();
+        //return this->data(Qt::DisplayRole).toString();
 
     return "";
 }

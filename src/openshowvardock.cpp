@@ -43,7 +43,8 @@ OpenShowVarDock::OpenShowVarDock()
     tree->setModel(model);
 
     tree->setItemDelegateForColumn(TreeModel::OPTIONS, new FormatDelegate);
-    tree->setItemDelegateForColumn(TreeModel::VARVALUE, new VarEditDelegate);
+    vareditdelegate = new VarEditDelegate;
+    tree->setItemDelegateForColumn(TreeModel::VARVALUE, vareditdelegate);
 
     setCentralWidget(tree);
     tree->setColumnWidth(TreeModel::VARNAME,110);
@@ -91,6 +92,7 @@ OpenShowVarDock::OpenShowVarDock()
     connect(tree,SIGNAL(dropVar(const QString &)),this,SLOT(on_insertVar(const QString &)));
 
     connect(model,SIGNAL(dataChanged(const QModelIndex &,const QModelIndex &)),this,SLOT(on_dataChanged(const QModelIndex &,const QModelIndex &)));
+    connect(vareditdelegate,SIGNAL(writevalue(const QByteArray &, const QByteArray &, const QHostAddress &)),this,SLOT(on_writeVariable(const QByteArray &, const QByteArray &, const QHostAddress &)));
 
     listVar.readList("varlist.xml");
 

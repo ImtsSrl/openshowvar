@@ -79,6 +79,7 @@ private:
 
     CTreeVar* tree;
     TreeModel *model;
+    VarEditDelegate *vareditdelegate;
 
     QTimer qtimeLettura;
     QTimer timeUpdateGraph;
