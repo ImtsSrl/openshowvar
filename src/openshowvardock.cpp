@@ -401,17 +401,21 @@ void OpenShowVarDock::lettura()
                     model->setData(index, QVariant(value), Qt::EditRole);
             }
 
-            index = model->index(var,TreeModel::VARNAME,robotip);
-            model->setData(index, QVariant(variabile), Qt::EditRole);
+            //index = model->index(var,TreeModel::VARNAME,robotip);
+            //model->setData(index, QVariant(variabile), Qt::EditRole);
             index = model->index(var,TreeModel::TIME,robotip);
-            if(readtime==-1)
-                model->setData(index, QVariant(tr("TIMEOUT")), Qt::EditRole);
-            else
-                model->setData(index, tempo.setNum(readtime).append(" [ms]"), Qt::EditRole);
+            if(readtime!=model->data(index,Qt::DisplayRole)){
+                if(readtime==-1)
+                    model->setData(index, QVariant(tr("TIMEOUT")), Qt::EditRole);
+                else
+                    model->setData(index, tempo.setNum(readtime).append(" [ms]"), Qt::EditRole);
+            }
 
             index = model->index(var,TreeModel::VARNAME,robotip);
-            //qDebug() << "Var: " << var << " Nome variabile: " << model->data(index,Qt::DisplayRole);
-            this->splitvaluetoview(index, variabile, value);
+            if(value!=model->data(index,Qt::DisplayRole)){
+                //qDebug() << "Var: " << var << " Nome variabile: " << model->data(index,Qt::DisplayRole);
+                this->splitvaluetoview(index, variabile, value);
+            }
         }
     }
 

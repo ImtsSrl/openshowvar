@@ -341,7 +341,7 @@ void RobotVarEdit::addInt(int widgetindex, QByteArray varName, int value){
 
     label[widgetindex] = new QLabel(varName,this);
     widget[widgetindex] = new QSpinBox(this);
-    ((QSpinBox*)widget[widgetindex])->setRange(-(9999999),(9999999));
+    ((QSpinBox*)widget[widgetindex])->setRange(KukaVar::MININTVALUE,KukaVar::MAXINTVALUE);
     ((QSpinBox*)widget[widgetindex])->setValue(value);
 }
 
@@ -358,7 +358,7 @@ void RobotVarEdit::addReal(int widgetindex, QByteArray varName, double value){
     label[widgetindex] = new QLabel(varName,this);
     widget[widgetindex] = new QDoubleSpinBox(this);
     ((QDoubleSpinBox*)widget[widgetindex])->setDecimals(5);
-    ((QDoubleSpinBox*)widget[widgetindex])->setRange(-99999,99999);
+    ((QDoubleSpinBox*)widget[widgetindex])->setRange(KukaVar::MINREALVALUE,KukaVar::MAXREALVALUE);
     ((QDoubleSpinBox*)widget[widgetindex])->setValue(value);
 }
 

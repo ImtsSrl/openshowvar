@@ -6,6 +6,7 @@
 #include <QHostAddress>
 
 #include "CShowModelIndex.h"
+#include "kukavar.h"
 
 class VarEditDelegate : public QStyledItemDelegate
 {

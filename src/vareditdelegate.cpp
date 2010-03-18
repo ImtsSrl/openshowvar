@@ -21,15 +21,42 @@ QWidget *VarEditDelegate::createEditor( QWidget *parent, const QStyleOptionViewI
 {
     ShowModelIndex indice=index;
 
-    if(indice.isInt(1)){
-        QSpinBox *spinbox = new QSpinBox(parent);
+    switch(indice.varTYPE()){
+    case KukaVar::INT:{
+            QSpinBox *spinbox = new QSpinBox(parent);
 
-        spinbox->setValue(index.data(Qt::DisplayRole).toInt());
+            spinbox->setRange(KukaVar::MININTVALUE,KukaVar::MAXINTVALUE);
+            spinbox->setAccelerated(true);
+            spinbox->setValue(index.data(Qt::DisplayRole).toInt());
 
-    //    connect(spinbox,SIGNAL(valueChanged(QString)),this,SLOT(commitAndCloseEditor(const QString &)));
-    //    combo->installEventFilter( const_cast<FormatDelegate*>(this) );
-        return spinbox;
+            //    connect(spinbox,SIGNAL(valueChanged(QString)),this,SLOT(commitAndCloseEditor(const QString &)));
+            //    combo->installEventFilter( const_cast<FormatDelegate*>(this) );
+            return spinbox;
+        }
+    case KukaVar::REAL:{
+            QDoubleSpinBox *spinbox = new QDoubleSpinBox(parent);
+
+            spinbox->setRange(KukaVar::MINREALVALUE,KukaVar::MAXREALVALUE);
+            spinbox->setDecimals(5);
+            spinbox->setSingleStep(0.1);
+            spinbox->setAccelerated(true);
+            spinbox->setValue(index.data(Qt::DisplayRole).toDouble());
+
+            return spinbox;
+        }
+    default:
+        return NULL;
     }
+
+//    if(indice.isInt(1)){
+//        QSpinBox *spinbox = new QSpinBox(parent);
+//
+//        spinbox->setRange(KukaVar::MININTVALUE,KukaVar::MAXINTVALUE);
+//        spinbox->setValue(index.data(Qt::DisplayRole).toInt());
+//    //    connect(spinbox,SIGNAL(valueChanged(QString)),this,SLOT(commitAndCloseEditor(const QString &)));
+//    //    combo->installEventFilter( const_cast<FormatDelegate*>(this) );
+//        return spinbox;
+//    }
 }
 
 void VarEditDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -46,11 +73,24 @@ void VarEditDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, 
 {
     ShowModelIndex indice=index;
 
-    //model->setData(index, static_cast<QSpinBox*>(editor)->value());
     QByteArray varname = indice.varNAME().toAscii();
     QByteArray varvalue;
-    varvalue.setNum(static_cast<QSpinBox*>(editor)->value());
     QHostAddress varip = QHostAddress(indice.robotIP());
+
+    switch(indice.varTYPE()){
+    case KukaVar::INT:{
+            //model->setData(index, static_cast<QSpinBox*>(editor)->value());
+            varvalue.setNum(static_cast<QSpinBox*>(editor)->value());
+            break;
+        }
+    case KukaVar::REAL:{
+            static_cast<QDoubleSpinBox*>(editor)->setDecimals(5);
+            varvalue.setNum(static_cast<QDoubleSpinBox*>(editor)->value(),'e',5);
+            break;
+        }
+    default:
+        varvalue="";
+    }
     qDebug() << "Scrittura variabile " << varname << " valore " << varvalue << " ip " << varip;
     emit writevalue(varname,varvalue,varip);
 }

@@ -14,6 +14,7 @@ public:
     bool isRobot();
     bool isVar();
     bool isInt(int column) const;
+    int varTYPE();
     QString robotIP();
     QString varNAME();
 };

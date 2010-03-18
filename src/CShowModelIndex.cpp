@@ -27,6 +27,12 @@ QString ShowModelIndex::robotIP(){
     if(this->isVar())
         return this->parent().data(Qt::DisplayRole).toString();
 
+    ShowModelIndex indice = this->parent().parent();
+    if(indice.isRobot()){
+        QString robotip=indice.data(Qt::DisplayRole).toString();
+        return robotip;
+   }
+
     return "";
 }
 
@@ -34,6 +40,14 @@ QString ShowModelIndex::varNAME(){
     if(this->isVar())
         return model()->data(model()->index(row(),0,parent()),Qt::DisplayRole).toString();
         //return this->data(Qt::DisplayRole).toString();
+
+    ShowModelIndex indice = this->parent();
+    if(indice.isVar()){
+        QString varname=indice.data(Qt::DisplayRole).toString();
+        varname.append(".");
+        varname.append(model()->data(model()->index(row(),0,parent()),Qt::DisplayRole).toString());
+        return varname;
+   }
 
     return "";
 }
@@ -68,3 +82,12 @@ bool ShowModelIndex::isInt(int column) const
         return false;
 }
 
+int ShowModelIndex::varTYPE()
+{
+    QByteArray varvalue = model()->data(model()->index(row(),1,parent()),Qt::DisplayRole).toByteArray();
+
+    KukaVar *kukavar = new KukaVar(QByteArray("TEST"),varvalue);
+    int vartype = kukavar->getVarType();
+    delete kukavar;
+    return vartype;
+}
