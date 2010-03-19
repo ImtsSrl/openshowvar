@@ -85,7 +85,8 @@ void VarEditDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, 
         }
     case KukaVar::REAL:{
             static_cast<QDoubleSpinBox*>(editor)->setDecimals(5);
-            varvalue.setNum(static_cast<QDoubleSpinBox*>(editor)->value(),'e',5);
+            //varvalue.setNum(static_cast<QDoubleSpinBox*>(editor)->value(),'e',5);
+            varvalue.setNum(static_cast<QDoubleSpinBox*>(editor)->value());
             break;
         }
     default:

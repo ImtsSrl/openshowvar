@@ -28,10 +28,8 @@ QString ShowModelIndex::robotIP(){
         return this->parent().data(Qt::DisplayRole).toString();
 
     ShowModelIndex indice = this->parent().parent();
-    if(indice.isRobot()){
-        QString robotip=indice.data(Qt::DisplayRole).toString();
-        return robotip;
-   }
+    if(indice.isRobot())
+       return indice.data(Qt::DisplayRole).toString();
 
     return "";
 }
@@ -58,7 +56,8 @@ bool ShowModelIndex::isInt(int column) const
 
     QByteArray varvalue = model()->data(model()->index(row(),column,parent()),Qt::DisplayRole).toByteArray();
 
-    KukaVar *kukavar = new KukaVar(QByteArray("TEST"),varvalue);
+    KukaVar *kukavar = new KukaVar(QByteArray("TEST"),varvalue.trimmed());
+    //qDebug() << "Tipo variabile " << kukavar->getVarType();
     switch(kukavar->getVarType()){
     case KukaVar::INT:
         {
@@ -86,7 +85,7 @@ int ShowModelIndex::varTYPE()
 {
     QByteArray varvalue = model()->data(model()->index(row(),1,parent()),Qt::DisplayRole).toByteArray();
 
-    KukaVar *kukavar = new KukaVar(QByteArray("TEST"),varvalue);
+    KukaVar *kukavar = new KukaVar(QByteArray("TEST"),varvalue.trimmed());
     int vartype = kukavar->getVarType();
     delete kukavar;
     return vartype;

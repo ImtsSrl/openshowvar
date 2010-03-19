@@ -123,7 +123,12 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 
     ShowModelIndex indice=index;
 
-    if(index.column()==2 && (indice.isInt(TreeModel::VARVALUE) || data(index,Qt::DisplayRole) == tr("Binary code") || data(index,Qt::DisplayRole) == tr("Hex code")))
+    //qDebug() << "Tipo variabile: " << index.data(Qt::DisplayRole).toString() << " " << indice.varTYPE();
+
+    if(index.column()==1 && indice.varTYPE()==KukaVar::REAL)
+        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+
+    if(index.column()==2 && (indice.varTYPE()==KukaVar::INT || data(index,Qt::DisplayRole) == tr("Binary code") || data(index,Qt::DisplayRole) == tr("Hex code")))
         return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 
     if(index.column()==1)

@@ -84,7 +84,7 @@ KukaVar::~KukaVar()
 
 int KukaVar::VarType(const QByteArray variabile)
 {
-    //qDebug() << "Variabile " << variabile;
+    //qDebug() << "Variabile ricevuta: " << variabile;
     if(variabile.startsWith("{") && variabile.endsWith("}"))
         return STRUCTURE;
 
