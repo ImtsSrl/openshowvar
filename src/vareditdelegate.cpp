@@ -23,15 +23,25 @@ QWidget *VarEditDelegate::createEditor( QWidget *parent, const QStyleOptionViewI
 
     switch(indice.varTYPE()){
     case KukaVar::INT:{
-            QSpinBox *spinbox = new QSpinBox(parent);
+//            if(indice.varNAME()=="$OV_PRO"){
+//                QSlider *slider = new QSlider(parent);
+//
+//                slider->setRange(0,100);
+//                slider->setOrientation(Qt::Horizontal);
+//
+//                return slider;
+//            }
+//            else{
+                QSpinBox *spinbox = new QSpinBox(parent);
 
-            spinbox->setRange(KukaVar::MININTVALUE,KukaVar::MAXINTVALUE);
-            spinbox->setAccelerated(true);
-            spinbox->setValue(index.data(Qt::DisplayRole).toInt());
+                spinbox->setRange(KukaVar::MININTVALUE,KukaVar::MAXINTVALUE);
+                spinbox->setAccelerated(true);
+                spinbox->setValue(index.data(Qt::DisplayRole).toInt());
 
-            //    connect(spinbox,SIGNAL(valueChanged(QString)),this,SLOT(commitAndCloseEditor(const QString &)));
-            //    combo->installEventFilter( const_cast<FormatDelegate*>(this) );
-            return spinbox;
+                //    connect(spinbox,SIGNAL(valueChanged(QString)),this,SLOT(commitAndCloseEditor(const QString &)));
+                //    combo->installEventFilter( const_cast<FormatDelegate*>(this) );
+                return spinbox;
+//            }
         }
     case KukaVar::REAL:{
             QDoubleSpinBox *spinbox = new QDoubleSpinBox(parent);
@@ -43,6 +53,13 @@ QWidget *VarEditDelegate::createEditor( QWidget *parent, const QStyleOptionViewI
             spinbox->setValue(index.data(Qt::DisplayRole).toDouble());
 
             return spinbox;
+        }
+    case KukaVar::STRUCTURE:{
+            PosSpinBox *structurespinbox = new PosSpinBox(parent);
+
+            structurespinbox->setValue(index.data(Qt::DisplayRole).toString());
+
+            return structurespinbox;
         }
     default:
         return NULL;
@@ -92,8 +109,11 @@ void VarEditDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, 
     default:
         varvalue="";
     }
-    qDebug() << "Scrittura variabile " << varname << " valore " << varvalue << " ip " << varip;
-    emit writevalue(varname,varvalue,varip);
+    qDebug() << "Valore precedente: " << indice.data(Qt::DisplayRole).toByteArray().trimmed();
+    if(indice.data(Qt::DisplayRole).toByteArray().trimmed()!=varvalue){
+        qDebug() << "Scrittura variabile " << varname << " valore " << varvalue << " ip " << varip;
+        emit writevalue(varname,varvalue,varip);
+    }
 }
 
 void VarEditDelegate::commitAndCloseEditor(const QString &text){

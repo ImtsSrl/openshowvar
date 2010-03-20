@@ -4,9 +4,11 @@
 #include <QStyledItemDelegate>
 #include <QDebug>
 #include <QHostAddress>
+#include <QSlider>
 
 #include "CShowModelIndex.h"
 #include "kukavar.h"
+#include "posspinbox.h"
 
 class VarEditDelegate : public QStyledItemDelegate
 {
