@@ -2,6 +2,7 @@
 
 PosSpinBox::PosSpinBox(QWidget *parent) : QAbstractSpinBox(parent) {
 
+    StepEnabled(QAbstractSpinBox::StepDownEnabled|QAbstractSpinBox::StepUpEnabled);
     //lineEdit()->setInputMask("NNNNN: \\X #000.000 \\, Y #0000, Z #0000, \\A #000, \\B #000, \\C #000;0");
 
 }
@@ -16,7 +17,16 @@ void PosSpinBox::setValue(QString value){
 
 void PosSpinBox::stepBy(int steps)
 {
-    qDebug() << "Passo";
+    qDebug() << "Passo " << steps;
+    lineEdit()->setSelection(11,5);
+}
+
+PosSpinBox::StepEnabled PosSpinBox::stepEnabled() const
+{
+    StepEnabled ret;
+    ret |= QAbstractSpinBox::StepDownEnabled;
+    ret |= QAbstractSpinBox::StepUpEnabled;
+    return ret;
 }
 
 void PosSpinBox::keyPressEvent(QKeyEvent *event){
@@ -29,4 +39,9 @@ void PosSpinBox::keyPressEvent(QKeyEvent *event){
         qDebug() << "Altro";
         break;
     }
+}
+
+void PosSpinBox::mousePressEvent(QMouseEvent *event)
+{
+    QAbstractSpinBox::mousePressEvent(event);
 }

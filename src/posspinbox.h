@@ -5,6 +5,7 @@
 #include <QLineEdit>
 #include <QDebug>
 #include <QKeyEvent>
+#include <QMouseEvent>
 
 class PosSpinBox : public QAbstractSpinBox{
     Q_OBJECT
@@ -13,7 +14,13 @@ public:
 
     enum Section {
         NoSection = 0x0000,
-        XPosSection = 0x0001,
+        TypePosSection = 0x0001,
+        XPosSection = 0x0002,
+        YPosSection = 0x0004,
+        ZPosSection = 0x0008,
+        APosSection = 0x0010,
+        BPosSection = 0x0020,
+        CPosSection = 0x0040,
     };
 
     PosSpinBox(QWidget *parent = 0);
@@ -23,7 +30,9 @@ public:
     void stepBy(int steps);
 
 protected:
+    virtual StepEnabled stepEnabled() const;
     virtual void keyPressEvent(QKeyEvent *event);
+    virtual void mousePressEvent(QMouseEvent *event);
 
 };
 
