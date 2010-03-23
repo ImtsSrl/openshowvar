@@ -28,6 +28,7 @@
 #include <QDebug>
 
 #include "showvarconst.h"
+#include "CKukaStrBaseElement.h"
 
 class KukaVar : public QObject
 {
@@ -69,8 +70,11 @@ class KukaVar : public QObject
                 QByteArray vartype,value,varname,varvalue,structurename,newvarvalue,structurevalue;
 		QList<QByteArray> arrayvalue,newarrayvalue;
 		QHash<QByteArray, QByteArray> elements;
+                //QList<KukaStrBaseElement*> kukaBaseElement;
+                QList<KukaStrBaseElement> kukaBaseElement;
 		
 		int VarType(const QByteArray variabile);
+                void splitStructure(QByteArray varvalue);
 };
 
 #endif

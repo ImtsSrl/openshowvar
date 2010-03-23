@@ -46,7 +46,8 @@ HEADERS += src/broadcast.h \
     src/formatdelegate.h \
     src/CShowModelIndex.h \
     src/vareditdelegate.h \
-    src/posspinbox.h
+    src/posspinbox.h \
+    src/CKukaStrBaseElement.h
 SOURCES += src/broadcast.cpp \
     src/CDebug.cpp \
     src/CGridField.cpp \
@@ -98,7 +99,8 @@ SOURCES += src/broadcast.cpp \
     src/formatdelegate.cpp \
     src/CShowModelIndex.cpp \
     src/vareditdelegate.cpp \
-    src/posspinbox.cpp
+    src/posspinbox.cpp \
+    src/CKukaStrBaseElement.cpp
 TRANSLATIONS += lang/openshowvar_de.ts \
     lang/openshowvar_en.ts \
     lang/openshowvar_it.ts

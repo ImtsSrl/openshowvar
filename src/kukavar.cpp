@@ -226,6 +226,8 @@ void KukaVar::setValue(QByteArray varvalue)
     switch(intvartype){
     case KukaVar::STRUCTURE:
         {
+            splitStructure(varvalue);
+
             //verify the start position
             int starttype=varvalue.indexOf("{");
             int stoptype=varvalue.indexOf(":");
@@ -377,6 +379,71 @@ void KukaVar::setValue(QByteArray varvalue)
     default:
         {
             break;
+        }
+    }
+}
+
+void KukaVar::splitStructure(QByteArray varvalue){
+    //qDebug() << "varvalue in kukavar " << varvalue;
+
+
+    if(varvalue.isEmpty())
+        return;
+
+    KukaStrBaseElement baseelement;
+    int instructure=0,posstartstructure=0,posendstructure=0;
+    int posstartelement=0,posstopelement=0;
+
+    for(int charpos=0;charpos<varvalue.length();charpos++)
+    {
+        switch(varvalue[charpos]){
+        case '{':{
+                //sono nella struttura ora vado alla ricerca del tipo struttura (:)
+                instructure++;
+                posstartstructure=charpos+1;
+                //qDebug() << "Inizio struttura alla posizione: " << posstartstructure;
+                break;
+            }
+        case ':':{
+                //tipo struttura trovato, ora ricerco il primo separatore
+                posendstructure=charpos-1;
+                posstartelement=charpos+2;
+                //qDebug() << "Fine tipo struttura alla posizione: " << posendstructure;
+                break;
+            }
+        case ',':{
+                //potrebbe non esserci la virgola, e quindi e' l'ultimo elemento
+                posstopelement=charpos;
+                QByteArray elementoevalore=varvalue.mid(posstartelement,posstopelement-posstartelement);
+                //qDebug() << "Elemento + valore struttura " << elementoevalore;
+
+                int posspace=varvalue.indexOf(' ',posstartelement);
+                //qDebug() << "Posizione spazio: " << posspace;
+
+                baseelement.setElement(varvalue.mid(posstartelement,posspace-posstartelement),posstartelement,posspace-posstartelement);
+                baseelement.setValue(varvalue.mid(posspace+1,posstopelement-(posspace+1)),posspace+1,posstopelement-(posspace+1));
+
+                kukaBaseElement.append(baseelement);
+
+                posstartelement=charpos+2;
+                break;
+            }
+        case '}':{
+                //ultimo valore struttura
+                posstopelement=charpos;
+                QByteArray elementoevalore=varvalue.mid(posstartelement,posstopelement-posstartelement);
+                //qDebug() << "Elemento + valore struttura " << elementoevalore;
+
+                int posspace=varvalue.indexOf(' ',posstartelement);
+                //qDebug() << "Posizione spazio: " << posspace;
+
+                baseelement.setElement(varvalue.mid(posstartelement,posspace-posstartelement),posstartelement,posspace-posstartelement);
+                baseelement.setValue(varvalue.mid(posspace+1,posstopelement-(posspace+1)),posspace+1,posstopelement-(posspace+1));
+
+                kukaBaseElement.append(baseelement);
+
+                break;
+            }
         }
     }
 }
