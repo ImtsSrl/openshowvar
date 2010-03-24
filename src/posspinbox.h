@@ -7,6 +7,8 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 
+#include "kukavar.h"
+
 class PosSpinBox : public QAbstractSpinBox{
     Q_OBJECT
 
@@ -33,6 +35,9 @@ protected:
     virtual StepEnabled stepEnabled() const;
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
+
+private:
+    KukaVar *kukavar;
 
 };
 

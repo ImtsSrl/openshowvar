@@ -391,6 +391,8 @@ void KukaVar::splitStructure(QByteArray varvalue){
         return;
 
     KukaStrBaseElement baseelement;
+    kukaBaseElement.clear();
+
     int instructure=0,posstartstructure=0,posendstructure=0;
     int posstartelement=0,posstopelement=0;
 
@@ -446,6 +448,20 @@ void KukaVar::splitStructure(QByteArray varvalue){
             }
         }
     }
+}
+
+int KukaVar::currentSectionIndex(int pos){
+    for(int index=0;kukaBaseElement.count();index++)
+        if(pos>=kukaBaseElement[index].getValueStart() && pos<=kukaBaseElement[index].getValueStart()+kukaBaseElement[index].getValueLength())
+            return index;
+}
+
+int KukaVar::getSectionStart(int index){
+    return kukaBaseElement[index].getValueStart();
+}
+
+int KukaVar::getSectionLength(int index){
+    return kukaBaseElement[index].getValueLength();
 }
 
 QByteArray KukaVar::createStructure()

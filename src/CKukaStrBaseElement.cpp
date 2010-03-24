@@ -27,3 +27,11 @@ void KukaStrBaseElement::setValue(QByteArray elementValue, int start, int length
     this->valueLength=length;
     //qDebug() << "valore elemento: " << this->elementValue << " start: " << this->valueStart << " lunghezza: " << this->valueLength;
 }
+
+int KukaStrBaseElement::getValueStart(){
+    return valueStart;
+}
+
+int KukaStrBaseElement::getValueLength(){
+    return valueLength;
+}

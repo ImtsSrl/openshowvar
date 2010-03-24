@@ -13,12 +13,15 @@ PosSpinBox::~PosSpinBox(){
 
 void PosSpinBox::setValue(QString value){
     lineEdit()->setText(value);
+    kukavar = new KukaVar("TEST",value.toAscii());
 }
 
 void PosSpinBox::stepBy(int steps)
 {
+    int index=kukavar->currentSectionIndex(lineEdit()->cursorPosition());
     qDebug() << "Passo " << steps;
-    lineEdit()->setSelection(11,5);
+    qDebug() << "Indice: " << index << " valore: ";
+    lineEdit()->setSelection(kukavar->getSectionStart(index),kukavar->getSectionLength(index));
 }
 
 PosSpinBox::StepEnabled PosSpinBox::stepEnabled() const

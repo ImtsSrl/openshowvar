@@ -58,6 +58,10 @@ class KukaVar : public QObject
 		
 		QByteArray getValue();
 
+                int currentSectionIndex(int pos);
+                int getSectionStart(int index);
+                int getSectionLength(int index);
+
                 static const char ERRTYPE=0,STRUCTURE=1,INT=2,REAL=3,BOOL=4,CHAR=5;
                 static const long int MAXINTVALUE=0x80000000-1,MININTVALUE=-0x80000000; //32 bit con segno robot
                 static const double MAXREALVALUE=3.4e+10,MINREALVALUE=-3.4e+10;
