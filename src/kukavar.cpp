@@ -451,9 +451,11 @@ void KukaVar::splitStructure(QByteArray varvalue){
 }
 
 int KukaVar::currentSectionIndex(int pos){
-    for(int index=0;kukaBaseElement.count();index++)
+    for(int index=0;index<kukaBaseElement.count();index++)
         if(pos>=kukaBaseElement[index].getValueStart() && pos<=kukaBaseElement[index].getValueStart()+kukaBaseElement[index].getValueLength())
             return index;
+
+    return 0;
 }
 
 int KukaVar::getSectionStart(int index){

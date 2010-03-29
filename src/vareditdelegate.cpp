@@ -106,6 +106,10 @@ void VarEditDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, 
             varvalue.setNum(static_cast<QDoubleSpinBox*>(editor)->value());
             break;
         }
+    case KukaVar::STRUCTURE:{
+            varvalue = static_cast<PosSpinBox*>(editor)->value();
+            break;
+        }
     default:
         varvalue="";
     }

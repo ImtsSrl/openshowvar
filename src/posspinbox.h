@@ -29,6 +29,7 @@ public:
     ~PosSpinBox();
 
     void setValue(QString value);
+    QByteArray value();
     void stepBy(int steps);
 
 protected:
